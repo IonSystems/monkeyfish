@@ -22,11 +22,12 @@ public class GameScreen implements Screen {
 	Texture bucketImage;
 	Texture treeImage;
 	Texture cloudImage;
+	Texture heart;
 	Sound dropSound;
 	Music rainMusic;
 	OrthographicCamera camera;
 	Rectangle bucket;
-	ArrayList<Rectangle> raindrops, trees, clouds;
+	ArrayList<Rectangle> raindrops, trees, clouds, hearts;
 	Texture textureUp;
 	Texture textureDown;
 	Texture background;
@@ -39,6 +40,7 @@ public class GameScreen implements Screen {
 	int movement = 200;
 	float yVelocity = 0;
 	int acceleration = 10;
+	int lives = 5;
 
 	private boolean touch;
 
@@ -51,6 +53,7 @@ public class GameScreen implements Screen {
 		bucketImage = new Texture(Gdx.files.internal("bobargb8888-32x32.png"));
 		treeImage = new Texture(Gdx.files.internal ("tree.png"));
 		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
+		heart = new Texture(Gdx.files.internal ("heart.png"));
 		// load the drop sound effect and the rain background "music"
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
@@ -71,6 +74,7 @@ public class GameScreen implements Screen {
 						// the bottom screen edge
 
 		// create the raindrops array and spawn the first raindrop
+		hearts = new ArrayList<Rectangle>();
 		raindrops = new ArrayList<Rectangle>();
 		trees = new ArrayList<Rectangle>();
 		clouds = new ArrayList<Rectangle>();
@@ -80,7 +84,7 @@ public class GameScreen implements Screen {
 		textureDown = new Texture(Gdx.files.internal("pause_button_down.png"));
 		background = new Texture(Gdx.files.internal("pause_button_background.png"));
 		btnPause = new MyButton(textureUp, textureDown, background);
-		btnPause.setPosition(400, 400);
+		btnPause.setPosition(frameWidth, 400);
 		btnPause.setSize(50, 50);
 
 		stage.addActor(btnPause);
@@ -101,6 +105,13 @@ public class GameScreen implements Screen {
 		clouds.add(new spawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
+	
+	private void spawnHearts(){
+		for (int i = 0; i < lives; i ++){
+			hearts.add(new spawnObject(heart, 10+30*i, (frameHeight -50)));
+		}
+	}
+	
 	
 	@Override
 	public void render(float delta) {
@@ -133,6 +144,9 @@ public class GameScreen implements Screen {
 		}
 		for (Rectangle cloud : clouds){
 			game.batch.draw(cloudImage, cloud.x, cloud.y);
+		}
+		for (Rectangle h : hearts){
+			game.batch.draw(heart, h.x, h.y);
 		}
 		game.batch.end();
 
@@ -190,6 +204,7 @@ public class GameScreen implements Screen {
 		if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
 			spawnRaindrop();
 		
+		spawnHearts();
 		// move the raindrops, remove any that are beneath the bottom edge of
 		// the screen or that hit the bucket. In the later case we increase the
 		// value our drops counter and add a sound effect.
@@ -200,6 +215,9 @@ public class GameScreen implements Screen {
 				toRemove.add(s);
 			if (s.overlaps(bucket)) {
 				dropsGathered++;
+				if(dropsGathered%10 == 0 && dropsGathered != 0){
+					lives++;
+				}
 				//dropSound.play();
 				toRemove.add(s);
 			}
