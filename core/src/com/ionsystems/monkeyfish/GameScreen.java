@@ -41,9 +41,6 @@ public class GameScreen implements Screen {
 	OrthographicCamera camera;
 	Rectangle bucket;
 	ArrayList<Rectangle> raindrops, trees, clouds, hearts;
-	Texture textureUp;
-	Texture textureDown;
-	Texture background;
 	long lastDropTime, lastTreeTime, lastCloudTime;
 	float btnPauseSx = 200;
 	float btnPauseSy = 200;
@@ -130,12 +127,6 @@ public class GameScreen implements Screen {
         	}
 		});
 		
-		textureUp = new Texture(Gdx.files.internal("pause_button_up.png"));
-		textureDown = new Texture(Gdx.files.internal("pause_button_down.png"));
-		background = new Texture(Gdx.files.internal("pause_button_background.png"));
-		btnPause.setPosition(frameWidth, 400);
-		btnPause.setSize(50, 50);
-
 		stage.addActor(btnPause);
 		//end Pause Button
 	}
