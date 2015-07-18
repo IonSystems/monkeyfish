@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 public class MainMenuScreen implements Screen {
 
     final MonkeyFishGame game;
-
+    
     OrthographicCamera camera;
 
     public MainMenuScreen(final MonkeyFishGame gam) {

@@ -47,11 +47,11 @@ public class GameScreen implements Screen {
 
         // create a Rectangle to logically represent the bucket
         bucket = new Rectangle();
-        bucket.x = 800 / 2 - 64 / 2; // center the bucket horizontally
+        bucket.x = 800 / 2 - 64/ 2; // center the bucket horizontally
         bucket.y = 20; // bottom left corner of the bucket is 20 pixels above
                         // the bottom screen edge
-        bucket.width = 64;
-        bucket.height = 64;
+        bucket.width = 256;
+        bucket.height = 256;
 
         // create the raindrops array and spawn the first raindrop
         raindrops = new Array<Rectangle>();
@@ -110,9 +110,14 @@ public class GameScreen implements Screen {
         // make sure the bucket stays within the screen bounds
         if (bucket.x < 0)
             bucket.x = 0;
-        if (bucket.x > 800 - 64)
-            bucket.x = 800 - 64;
+        if (bucket.x > 800 - bucket.width)
+            bucket.x = 800 - bucket.width;
 
+        
+        if (bucket.y < 0)
+            bucket.y = 0;
+        if (bucket.y > 800 - bucket.height)
+            bucket.y = 800 - bucket.height;
         // check if we need to create a new raindrop
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
             spawnRaindrop();
