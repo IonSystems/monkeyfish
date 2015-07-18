@@ -64,7 +64,6 @@ public class GameScreen implements Screen {
 	int initMovement;
 	private boolean touch;
 	private boolean overlapping = false;
-	private boolean init;
 	
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
@@ -103,7 +102,7 @@ public class GameScreen implements Screen {
 		trees = new ArrayList<Rectangle>();
 		clouds = new ArrayList<Rectangle>();
 		grounds = new ArrayList<Rectangle>();
-		spawnRaindrop();
+		spawnBird();
 		initialiseGround();
 		
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -146,18 +145,18 @@ public class GameScreen implements Screen {
 			}
 		}
 	
-	private void spawnRaindrop() {
-		birds.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - bob.height)));
+	private void spawnBird() {
+		birds.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, 3*frameHeight/4 - birdImage.getHeight())));
 		lastDropTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnTree() {
-		trees.add(new SpawnObject(treeImage, frameWidth, frameHeight/6));
+		trees.add(new SpawnObject(treeImage, frameWidth+ (int)MathUtils.random(0, frameWidth), frameHeight/6));
 		lastTreeTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnCloud(){
-		clouds.add(new SpawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
+		clouds.add(new SpawnObject(cloudImage, frameWidth+ (int)MathUtils.random(0, frameWidth/2), ((int)frameHeight/4 + (int)MathUtils.random(0, 3*frameHeight/4 - cloudImage.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
 	
@@ -249,8 +248,8 @@ public class GameScreen implements Screen {
 		if (bob.x > frameWidth - bob.width)
 			bob.x = frameWidth - bob.width;
 
-		if (bob.y < 0)
-			bob.y = 0;
+		if (bob.y < bob.height)
+			bob.y = bob.height;
 		if (bob.y > frameHeight - bob.height)
 			bob.y = frameHeight - bob.height;
 		
@@ -262,14 +261,14 @@ public class GameScreen implements Screen {
 				 grounds.get(i).x += grounds.get(i).width * grounds.size();
 			 }
 		}
-		if (TimeUtils.nanoTime() - lastTreeTime > 2000000000)
+		if (TimeUtils.nanoTime() - lastTreeTime > 500000000)
 			spawnTree();
 
 		if (TimeUtils.nanoTime() - lastCloudTime > 1700000000)
 			spawnCloud();
 		
 		if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
-			spawnRaindrop();
+			spawnBird();
 		
 		spawnHearts();
 		// move the birds, remove any that are beneath the bottom edge of
@@ -316,7 +315,7 @@ public class GameScreen implements Screen {
 			if (s.x + s.width < 0)
 				toRemove.add(s);
 			if (s.overlaps(bob)){
-				movement = 100;
+				movement = 10;
 			}
 			else movement = initMovement;
 		}
