@@ -2,6 +2,7 @@ package com.ionsystems.monkeyfish;
 
 import java.util.Iterator;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -11,11 +12,19 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -32,14 +41,22 @@ public class GameScreen implements Screen {
     Array<Rectangle> raindrops;
     Texture textureUp;   
     Texture textureDown; 
-    Texture background;  
-    MyButton myButton;   
-    MyButton btnPause ;
+    Texture background;   
+
+    float btnPauseSx = 200;
+    float btnPauseSy = 200;
     long lastDropTime;
     int dropsGathered;
-    int frameHeight = 480;
-    int frameWidth = 800;
+    int frameHeight = 1080;
+    int frameWidth = 1920;
     int movement = 200;
+    
+    //pause button variables
+    TextButton btnPause;
+    TextureAtlas pauseAtlas;
+    TextButtonStyle pauseStyle;
+    BitmapFont font;
+    Skin pauseSkin;
 
     public GameScreen(final MonkeyFishGame gam) {
         this.game = gam;
@@ -76,14 +93,43 @@ public class GameScreen implements Screen {
         raindrops = new Array<Rectangle>();
         spawnRaindrop();
         
-        textureUp = new Texture(Gdx.files.internal("pause_button_up.png"));
-        textureDown = new Texture(Gdx.files.internal("pause_button_down.png"));
-        background = new Texture(Gdx.files.internal("pause_button_background.png"));
-        btnPause = new MyButton(textureUp, textureDown, background);
-        btnPause.setPosition(400, 400);
-        btnPause.setSize(50, 50);
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        
+        //Pause Button creation
+        font = new BitmapFont(Gdx.files.internal("fonts/Arial.fnt"),false);
+        pauseStyle = new TextButtonStyle();
+        pauseSkin = new Skin();
+        pauseStyle.font = font;
+        btnPause = new TextButton("A", pauseStyle);
+        pauseAtlas = new TextureAtlas("Buttons/pauseButton.pack");
+        
+        btnPause.setPosition(500, 400);
+        btnPause.setSize(40, 40);
+        
+        
+        
+        pauseSkin.addRegions(pauseAtlas);
+        pauseStyle.up = pauseSkin.getDrawable("Pause_button_up");
+        pauseStyle.down = pauseSkin.getDrawable("pause_button_down");
+        
+        btnPause.addListener(new ClickListener() {
+        	@Override
+        	public boolean touchDown(InputEvent e, float x, float y, int pointer, int button){
+        		Gdx.app.debug("gesture", "inside touchDown");
+        		btnPause.background((Drawable) background);
+				return false;
+        	}
+        	@Override
+        	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
+        		Gdx.app.debug("gesture", "inside touchUp");
+        		btnPause.background((Drawable) background);
+        	}
+        	
+        });
         
         stage.addActor(btnPause);
+        //Pause Button End
+        
         
     }
 
