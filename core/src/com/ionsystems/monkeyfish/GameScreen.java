@@ -1,7 +1,6 @@
 package com.ionsystems.monkeyfish;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -16,14 +15,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen implements Screen {
@@ -31,16 +27,23 @@ public class GameScreen implements Screen {
 	final MonkeyFishGame game;
 
 	Stage stage;
-	Texture dropImage;
-	Texture bucketImage;
+	Texture birdImage;
+	Texture bobImage;
 	Texture treeImage;
 	Texture cloudImage;
+	Texture groundImage;
 	Texture heart;
-	Sound dropSound;
-	Music rainMusic;
+	Sound birdSong;
+	Music gameMusic;
 	OrthographicCamera camera;
-	Rectangle bucket;
-	ArrayList<Rectangle> raindrops, trees, clouds, hearts;
+
+	Rectangle bob;
+	ArrayList<Rectangle> raindrops, trees, clouds, hearts, ground;
+	Texture grounds;
+	Texture textureUp;
+	Texture textureDown;
+	Texture background;
+
 	long lastDropTime, lastTreeTime, lastCloudTime;
 	float btnPauseSx = 200;
 	float btnPauseSy = 200;
@@ -50,6 +53,7 @@ public class GameScreen implements Screen {
 	int movement = 200;
 	float yVelocity = 0;
 	int acceleration = 10;
+	boolean antipodean = false;
 	
 	//pause button variables
 	TextButton btnPause;
@@ -61,33 +65,36 @@ public class GameScreen implements Screen {
 
 	private boolean touch;
 
+	private boolean overlapping = false;
+
+	private boolean init = true;
+
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
 
 		stage = new Stage();
-		// load the images for the droplet and the bucket, 64x64 pixels each
-		dropImage = new Texture(Gdx.files.internal("bird.png"));
-		bucketImage = new Texture(Gdx.files.internal("bobargb8888-32x32.png"));
+		birdImage = new Texture(Gdx.files.internal("bird.png"));
+		bobImage = new Texture(Gdx.files.internal("bob.png"));
 		treeImage = new Texture(Gdx.files.internal ("tree.png"));
 		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
+		groundImage = new Texture(Gdx.files.internal ("ground1.png"));
 		heart = new Texture(Gdx.files.internal ("heart.png"));
-		// load the drop sound effect and the rain background "music"
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
-		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
-		rainMusic.setLooping(true);
+		birdSong = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
+		gameMusic.setLooping(true);
 
 		// create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, frameWidth, frameHeight);
 
-		// create a Rectangle to logically represent the bucket
-		bucket = new Rectangle();
-		bucket.width = bucketImage.getWidth();
-		bucket.height = bucketImage.getHeight();
+		// create a Rectangle to logically represent the bob
+		bob = new Rectangle();
+		bob.width = bobImage.getWidth();
+		bob.height = bobImage.getHeight();
 
-		bucket.x = frameWidth / 2 - (bucket.width) / 2; // center the bucket
+		bob.x = frameWidth / 2 - (bob.width) / 2; // center the bob
 														// horizontally
-		bucket.y = 20; // bottom left corner of the bucket is 20 pixels above
+		bob.y = 20; // bottom left corner of the bob is 20 pixels above
 						// the bottom screen edge
 
 		// create the raindrops array and spawn the first raindrop
@@ -95,6 +102,7 @@ public class GameScreen implements Screen {
 		raindrops = new ArrayList<Rectangle>();
 		trees = new ArrayList<Rectangle>();
 		clouds = new ArrayList<Rectangle>();
+		ground = new ArrayList<Rectangle>();
 		spawnRaindrop();
 
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -132,13 +140,14 @@ public class GameScreen implements Screen {
 		//end Pause Button
 	}
 
+	
 	private void spawnRaindrop() {
-		raindrops.add(new SpawnObject(dropImage, frameWidth, (int)MathUtils.random(0, frameHeight - bucket.height)));
+		raindrops.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - bob.height)));
 		lastDropTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnTree() {
-		trees.add(new SpawnObject(treeImage, frameWidth, 0));
+		trees.add(new SpawnObject(treeImage, frameWidth, 150));
 		lastTreeTime = TimeUtils.nanoTime();
 	}
 	
@@ -146,8 +155,18 @@ public class GameScreen implements Screen {
 		clouds.add(new SpawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
+	private void initialiseGround(){
+		ground.add(new SpawnObject(groundImage, 0, 0));
+		ground.add(new SpawnObject(groundImage, groundImage.getWidth(), 0));
+		init = false;
+		}
+	
+	private void spawnGround(){
+		ground.add(new SpawnObject(groundImage, frameWidth, 0));
+	}
 	
 	private void spawnHearts(){
+		hearts.clear();
 		for (int i = 0; i < lives; i ++){
 			hearts.add(new SpawnObject(heart, 10+30*i, (frameHeight -50)));
 		}
@@ -172,13 +191,15 @@ public class GameScreen implements Screen {
 		// coordinate system specified by the camera.
 		game.batch.setProjectionMatrix(camera.combined);
 
-		// begin a new batch and draw the bucket and
-		// all drops
+		// begin a new batch and draw the bob and all drops
 		game.batch.begin();
 		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, frameHeight);
-		game.batch.draw(bucketImage, bucket.x, bucket.y);
+				
+		for (Rectangle r : ground){
+			game.batch.draw(groundImage, r.x, r.y);
+		}
 		for (Rectangle raindrop : raindrops) {
-			game.batch.draw(dropImage, raindrop.x, raindrop.y);
+			game.batch.draw(birdImage, raindrop.x, raindrop.y);
 		}
 		for (Rectangle tree : trees){
 			game.batch.draw(treeImage, tree.x, tree.y);
@@ -189,6 +210,8 @@ public class GameScreen implements Screen {
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
+		game.batch.draw(bobImage, bob.x, bob.y);
+
 		game.batch.end();
 
 		// process user input
@@ -197,12 +220,12 @@ public class GameScreen implements Screen {
 			// Don't need most of this as based on one button press.
 			// touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			// camera.unproject(touchPos);
-			// bucket.y = touchPos.y - bucket.height / 2;
+			// bob.y = touchPos.y - bob.height / 2;
 			touch = true;
 			yVelocity = 7;
 		}
 		if (touch) {
-			if (bucket.y + bucket.height >= frameHeight) {
+			if (bob.y + bob.height >= frameHeight) {
 
 				touch = false;
 				yVelocity = 0;
@@ -210,32 +233,46 @@ public class GameScreen implements Screen {
 
 			yVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 		} else {
-			if (bucket.y > 1) {
+			if (bob.y > 1) {
 				yVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 			} else {
 				yVelocity = 0;
 			}
 		}
-		bucket.y += yVelocity;
+		bob.y += yVelocity;
 		/*
 		 * Probably won't use side movements if
-		 * (Gdx.input.isKeyPressed(Keys.LEFT)) bucket.x -= movement *
+		 * (Gdx.input.isKeyPressed(Keys.LEFT)) bob.x -= movement *
 		 * Gdx.graphics.getDeltaTime(); if (Gdx.input.isKeyPressed(Keys.RIGHT))
-		 * bucket.x += movement * Gdx.graphics.getDeltaTime();
+		 * bob.x += movement * Gdx.graphics.getDeltaTime();
 		 */
 
-		// make sure the bucket stays within the screen bounds
-		if (bucket.x < 0)
-			bucket.x = 0;
-		if (bucket.x > frameWidth - bucket.width)
-			bucket.x = frameWidth - bucket.width;
+		// make sure the bob stays within the screen bounds
+		if (bob.x < 0)
+			bob.x = 0;
+		if (bob.x > frameWidth - bob.width)
+			bob.x = frameWidth - bob.width;
 
-		if (bucket.y < 0)
-			bucket.y = 0;
-		if (bucket.y > frameHeight - bucket.height)
-			bucket.y = frameHeight - bucket.height;
+		if (bob.y < 0)
+			bob.y = 0;
+		if (bob.y > frameHeight - bob.height)
+			bob.y = frameHeight - bob.height;
 
-		// check if we need to create a new raindrop
+		
+		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
+		
+		if (init){
+			initialiseGround();
+		}
+		for(Rectangle gr : ground){
+			 gr.x -= movement * Gdx.graphics.getDeltaTime();
+			 if(gr.x + gr.width < 0){
+				 toRemove.add(gr);
+			 }
+			 if(gr.x + gr.width == frameWidth){
+				 spawnGround();
+			 }
+		}
 		if (TimeUtils.nanoTime() - lastTreeTime > 2000000000)
 			spawnTree();
 
@@ -247,19 +284,19 @@ public class GameScreen implements Screen {
 		
 		spawnHearts();
 		// move the raindrops, remove any that are beneath the bottom edge of
-		// the screen or that hit the bucket. In the later case we increase the
+		// the screen or that hit the bob. In the later case we increase the
 		// value our drops counter and add a sound effect.
-		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
+
 		for(Rectangle s : raindrops ){
 			s.x -= movement * Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			if (s.overlaps(bucket)) {
+			if (s.overlaps(bob)) {
 				dropsGathered++;
-				if(dropsGathered%10 == 0 && dropsGathered != 0){
+				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives <= 5){
 					lives++;
 				}
-				//dropSound.play();
+				//birdSong.play();
 				toRemove.add(s);
 			}
 		}
@@ -267,13 +304,34 @@ public class GameScreen implements Screen {
 			s.x -= movement * Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
+			/*if (s.overlaps(bob)){
+				if(!overlapping) {
+					if(lives == 0){
+						movement = 0;
+						//dispose();
+					}
+					else{
+					overlapping = true;
+					hearts.remove(0);
+					lives--;
+					System.out.println("Hearts: " + hearts.size());
+					System.out.println("lives: " + lives);
+					}
+			}
+			}*/
+			else overlapping = false;		
 		}
+		
 		for(Rectangle s : clouds ){
 			s.x -= movement * Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
+			if (s.overlaps(bob)){
+				movement = 100;
+			}
+			else movement = 200;
 		}
-		
+		ground.removeAll(toRemove);
 		raindrops.removeAll(toRemove);
 		trees.removeAll(toRemove);
 		clouds.removeAll(toRemove);
@@ -288,7 +346,7 @@ public class GameScreen implements Screen {
 	public void show() {
 		// start the playback of the background music
 		// when the screen is shown
-		//rainMusic.play();
+		//gameMusic.play();
 	}
 
 	@Override
@@ -305,10 +363,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		dropImage.dispose();
-		bucketImage.dispose();
-		dropSound.dispose();
-		rainMusic.dispose();
+		birdImage.dispose();
+		bobImage.dispose();
+		birdSong.dispose();
+		gameMusic.dispose();
+		groundImage.dispose();
+		
+		
 	}
 
 }
