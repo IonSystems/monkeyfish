@@ -50,8 +50,8 @@ public class GameScreen implements Screen {
 
 		stage = new Stage();
 		// load the images for the droplet and the bucket, 64x64 pixels each
-		dropImage = new Texture(Gdx.files.internal("badlogic.jpg"));
-		bucketImage = new Texture(Gdx.files.internal("badlogic.jpg"));
+		dropImage = new Texture(Gdx.files.internal("pause_button_down.png"));
+		bucketImage = new Texture(Gdx.files.internal("bobargb8888-32x32.png"));
 
 		// load the drop sound effect and the rain background "music"
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
@@ -67,8 +67,6 @@ public class GameScreen implements Screen {
 		bucket.width = bucketImage.getWidth();
 		bucket.height = bucketImage.getHeight();
 
-		/* Testing */
-		System.out.println("Width: " + bucket.width + ", Height: " + bucket.height);
 		bucket.x = frameWidth / 2 - (bucket.width) / 2; // center the bucket
 														// horizontally
 		bucket.y = 20; // bottom left corner of the bucket is 20 pixels above
