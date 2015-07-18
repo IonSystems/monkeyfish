@@ -36,12 +36,14 @@ public class GameScreen implements Screen {
 	Sound birdSong;
 	Music gameMusic;
 	OrthographicCamera camera;
+
 	Rectangle bob;
 	ArrayList<Rectangle> raindrops, trees, clouds, hearts, ground;
 	Texture grounds;
 	Texture textureUp;
 	Texture textureDown;
 	Texture background;
+
 	long lastDropTime, lastTreeTime, lastCloudTime;
 	float btnPauseSx = 200;
 	float btnPauseSy = 200;
@@ -110,7 +112,7 @@ public class GameScreen implements Screen {
 		pauseStyle = new TextButtonStyle();
 		pauseSkin = new Skin();
 		pauseStyle.font = font;
-		btnPause = new TextButton("A", pauseStyle);
+		btnPause = new TextButton("", pauseStyle);
 		pauseAtlas = new TextureAtlas("Buttons/pauseButton.pack");
 		
 		btnPause.setPosition(100, 100);
@@ -133,13 +135,8 @@ public class GameScreen implements Screen {
         	}
 		});
 		
-		textureUp = new Texture(Gdx.files.internal("pause_button_up.png"));
-		textureDown = new Texture(Gdx.files.internal("pause_button_down.png"));
-		background = new Texture(Gdx.files.internal("pause_button_background.png"));
-		btnPause.setPosition(frameWidth, 400);
-		btnPause.setSize(50, 50);
-
 		stage.addActor(btnPause);
+		Gdx.input.setInputProcessor(stage);
 		//end Pause Button
 	}
 
