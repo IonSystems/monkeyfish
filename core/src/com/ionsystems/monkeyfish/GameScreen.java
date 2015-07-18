@@ -13,12 +13,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen implements Screen {
     final MonkeyFishGame game;
 
+    Stage stage;
     Texture dropImage;
     Texture bucketImage;
     Sound dropSound;
@@ -26,12 +29,18 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
     Rectangle bucket;
     Array<Rectangle> raindrops;
+    Texture textureUp;   
+    Texture textureDown; 
+    Texture background;  
+    MyButton myButton;   
+    MyButton btnPause ;
     long lastDropTime;
     int dropsGathered;
 
     public GameScreen(final MonkeyFishGame gam) {
         this.game = gam;
 
+        stage = new Stage();
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("badlogic.jpg"));
         bucketImage = new Texture(Gdx.files.internal("badlogic.jpg"));
@@ -56,7 +65,16 @@ public class GameScreen implements Screen {
         // create the raindrops array and spawn the first raindrop
         raindrops = new Array<Rectangle>();
         spawnRaindrop();
-
+        
+        textureUp = new Texture(Gdx.files.internal("pause_button_up.png"));
+        textureDown = new Texture(Gdx.files.internal("pause_button_down.png"));
+        background = new Texture(Gdx.files.internal("pause_button_background.png"));
+        btnPause = new MyButton(textureUp, textureDown, background);
+        btnPause.setPosition(400, 400);
+        btnPause.setSize(50, 50);
+        
+        stage.addActor(btnPause);
+        
     }
 
     private void spawnRaindrop() {
@@ -78,6 +96,8 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        stage.act();
+        
         // tell the camera to update its matrices.
         camera.update();
 
@@ -137,6 +157,7 @@ public class GameScreen implements Screen {
                 iter.remove();
             }
         }
+        stage.draw();
     }
 
     @Override
