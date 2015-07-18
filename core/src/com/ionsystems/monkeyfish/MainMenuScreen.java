@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -52,24 +54,38 @@ public class MainMenuScreen implements Screen {
         label = new Label("", skin);
         //Buttons
         
+       TextButton btnStart = new TextButton("Start", skin);
+       TextButton btnOptions = new TextButton("Options", skin);
+       TextButton btnHelp = new TextButton("Help", skin);
+       TextButton btnAbout = new TextButton("About", skin);
+       
         logo = new Texture(Gdx.files.internal("badlogic.jpg"));
         imgLogo = new Image(logo);
         Table root = new Table(skin);
 		root.setFillParent(true);
 		root.setBackground(skin.getDrawable("default-pane"));
 		root.add(imgLogo).row();
-		root.add(new TextButton("Start", skin)).row();
-		root.add(new TextButton("Options", skin)).row();
-		root.add(new TextButton("Help", skin)).row();
-		root.add(new TextButton("About", skin)).row();
+		root.add(btnStart).row();
+		root.add(btnOptions).row();
+		root.add(btnHelp).row();
+		root.add(btnAbout).row();
 		root.add(label).row();
 		stage.addActor(root);
-        
+       
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
 		label.setText("Creators: Cameron Craig, Euan Mutch, Andrew Rigg, Stuart Thain");
         
+		 Gdx.input.setInputProcessor(stage);
+		 
+		 btnStart.addListener(new ClickListener() {
+             @Override
+             public void touchUp(InputEvent e, float x, float y, int pointer, int button){
+                     game.setScreen(new GameScreen(game));
+             }
+            
+     });
 //        Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
 //			public boolean keyDown (int keycode) {
 //				if (keycode == Input.Keys.SPACE) {
@@ -108,10 +124,6 @@ public class MainMenuScreen implements Screen {
         game.batch.end();
         stage.draw();
 
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
     }
 
 	@Override
