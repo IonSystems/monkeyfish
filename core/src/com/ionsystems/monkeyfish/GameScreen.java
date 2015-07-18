@@ -143,33 +143,29 @@ public class GameScreen implements Screen {
 	
 	private void initialiseGround(){
 		for(int i = 0; i < (int)(frameWidth/groundImage.getWidth())+2; i++){
-			grounds.add(new spawnObject(groundImage, i * groundImage.getWidth(), 0));
+			grounds.add(new SpawnObject(groundImage, i * groundImage.getWidth(), 0));
 			}
 		}
 	
-	private void spawnGround(){
-		grounds.add(new spawnObject(groundImage, frameWidth, 0));
-	}
-	
 	private void spawnRaindrop() {
-		raindrops.add(new spawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - bob.height)));
+		raindrops.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - bob.height)));
 		lastDropTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnTree() {
-		trees.add(new spawnObject(treeImage, frameWidth, 150));
+		trees.add(new SpawnObject(treeImage, frameWidth, 150));
 		lastTreeTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnCloud(){
-		clouds.add(new spawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
+		clouds.add(new SpawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnHearts(){
 		hearts.clear();
 		for (int i = 0; i < lives; i ++){
-			hearts.add(new spawnObject(heart, 10+30*i, (frameHeight -50)));
+			hearts.add(new SpawnObject(heart, 10+30*i, (frameHeight -50)));
 		}
 	}
 	
