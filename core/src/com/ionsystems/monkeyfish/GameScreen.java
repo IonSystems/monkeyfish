@@ -104,7 +104,7 @@ public class GameScreen implements Screen {
 		pauseStyle = new TextButtonStyle();
 		pauseSkin = new Skin();
 		pauseStyle.font = font;
-		btnPause = new TextButton("A", pauseStyle);
+		btnPause = new TextButton("", pauseStyle);
 		pauseAtlas = new TextureAtlas("Buttons/pauseButton.pack");
 		
 		btnPause.setPosition(100, 100);
@@ -128,6 +128,7 @@ public class GameScreen implements Screen {
 		});
 		
 		stage.addActor(btnPause);
+		Gdx.input.setInputProcessor(stage);
 		//end Pause Button
 	}
 
