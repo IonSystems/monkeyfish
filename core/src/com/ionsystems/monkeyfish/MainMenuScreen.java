@@ -2,20 +2,46 @@ package com.ionsystems.monkeyfish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class MainMenuScreen implements Screen {
 
     final MonkeyFishGame game;
     
     OrthographicCamera camera;
+    Stage stage;
+    TextureAtlas atlas;
+    Skin skin;
+    TextureRegion hero;
+    Color red;
 
     public MainMenuScreen(final MonkeyFishGame gam) {
         game = gam;
-
+        stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+        
+       // atlas = new TextureAtlas(Gdx.files.internal("textures/Textures1.png"));
+       // skin = new Skin(Gdx.files.internal("skins/uiskin.png"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin.add("logo", new Texture("alpha.png"));
+        
+        red = skin.getColor("red");
+        
+        //Buttons
+        TextButtonStyle styleButton = skin.get("default", TextButtonStyle.class);
+        TextButton btnStart = new TextButton("Start", skin);
+        btnStart.setPosition(50, 50, 0);
+        stage.addActor(btnStart);
 
     }
     
@@ -31,6 +57,7 @@ public class MainMenuScreen implements Screen {
         game.font.draw(game.batch, "Welcome to MonkeyFish!!! ", 100, 150);
         game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
         game.batch.end();
+        stage.draw();
 
         if (Gdx.input.isTouched()) {
             game.setScreen(new GameScreen(game));
