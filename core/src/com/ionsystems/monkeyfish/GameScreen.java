@@ -133,23 +133,23 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnRaindrop() {
-		raindrops.add(new spawnObject(dropImage, frameWidth, (int)MathUtils.random(0, frameHeight - bucket.height)));
+		raindrops.add(new SpawnObject(dropImage, frameWidth, (int)MathUtils.random(0, frameHeight - bucket.height)));
 		lastDropTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnTree() {
-		trees.add(new spawnObject(treeImage, frameWidth, 0));
+		trees.add(new SpawnObject(treeImage, frameWidth, 0));
 		lastTreeTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnCloud(){
-		clouds.add(new spawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
+		clouds.add(new SpawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnHearts(){
 		for (int i = 0; i < lives; i ++){
-			hearts.add(new spawnObject(heart, 10+30*i, (frameHeight -50)));
+			hearts.add(new SpawnObject(heart, 10+30*i, (frameHeight -50)));
 		}
 	}
 	
