@@ -38,8 +38,7 @@ public class GameScreen implements Screen {
 	OrthographicCamera camera;
 
 	Rectangle bob;
-	ArrayList<Rectangle> raindrops, trees, clouds, hearts, ground;
-	Texture grounds;
+	ArrayList<Rectangle> raindrops, trees, clouds, hearts, grounds;
 	Texture textureUp;
 	Texture textureDown;
 	Texture background;
@@ -48,8 +47,8 @@ public class GameScreen implements Screen {
 	float btnPauseSx = 200;
 	float btnPauseSy = 200;
 	int dropsGathered;
-	int frameHeight = 480;
-	int frameWidth = 800;
+	int frameHeight;
+	int frameWidth;
 	int movement = 200;
 	float yVelocity = 0;
 	int acceleration = 10;
@@ -62,16 +61,13 @@ public class GameScreen implements Screen {
 	BitmapFont font;
 	Skin pauseSkin;
 	int lives = 5;
-
 	private boolean touch;
-
 	private boolean overlapping = false;
-
-	private boolean init = true;
+	private boolean init;
+	
 
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
-
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
 		bobImage = new Texture(Gdx.files.internal("bob.png"));
@@ -82,11 +78,15 @@ public class GameScreen implements Screen {
 		birdSong = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
 		gameMusic.setLooping(true);
-
+		
+		frameHeight = Gdx.graphics.getHeight();
+		frameWidth = Gdx.graphics.getWidth();
+		
 		// create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, frameWidth, frameHeight);
 
+	
 		// create a Rectangle to logically represent the bob
 		bob = new Rectangle();
 		bob.width = bobImage.getWidth();
@@ -102,9 +102,10 @@ public class GameScreen implements Screen {
 		raindrops = new ArrayList<Rectangle>();
 		trees = new ArrayList<Rectangle>();
 		clouds = new ArrayList<Rectangle>();
-		ground = new ArrayList<Rectangle>();
+		grounds = new ArrayList<Rectangle>();
 		spawnRaindrop();
-
+		initialiseGround();
+		
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		
 		//Pause Button creation
@@ -115,8 +116,8 @@ public class GameScreen implements Screen {
 		btnPause = new TextButton("", pauseStyle);
 		pauseAtlas = new TextureAtlas("Buttons/pauseButton.pack");
 		
-		btnPause.setPosition(100, 100);
-		btnPause.setSize(20, 20);
+		btnPause.setPosition(frameWidth - 100, frameHeight - 100);
+		btnPause.setSize(50, 50);
 		
 		
 		pauseSkin.addRegions(pauseAtlas);
@@ -139,7 +140,16 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 		//end Pause Button
 	}
-
+	
+	private void initialiseGround(){
+		for(int i = 0; i < (int)(frameWidth/groundImage.getWidth())+2; i++){
+			grounds.add(new spawnObject(groundImage, i * groundImage.getWidth(), 0));
+			}
+		}
+	
+	private void spawnGround(){
+		grounds.add(new spawnObject(groundImage, frameWidth, 0));
+	}
 	
 	private void spawnRaindrop() {
 		raindrops.add(new spawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - bob.height)));
@@ -154,15 +164,6 @@ public class GameScreen implements Screen {
 	private void spawnCloud(){
 		clouds.add(new spawnObject(cloudImage, frameWidth, ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloudImage.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
-	}
-	private void initialiseGround(){
-		ground.add(new spawnObject(groundImage, 0, 0));
-		ground.add(new spawnObject(groundImage, groundImage.getWidth(), 0));
-		init = false;
-		}
-	
-	private void spawnGround(){
-		ground.add(new spawnObject(groundImage, frameWidth, 0));
 	}
 	
 	private void spawnHearts(){
@@ -195,7 +196,7 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, frameHeight);
 				
-		for (Rectangle r : ground){
+		for (Rectangle r : grounds){
 			game.batch.draw(groundImage, r.x, r.y);
 		}
 		for (Rectangle raindrop : raindrops) {
@@ -260,17 +261,11 @@ public class GameScreen implements Screen {
 
 		
 		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
-		
-		if (init){
-			initialiseGround();
-		}
-		for(Rectangle gr : ground){
-			 gr.x -= movement * Gdx.graphics.getDeltaTime();
-			 if(gr.x + gr.width < 0){
-				 toRemove.add(gr);
-			 }
-			 if(gr.x + gr.width == frameWidth){
-				 spawnGround();
+
+		for(int i = 0; i < grounds.size(); i++){
+			 grounds.get(i).x -= movement * Gdx.graphics.getDeltaTime();
+			 if(grounds.get(i).x + grounds.get(i).width <= 0){
+				 grounds.get(i).x += grounds.get(i).width * grounds.size();
 			 }
 		}
 		if (TimeUtils.nanoTime() - lastTreeTime > 2000000000)
@@ -331,7 +326,7 @@ public class GameScreen implements Screen {
 			}
 			else movement = 200;
 		}
-		ground.removeAll(toRemove);
+
 		raindrops.removeAll(toRemove);
 		trees.removeAll(toRemove);
 		clouds.removeAll(toRemove);
