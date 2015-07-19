@@ -21,7 +21,7 @@ public class AnimationSprite implements ApplicationListener {
     float stateTime;                                        // #8
 
     
-    public AnimationSprite(SpriteBatch sb, int cols, int rows, String file){
+    public AnimationSprite(SpriteBatch sb, int cols, int rows, String file, int x, int y){
     	this.spriteBatch = sb;
 	    this.cols = cols;
 	    this.rows = rows;
