@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
 	
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
-		mario = new AnimationSprite(this.game.batch, 5, 1,"mario-jump.png");
+		mario = new AnimationSprite(this.game.batch, 5, 1,"mario.png");
 		flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy.png");
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
