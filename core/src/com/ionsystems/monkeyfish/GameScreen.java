@@ -116,15 +116,15 @@ public class GameScreen implements Screen {
 		btnPause.setSize((0.1f*frameHeight),(0.1f*frameHeight));
 		
 		pauseSkin.addRegions(pauseAtlas);
-		pauseStyle.up = pauseSkin.getDrawable("Pause_button_up");
+		pauseStyle.up = pauseSkin.getDrawable("pause_button_up");
 		pauseStyle.down = pauseSkin.getDrawable("pause_button_down");
 		
 		btnPause.addListener(new ClickListener() {
 			@Override
-        	public boolean touchDown(InputEvent e, float x, float y, int pointer, int button){
-        		Gdx.app.debug("gesture", "inside touchDown");
+        	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
+        		Gdx.app.debug("gesture", "inside touchUp GameScreen");
+        		
         		game.setScreen(new PauseScreen(game));
-				return false;
         	}
 		});
 		

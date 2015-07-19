@@ -1,0 +1,117 @@
+
+buttons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+black_button_down
+  rotate: false
+  xy: 1, 853
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+black_button_up
+  rotate: false
+  xy: 1, 711
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+brown_button_down
+  rotate: false
+  xy: 279, 853
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+brown_button_up
+  rotate: false
+  xy: 1, 569
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+darkblue_button_down
+  rotate: false
+  xy: 279, 711
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+darkblue_button_up
+  rotate: false
+  xy: 557, 853
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+green_button_down
+  rotate: false
+  xy: 1, 427
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+green_button_up
+  rotate: false
+  xy: 279, 569
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+lightblue_button_down
+  rotate: false
+  xy: 557, 711
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+lightblue_button_up
+  rotate: false
+  xy: 1, 285
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+purple_button_down
+  rotate: false
+  xy: 279, 427
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+purple_button_up
+  rotate: false
+  xy: 557, 569
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+red_button_down
+  rotate: false
+  xy: 1, 143
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+red_button_up
+  rotate: false
+  xy: 279, 285
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+yellow_button_down
+  rotate: false
+  xy: 557, 427
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
+yellow_button_up
+  rotate: false
+  xy: 1, 1
+  size: 276, 140
+  orig: 276, 140
+  offset: 0, 0
+  index: -1
