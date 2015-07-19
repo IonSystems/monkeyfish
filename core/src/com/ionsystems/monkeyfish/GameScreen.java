@@ -33,13 +33,14 @@ public class GameScreen implements Screen {
 	Music gameMusic;
 	OrthographicCamera camera;
 	ArrayList<Rectangle> birds, trees, clouds, clouds2, clouds3, clouds4, hearts, grounds;
+	ArrayList<AnimationSprite> flappies;
 	Rectangle bob, plane, blimp;
 	int dropsGathered, frameHeight, frameWidth, movement, acceleration, lives, initMovement;
-	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime;
+	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime, lastFlappyTime;
 	float btnPauseSx, btnPauseSy, verticalVelocity;
 	private boolean touch, antipodean;
 	AnimationSprite mario;
-	AnimationSprite flappy;
+	//AnimationSprite flappy;
 	ArrayList<String> imageNames;
 	TextButton btnPause;
 	TextureAtlas pauseAtlas;
@@ -50,7 +51,7 @@ public class GameScreen implements Screen {
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
 		mario = new AnimationSprite(this.game.batch, 5, 1,"mario.png");
-		flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy.png");
+		//flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy.png");
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
 		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
@@ -84,13 +85,15 @@ public class GameScreen implements Screen {
 		bob = new Rectangle();
 		plane = new Rectangle();
 		blimp = new Rectangle();
-		bob.width = bobImage.getWidth();
-		bob.height = bobImage.getHeight();
-
-		bob.x = frameWidth/2 - (bob.width)/2; // center the bob horizontally
+		//bob.width = bobImage.getWidth();
+		//bob.height = bobImage.getHeight();
+		mario.setX(frameWidth/2 - mario.width/2);
+		mario.setY(0);
+		bob.x = frameWidth/2 - (bob.width)/2; 
 		bob.y = 1.2f*bob.height; // bottom left corner of the bob is 20 pixels above the bottom screen edge
 
 		// create the birds array and spawn the first raindrop
+		flappies = new ArrayList<AnimationSprite>();
 		hearts = new ArrayList<Rectangle>();
 		birds = new ArrayList<Rectangle>();
 		trees = new ArrayList<Rectangle>();
@@ -135,7 +138,7 @@ public class GameScreen implements Screen {
 		});
 		
 		mario.create();
-		flappy.create();
+		//flappy.create();
 		
 		stage.addActor(btnPause);
 		Gdx.input.setInputProcessor(stage);
@@ -178,6 +181,12 @@ public class GameScreen implements Screen {
 		lastBirdTime = TimeUtils.nanoTime();
 	}
 	
+	private void spawnFlappy(){
+		flappies.add(new AnimationSprite(this.game.batch, 3, 1, "flappy.png"));
+		
+		lastFlappyTime = TimeUtils.nanoTime();
+	}
+	
 	private void spawnTree() {
 		trees.add(new SpawnObject(treeImage, frameWidth+ (int)MathUtils.random(0, frameWidth), frameHeight/6));
 		lastTreeTime = TimeUtils.nanoTime();
@@ -207,11 +216,7 @@ public class GameScreen implements Screen {
 	
 	public void render(float delta) {
 		checkSettings();
-		// clear the screen with a dark blue color. The
-		// arguments to glClearColor are the red, green
-		// blue and alpha component in the range [0,1]
-		// of the color to be used to clear the screen.
-		Gdx.gl.glClearColor(0, 0.3f, 0.5f, 1.5f);
+		Gdx.gl.glClearColor(0.4f, 0.4f, 0.7f, 1.5f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act();
@@ -233,7 +238,6 @@ public class GameScreen implements Screen {
 		}
 		for (Rectangle tree : trees){
 			game.batch.draw(treeImage, tree.x, setAntipodean(treeImage.getHeight(), tree.y), treeImage.getWidth(), treeImage.getHeight(), 0, 0, treeImage.getWidth(), treeImage.getHeight(), false, antipodean);
-
 		}
 		for (Rectangle cloud : clouds){
 			game.batch.draw(cloudImage, cloud.x, setAntipodean(cloudImage.getHeight(), cloud.y), cloudImage.getWidth(), cloudImage.getHeight(), 0, 0, cloudImage.getWidth(), cloudImage.getHeight(), false, antipodean);
@@ -250,23 +254,19 @@ public class GameScreen implements Screen {
 		for (Rectangle bird : birds) {
 			game.batch.draw(birdImage, bird.x, setAntipodean(birdImage.getHeight(), bird.y), birdImage.getWidth(), birdImage.getHeight(), 0, 0, birdImage.getWidth(), birdImage.getHeight(), false, antipodean);
 		}
+		for (AnimationSprite flappy : flappies){
+			game.batch.draw(flappy.walkSheet, flappy.x, setAntipodean(flappy.walkSheet.getHeight(), flappy.y), flappy.walkSheet.getWidth(), flappy.walkSheet.getHeight(), 0, 0, flappy.walkSheet.getWidth(), flappy.walkSheet.getHeight(), false, antipodean);
+		}
 		game.batch.draw(planeImage, plane.x, setAntipodean(planeImage.getHeight(), plane.y), planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(), false, antipodean);
 		game.batch.draw(blimpImage, blimp.x, setAntipodean(blimpImage.getHeight(), blimp.y), blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
-		game.batch.draw(bobImage, bob.x, setAntipodean(bobImage.getHeight(), bob.y), bobImage.getWidth(), bobImage.getHeight(), 0, 0, bobImage.getWidth(), bobImage.getHeight(), false, antipodean);
+		//game.batch.draw(bobImage, bob.x, setAntipodean(bobImage.getHeight(), bob.y), bobImage.getWidth(), bobImage.getHeight(), 0, 0, bobImage.getWidth(), bobImage.getHeight(), false, antipodean);
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
-		mario.render(100, 100);
-		flappy.render(200, 100);
+		mario.render((int)mario.x,(int)mario.y);
 		game.batch.end();
 
-		// process user input
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			// Vector3 touchPos = new Vector3();
-			// Don't need most of this as based on one button press.
-			// touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			// camera.unproject(touchPos);
-			// bob.y = touchPos.y - bob.height / 2;
 			touch = true;
 			verticalVelocity = 7;
 		}
@@ -286,6 +286,23 @@ public class GameScreen implements Screen {
 			}
 		}
 		bob.y += verticalVelocity;
+		
+		if (touch) {
+			if (mario.y + mario.height >= frameHeight) {
+
+				touch = false;
+				verticalVelocity = 0;
+			}
+
+			verticalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
+		} else {
+			if (mario.y > 1) {
+				verticalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
+			} else {
+				verticalVelocity = 0;
+			}
+		}
+		mario.y += verticalVelocity;
 		/*
 		 * Probably won't use side movements if
 		 * (Gdx.input.isKeyPressed(Keys.LEFT)) bob.x -= movement *
@@ -306,8 +323,13 @@ public class GameScreen implements Screen {
 		if (bob.y > frameHeight - bob.height)
 			bob.y = frameHeight - bob.height;
 		
+		if (mario.y < 0.5f*mario.height)
+			mario.y = 0.5f*mario.height;
+		if (mario.y > frameHeight - mario.height)
+			mario.y = frameHeight - mario.height;
+		
 		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
-
+		ArrayList<AnimationSprite> spritesRemove = new ArrayList<AnimationSprite>();
 		for(int i = 0; i < grounds.size(); i++){
 			 grounds.get(i).x -= movement * 0.5* Gdx.graphics.getDeltaTime();
 			 if(grounds.get(i).x + grounds.get(i).width <= 0){
@@ -320,8 +342,11 @@ public class GameScreen implements Screen {
 		if ((TimeUtils.nanoTime() - lastCloudTime)/1000 > 5000000)
 			spawnCloud();
 		
-		if (TimeUtils.nanoTime() - lastBirdTime > 1000000000)
-			spawnBird();
+		/*if (TimeUtils.nanoTime() - lastBirdTime > 1000000000)
+			spawnBird();*/
+		
+		if (TimeUtils.nanoTime() - lastFlappyTime > 1000000000)
+			spawnFlappy();
 		
 		spawnHearts();
 		
@@ -329,6 +354,20 @@ public class GameScreen implements Screen {
 		// the screen or that hit the bob. In the later case we increase the
 		// value our drops counter and add a sound effect.
 
+		for(AnimationSprite flappy : flappies){
+			flappy.x -= movement * Gdx.graphics.getDeltaTime();
+			if (flappy.x + flappy.width < 0)
+				spritesRemove.add(flappy);
+			if (flappy.overlaps(mario)) {
+				dropsGathered++;
+				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives < 5){
+					lives++;
+				}
+				//birdSong.play();
+				spritesRemove.add(flappy);
+			}
+		}
+		/*
 		for(Rectangle s : birds ){
 			s.x -= movement * Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
@@ -341,7 +380,7 @@ public class GameScreen implements Screen {
 				//birdSong.play();
 				toRemove.add(s);
 			}
-		}
+		}*/
 		for(Rectangle s : trees ){
 			s.x -= movement *0.5* Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
@@ -402,7 +441,7 @@ public class GameScreen implements Screen {
 				spawnBlimp();
 			}
 		}
-		
+		flappies.removeAll(spritesRemove);
 		birds.removeAll(toRemove);
 		trees.removeAll(toRemove);
 		clouds.removeAll(toRemove);
@@ -424,38 +463,31 @@ public class GameScreen implements Screen {
 		//Music
 		if(!SavedSettings.SETTING_MUSIC.getBoolean()){
 			gameMusic.pause();
-			System.out.println("p");
+			//System.out.println("p");
 		}else if(!gameMusic.isPlaying()){
-			gameMusic.play();
-			Gdx.app.debug("Sound", "Music playing");
+			//gameMusic.play();
+			//Gdx.app.debug("Sound", "Music playing");
 		}
-		
 	}
 
-	@Override
 	public void resize(int width, int height) {
 	}
 
-	@Override
 	public void show() {
 		// start the playback of the background music
 		// when the screen is shown
 		//gameMusic.play();
 	}
 
-	@Override
 	public void hide() {
 	}
 
-	@Override
 	public void pause() {
 	}
 
-	@Override
 	public void resume() {
 	}
 
-	@Override
 	public void dispose() {
 		birdImage.dispose();
 		bobImage.dispose();
