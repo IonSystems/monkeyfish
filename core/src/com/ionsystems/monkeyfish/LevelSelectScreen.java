@@ -65,7 +65,7 @@ public class LevelSelectScreen implements Screen {
         chkAntipeeedeeeeean.setChecked(preferences.getBoolean("antipeeedeeeeean"));
         
        
-        logo = new Texture(Gdx.files.internal("badlogic.jpg"));
+        logo = new Texture(Gdx.files.internal("IONsystems.png"));
         imgLogo = new Image(logo);
         levelsTable = new Table(skin);
         levelsTable.setFillParent(true);

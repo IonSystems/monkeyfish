@@ -67,7 +67,7 @@ public class OptionsScreen implements Screen {
         btnBack = new TextButton("Back", skin);
         btnSave = new TextButton("Save", skin);
        
-        logo = new Texture(Gdx.files.internal("badlogic.jpg"));
+        logo = new Texture(Gdx.files.internal("IONsystems.png"));
         imgLogo = new Image(logo);
         Table root = new Table(skin);
 		root.setFillParent(true);
