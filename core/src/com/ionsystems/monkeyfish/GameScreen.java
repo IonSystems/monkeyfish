@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 	Rectangle bob, plane, blimp;
 	int dropsGathered, frameHeight, frameWidth, movement, acceleration, lives, initMovement;
 	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime;
-	float btnPauseSx, btnPauseSy, horizontalVelocity;
+	float btnPauseSx, btnPauseSy, verticalVelocity;
 	private boolean touch, antipodean;
 	
 	//pause button variables
@@ -69,7 +69,7 @@ public class GameScreen implements Screen {
 		initMovement = frameHeight/2;
 		movement = initMovement;
 		acceleration = 12;
-		horizontalVelocity = 0;
+		verticalVelocity = 0;
 		lives = 5;
 		antipodean = false;
 		
@@ -131,6 +131,9 @@ public class GameScreen implements Screen {
 		stage.addActor(btnPause);
 		Gdx.input.setInputProcessor(stage);
 		//end Pause Button
+		
+		spawnPlane();
+		spawnBlimp();
 	}
 	
 	private void initialiseGround(){
@@ -139,12 +142,10 @@ public class GameScreen implements Screen {
 			}
 		}
 	private void spawnPlane(){
-		if(lastPlaneTime % 100 < 10)
 		plane = new SpawnObject(planeImage, frameWidth, frameHeight - planeImage.getHeight() - (int)MathUtils.random(0, frameHeight/3));
 		lastPlaneTime = TimeUtils.millis();
 	}
 	private void spawnBlimp(){
-		if(lastBlimpTime % 100 > 98)
 		blimp = new SpawnObject(blimpImage, frameWidth, frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4));
 		lastBlimpTime = TimeUtils.millis();
 	}
@@ -172,7 +173,6 @@ public class GameScreen implements Screen {
 		for (int i = 0; i < lives; i++){
 			hearts.add(new SpawnObject(heart, 5+30*i, (frameHeight -50)));
 		}
-		System.out.println("hearts contains : " + hearts.size());
 	}
 	
 	@Override
@@ -234,24 +234,24 @@ public class GameScreen implements Screen {
 			// camera.unproject(touchPos);
 			// bob.y = touchPos.y - bob.height / 2;
 			touch = true;
-			horizontalVelocity = 7;
+			verticalVelocity = 7;
 		}
 		if (touch) {
 			if (bob.y + bob.height >= frameHeight) {
 
 				touch = false;
-				horizontalVelocity = 0;
+				verticalVelocity = 0;
 			}
 
-			horizontalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
+			verticalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 		} else {
 			if (bob.y > 1) {
-				horizontalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
+				verticalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 			} else {
-				horizontalVelocity = 0;
+				verticalVelocity = 0;
 			}
 		}
-		bob.y += horizontalVelocity;
+		bob.y += verticalVelocity;
 		/*
 		 * Probably won't use side movements if
 		 * (Gdx.input.isKeyPressed(Keys.LEFT)) bob.x -= movement *
@@ -286,8 +286,7 @@ public class GameScreen implements Screen {
 		
 		if (TimeUtils.nanoTime() - lastBirdTime > 1000000000)
 			spawnBird();
-		spawnPlane();
-		spawnBlimp();
+		
 		spawnHearts();
 		
 		// move the birds, remove any that are beneath the bottom edge of
@@ -332,46 +331,40 @@ public class GameScreen implements Screen {
 			s.x -= movement * 0.7 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			if (s.overlaps(bob)){
-				movement = 10;
-			}
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds2 ){
 			s.x -= movement * 0.6*Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			if (s.overlaps(bob)){
-				movement = 20;
-			}
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds3 ){
 			s.x -= movement * 0.9 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			if (s.overlaps(bob)){
-				movement = 5;
-			}
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds4 ){
 			s.x -= movement * 0.5 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			if (s.overlaps(bob)){
-				movement = 50;
-			}
 			else movement = initMovement;
 		}
-		plane.x -= movement * 1.5 * Gdx.graphics.getDeltaTime();
+		
+		blimp.x -= movement/ 5  * Gdx.graphics.getDeltaTime();
+		plane.x -= movement*1.5 * Gdx.graphics.getDeltaTime();
+
 		if (plane.x + plane.width < 0){
-			spawnPlane();
+			if (TimeUtils.millis() - lastPlaneTime > 10000 && MathUtils.random(10000)> 9998){
+				spawnPlane();
+			}		
 		}
 		
-		blimp.x -= (movement/5)  * Gdx.graphics.getDeltaTime();
 		if(blimp.x + blimp.width < 0){
-			spawnBlimp();
+			if(TimeUtils.millis() - lastBlimpTime > 300000 && MathUtils.random(100) > 95){
+				spawnBlimp();
+			}
 		}
 		
 		birds.removeAll(toRemove);
@@ -412,9 +405,6 @@ public class GameScreen implements Screen {
 		bobImage.dispose();
 		birdSong.dispose();
 		gameMusic.dispose();
-		groundImage.dispose();
-		
-		
+		groundImage.dispose();		
 	}
-
 }
