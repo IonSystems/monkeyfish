@@ -51,13 +51,13 @@ public class GameScreen implements Screen {
 		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png");
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
-		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
 		treeImage = new Texture(Gdx.files.internal ("tree.png"));
 		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
 		cloud2Image = new Texture(Gdx.files.internal ("cloud2.png"));
 		cloud3Image = new Texture(Gdx.files.internal ("cloud3.png"));
 		cloud4Image = new Texture(Gdx.files.internal ("cloud4.png"));
 		planeImage = new Texture(Gdx.files.internal ("plane.png"));
+		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
 		groundImage = new Texture(Gdx.files.internal ("ground1.png"));
 		heart = new Texture(Gdx.files.internal ("heart.png"));
 		birdSong = setupSoundSetting();
@@ -78,9 +78,8 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false, frameWidth, frameHeight);
 	
 		// create a Rectangle to logically represent the bob
-		//plane = new Rectangle();
 		plane = new Rectangle(frameWidth*MathUtils.random(50, 100), frameHeight - planeImage.getHeight() - (int)MathUtils.random(0, frameHeight/3), planeImage.getWidth(), planeImage.getHeight());
-		blimp = new Rectangle(frameWidth*MathUtils.random(200,400), frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), blimpImage.getWidth(), blimpImage.getHeight());
+		blimp = new Rectangle(frameWidth*MathUtils.random(20,40), frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), blimpImage.getWidth(), blimpImage.getHeight());
 
 		// create the birds array and spawn the first raindrop
 		flappies = new ArrayList<AnimationSprite>();
@@ -282,7 +281,7 @@ public class GameScreen implements Screen {
 
 		if (player.y < 0.7*player.height)
 			player.y = (float) (0.7*player.height);
-		if (player.y > frameHeight - player.height && lockedHeight)
+		if (player.y >= frameHeight - player.height && lockedHeight)
 			player.y = frameHeight - player.height;
 		
 		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
@@ -299,9 +298,6 @@ public class GameScreen implements Screen {
 
 		if ((TimeUtils.nanoTime() - lastCloudTime)/1000 > 5000000)
 			spawnCloud();
-		
-		/*if (TimeUtils.nanoTime() - lastBirdTime > 1000000000)
-			spawnBird();*/
 		
 		if (TimeUtils.nanoTime() - lastFlappyTime > 1000000000)
 			spawnFlappy();
@@ -330,7 +326,7 @@ public class GameScreen implements Screen {
 			s.x -= movement * Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			if (s.overlaps(mario)) {
+			if (s.overlaps(player)) {
 				dropsGathered++;
 				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives < 5){
 					lives++;
@@ -369,9 +365,15 @@ public class GameScreen implements Screen {
 			else movement = initMovement;
 		}
 		
-		blimp.x -= movement/ 5  * Gdx.graphics.getDeltaTime();
+		blimp.x -= movement*0.6  * Gdx.graphics.getDeltaTime();
 		plane.x -= movement*1.5 * Gdx.graphics.getDeltaTime();
 
+		if(plane.x > 2*frameWidth && plane.x < 3*frameWidth){
+			lastPlaneTime = TimeUtils.millis();
+		}
+		if(blimp.x > 2*frameWidth && blimp.x < 3*frameWidth){
+			lastBlimpTime = TimeUtils.millis();
+		}
 		if (plane.x + plane.width < 0){
 			if (TimeUtils.millis() - lastPlaneTime > 100000+lastPlaneTime%100000){
 				spawnPlane();
