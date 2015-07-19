@@ -45,6 +45,8 @@ public class AnimationSprite implements ApplicationListener {
     }
 
     public void render(int x, int y) {
+    	Gdx.gl.glClearColor(0, 0.3f, 0.5f, 1.5f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();           // #15
         currentFrame = walkAnimation.getKeyFrame(stateTime, true);  // #16
         spriteBatch.draw(currentFrame, x, y);             // #17
