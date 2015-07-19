@@ -54,7 +54,6 @@ public class OptionsScreen implements Screen {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         skin.add("logo", new Texture("alpha.png"));
         
-        red = skin.getColor("red");
         label = new Label("Configure game options, click save to save.\n"
         		+ "Options are saved for the next time.", skin);
         //Buttons
@@ -107,20 +106,7 @@ public class OptionsScreen implements Screen {
              }
             
 		 });
-//        Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
-//			public boolean keyDown (int keycode) {
-//				if (keycode == Input.Keys.SPACE) {
-//					label.setText("Label");
-//					stage.setViewport(viewport);
-//					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//				}
-//				return false;
-//			}
-//		}, stage));
-
     }
-    
-
 
     static public Viewport getViewport (Camera camera) {
 		int minWorldWidth = 640;
@@ -135,13 +121,10 @@ public class OptionsScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to MonkeyFish!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
         game.batch.end();
         stage.draw();
 
