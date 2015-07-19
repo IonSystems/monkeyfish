@@ -2,6 +2,10 @@ package com.ionsystems.monkeyfish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,11 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PauseScreen implements Screen{
 
 	final MonkeyFishGame game;
 	Stage stage;
+	float frameWidth;
+	float frameHeight;
 	
 	TextButton btnResume;
 	TextButtonStyle resumeStyle;
@@ -31,12 +40,19 @@ public class PauseScreen implements Screen{
 
 	Skin pauseSkin;
 	Table table;
-	
+	OrthographicCamera camera;
+    Viewport viewport;
 	
 	public PauseScreen(final MonkeyFishGame g){
 		
 		this.game = g;
 		stage = new Stage();
+		
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, frameWidth, frameHeight);
+		
+		viewport = getViewport((Camera)camera);
+		stage.setViewport(viewport);
 		table = new Table(pauseSkin);
 		
 		table.setFillParent(true);
@@ -109,9 +125,22 @@ public class PauseScreen implements Screen{
 		
 	}
 
+	static public Viewport getViewport (Camera camera) {
+		int minWorldWidth = 640;
+		int minWorldHeight = 480;
+		int maxWorldWidth = 800;
+		int maxWorldHeight = 480;
+		Viewport viewport;
+		viewport = new StretchViewport(minWorldWidth, minWorldHeight, camera);
+		return viewport;
+	}
+	
 	@Override
 	public void render(float delta) {
 		// TODO Auto-generated method stub
+		//Gdx.gl.glClearColor(0, 0.3f, 0.5f, 1.5f);
+		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		camera.update();
 		stage.act();
 		stage.draw();
 	}
@@ -119,7 +148,7 @@ public class PauseScreen implements Screen{
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

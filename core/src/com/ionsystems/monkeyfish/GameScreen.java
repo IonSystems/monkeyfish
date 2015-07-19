@@ -230,6 +230,8 @@ public class GameScreen implements Screen {
 
 		// begin a new batch and draw the bob and all drops
 		game.batch.begin();
+		mario.render(100, 100);
+		flappy.render(200, 100);
 		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 10, frameHeight - 5);
 				
 		
@@ -263,7 +265,11 @@ public class GameScreen implements Screen {
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
+<<<<<<< HEAD
 		mario.render((int)mario.x,(int)mario.y);
+=======
+		
+>>>>>>> origin/master
 		game.batch.end();
 
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
