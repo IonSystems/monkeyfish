@@ -130,7 +130,7 @@ public class GameScreen implements Screen {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}*/
-        		game.setScreen(new PauseScreen(game));
+        		game.gameState = GameState.PAUSED;
         	}
 		});
 		

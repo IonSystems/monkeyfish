@@ -1,12 +1,14 @@
 package com.ionsystems.monkeyfish;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 public class MainMenuScreen implements Screen {
 
@@ -28,8 +31,6 @@ public class MainMenuScreen implements Screen {
     Stage stage;
     TextureAtlas atlas;
     Skin skin;
-    TextureRegion hero;
-    Color red;
     int screenWidth, screenHeight;
     Texture logo;
     Image imgLogo;
@@ -37,7 +38,7 @@ public class MainMenuScreen implements Screen {
 	
 	Label label;
 
-    public MainMenuScreen(final MonkeyFishGame game) {
+    public MainMenuScreen(final MonkeyFishGame game){
     	screenWidth = 800;
     	screenHeight = 480;
         this.game = game;
@@ -47,7 +48,6 @@ public class MainMenuScreen implements Screen {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         skin.add("logo", new Texture("alpha.png"));
         
-        red = skin.getColor("red");
         label = new Label("", skin);
         
         //Buttons
@@ -81,35 +81,27 @@ public class MainMenuScreen implements Screen {
 		 btnStart.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new GameScreen(game));
+            	 game.gameState = GameState.PLAYING;
+            	 System.out.println("Click");
              }
             
 		 });
 		 btnOptions.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new OptionsScreen(game));
+            	 game.gameState = GameState.OPTIONS;
+            	 System.out.println("Click");
              }
             
 		 });
 		 btnLevels.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new LevelSelectScreen(game));
+            	 game.gameState = GameState.LEVEL_SELECT;
+            	 System.out.println("Click");
              }
             
 		 });
-
-//        Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
-//			public boolean keyDown (int keycode) {
-//				if (keycode == Input.Keys.SPACE) {
-//					label.setText("Label");
-//					stage.setViewport(viewport);
-//					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//				}
-//				return false;
-//			}
-//		}, stage));
 
     }
     
@@ -126,26 +118,38 @@ public class MainMenuScreen implements Screen {
 	}
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
-        game.batch.begin();
-        game.font.draw(game.batch, "Welcome to MonkeyFish!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
-        game.batch.end();
-        stage.draw();
+    	if(game.gameState == GameState.MAINMENU){
+	        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+	        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	        camera.update();
+	        game.batch.setProjectionMatrix(camera.combined);
+	        //game.batch.draw(batch);
+	        game.batch.begin();
+//	        game.batch.draw(new Label("TEST",skin), 0f, 0f);
+	        game.batch.end();
+	        stage.draw();
+	        stage.act();
+        }
 
     }
 
 	public void show() {
-		
+		game.batch = new SpriteBatch();
+        stage  = new Stage();
+        Gdx.input.setInputProcessor(stage);
 	}
 
 	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
+		float aspectRatio = (float) width / (float) height;
+		camera = new OrthographicCamera(640, 360);
+		camera.translate(320,180);
+		camera.update();
+
+		stage.setViewport(new StretchViewport(640, 360, camera));
+		stage.getViewport().setCamera(camera);
+
+		stage.getViewport().update(width, height,true);
+
 		
 	}
 

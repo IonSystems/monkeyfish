@@ -89,7 +89,7 @@ public class OptionsScreen implements Screen {
 		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new MainMenuScreen(game));
+            	 game.gameState = GameState.MAINMENU;
              }
             
 		 });

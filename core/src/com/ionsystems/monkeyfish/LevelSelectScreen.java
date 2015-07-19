@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -88,7 +89,7 @@ public class LevelSelectScreen implements Screen {
                  @Override
                  public void clicked(InputEvent e, float x, float y){
                 	 Levels.getInstance().gotoLevel(tempLevelIndex);
-                     game.setScreen(new GameScreen(game));
+                     
                  }
                 
     		 });
@@ -106,7 +107,7 @@ public class LevelSelectScreen implements Screen {
 		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new MainMenuScreen(game));
+                     game.gameState = GameState.MAINMENU;
              }
             
 		 });
@@ -137,7 +138,9 @@ public class LevelSelectScreen implements Screen {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		game.batch = new SpriteBatch();
+        stage  = new Stage();
+        Gdx.input.setInputProcessor(stage);
 		
 	}
 
