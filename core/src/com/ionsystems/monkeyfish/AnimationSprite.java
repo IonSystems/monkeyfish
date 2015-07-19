@@ -59,15 +59,6 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
 	    this.width = walkSheet.getHeight()/rows;
     }
     
-    /*
-    public int getHeight() {
-		return height;
-    }
-
-	public int getWidth() {
-		return width;
-	}
-*/
 	public void create() {
         
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/cols, walkSheet.getHeight()/rows);              // #10

@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
 	
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
-		mario = new AnimationSprite(this.game.batch, 5, 1,"mario.png");
+		mario = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png");
 		//flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy.png");
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
@@ -87,8 +87,6 @@ public class GameScreen implements Screen {
 		blimp = new Rectangle();
 		//bob.width = bobImage.getWidth();
 		//bob.height = bobImage.getHeight();
-		mario.setX(frameWidth/2 - mario.width/2);
-		mario.setY(0);
 		//bob.x = frameWidth/2 - (bob.width)/2; 
 		//bob.y = 1.2f*bob.height; // bottom left corner of the bob is 20 pixels above the bottom screen edge
 
@@ -123,7 +121,6 @@ public class GameScreen implements Screen {
 		pauseStyle.down = pauseSkin.getDrawable("pause_button_down");
 		
 		btnPause.addListener(new ClickListener() {
-			@Override
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp GameScreen");
         		
@@ -182,8 +179,7 @@ public class GameScreen implements Screen {
 	}
 	
 	private void spawnFlappy(){
-		flappies.add(new AnimationSprite(this.game.batch, 3, 1, "flappy.png"));
-		
+		flappies.add(new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png"));
 		lastFlappyTime = TimeUtils.nanoTime();
 	}
 	
@@ -231,7 +227,6 @@ public class GameScreen implements Screen {
 		// begin a new batch and draw the bob and all drops
 		game.batch.begin();	
 		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 10, frameHeight - 5);
-				
 		
 		for (Rectangle ground : grounds){
 			game.batch.draw(groundImage, ground.x, setAntipodean(groundImage.getHeight(), ground.y), groundImage.getWidth(), groundImage.getHeight(), 0, 0, groundImage.getWidth(), groundImage.getHeight(), false, antipodean);
@@ -263,8 +258,7 @@ public class GameScreen implements Screen {
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
-
-		mario.render((int)mario.x,(int)mario.y);
+		mario.render((int)(frameWidth/2 - mario.width/2), (int)mario.height);
 
 		game.batch.end();
 
@@ -274,7 +268,6 @@ public class GameScreen implements Screen {
 		}
 		/*if (touch) {
 			if (bob.y + bob.height >= frameHeight) {
-
 				touch = false;
 				verticalVelocity = 0;
 			}
@@ -291,7 +284,6 @@ public class GameScreen implements Screen {
 		*/
 		if (touch) {
 			if (mario.y + mario.height >= frameHeight) {
-
 				touch = false;
 				verticalVelocity = 0;
 			}
@@ -325,8 +317,8 @@ public class GameScreen implements Screen {
 		if (bob.y > frameHeight - bob.height)
 			bob.y = frameHeight - bob.height;
 		*/
-		if (mario.y < 0.5f*mario.height)
-			mario.y = 0.5f*mario.height;
+		if (mario.y < mario.height)
+			mario.y = mario.height;
 		if (mario.y > frameHeight - mario.height)
 			mario.y = frameHeight - mario.height;
 		
@@ -451,8 +443,8 @@ public class GameScreen implements Screen {
 			gameMusic.pause();
 			System.out.println("p");
 		}else if(!gameMusic.isPlaying()){
-			gameMusic.play();
-			Gdx.app.debug("Sound", "Music playing");
+			//gameMusic.play();
+			//Gdx.app.debug("Sound", "Music playing");
 		}
 	}
 
