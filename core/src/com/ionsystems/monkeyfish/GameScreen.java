@@ -37,7 +37,7 @@ public class GameScreen implements Screen {
 	int dropsGathered, frameHeight, frameWidth, movement, acceleration, lives, initMovement;
 	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime;
 	float btnPauseSx, btnPauseSy, horizontalVelocity;
-	private boolean touch, overlapping, antipodean;
+	private boolean touch, antipodean;
 	
 	//pause button variables
 	TextButton btnPause;
@@ -145,7 +145,7 @@ public class GameScreen implements Screen {
 	}
 	private void spawnBlimp(){
 		if(lastBlimpTime % 100 > 98)
-		blimp = new SpawnObject(blimpImage, frameWidth, frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/5));
+		blimp = new SpawnObject(blimpImage, frameWidth, frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4));
 		lastBlimpTime = TimeUtils.millis();
 	}
 	
@@ -160,18 +160,19 @@ public class GameScreen implements Screen {
 	}
 	
 	private void spawnCloud(){
-		clouds.add(new SpawnObject(cloudImage, frameWidth+ (int)MathUtils.random(0, frameWidth/2), ((int)frameHeight/4 + (int)MathUtils.random(0, 3*frameHeight/4 - cloudImage.getHeight()))));
-		clouds2.add(new SpawnObject(cloud2Image, 2*frameWidth + (int)MathUtils.random(0, frameWidth), ((int)frameHeight/4 + (int)MathUtils.random(0, 3*frameHeight/4 - cloud2Image.getHeight()))));
-		clouds3.add(new SpawnObject(cloud3Image, 3*frameWidth + (int)MathUtils.random(0, frameWidth*3), ((int)frameHeight/3 + (int)MathUtils.random(0, 2*frameHeight/3 - cloud3Image.getHeight()))));
-		clouds4.add(new SpawnObject(cloud4Image, 4*frameWidth + (int)MathUtils.random(0, frameWidth*2), ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloud4Image.getHeight()))));
+		clouds.add(new SpawnObject(cloudImage, frameWidth+ (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds2.add(new SpawnObject(cloud2Image, frameWidth + (int)MathUtils.random(0, frameWidth), frameHeight - cloud2Image.getHeight() - (int)MathUtils.random(0,frameHeight/3)));
+		clouds3.add(new SpawnObject(cloud3Image, frameWidth + (int)MathUtils.random(0, frameWidth), frameHeight - cloud3Image.getHeight() - (int)MathUtils.random(0,frameHeight/4)));
+		clouds4.add(new SpawnObject(cloud4Image, frameWidth + (int)MathUtils.random(0, frameWidth), frameHeight - cloud4Image.getHeight() - (int)MathUtils.random(0,frameHeight/5)));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnHearts(){
 		hearts.clear();
-		for (int i = 0; i < lives; i ++){
+		for (int i = 0; i < lives; i++){
 			hearts.add(new SpawnObject(heart, 5+30*i, (frameHeight -50)));
 		}
+		System.out.println("hearts contains : " + hearts.size());
 	}
 	
 	@Override
@@ -272,7 +273,7 @@ public class GameScreen implements Screen {
 		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
 
 		for(int i = 0; i < grounds.size(); i++){
-			 grounds.get(i).x -= movement * Gdx.graphics.getDeltaTime();
+			 grounds.get(i).x -= movement * 0.5* Gdx.graphics.getDeltaTime();
 			 if(grounds.get(i).x + grounds.get(i).width <= 0){
 				 grounds.get(i).x += grounds.get(i).width * grounds.size();
 			 }
@@ -280,7 +281,7 @@ public class GameScreen implements Screen {
 		if (TimeUtils.nanoTime() - lastTreeTime > 500000000)
 			spawnTree();
 
-		if (TimeUtils.nanoTime() - lastCloudTime > 1900000000)
+		if ((TimeUtils.nanoTime() - lastCloudTime)/1000 > 5000000)
 			spawnCloud();
 		
 		if (TimeUtils.nanoTime() - lastBirdTime > 1000000000)
@@ -299,7 +300,7 @@ public class GameScreen implements Screen {
 				toRemove.add(s);
 			if (s.overlaps(bob)) {
 				dropsGathered++;
-				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives <= 5){
+				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives < 5){
 					lives++;
 				}
 				//birdSong.play();
@@ -307,29 +308,28 @@ public class GameScreen implements Screen {
 			}
 		}
 		for(Rectangle s : trees ){
-			s.x -= movement * Gdx.graphics.getDeltaTime();
+			s.x -= movement *0.5* Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
-			/*if (s.overlaps(bob)){
-				if(!overlapping) {
-					if(lives == 0){
-						movement = 0;
-						//dispose();
-					}
-					else{
-					overlapping = true;
-					hearts.remove(0);
-					lives--;
-					System.out.println("Hearts: " + hearts.size());
-					System.out.println("lives: " + lives);
-					}
-			}
-			}*/
-			else overlapping = false;		
+//			if (s.overlaps(bob)){
+//				if(!overlapping) {
+//					if(lives == 0){
+//						movement = 0;
+//					}
+//					else{
+//					overlapping = true;
+//					hearts.remove(0);
+//					lives--;
+//					System.out.println("Hearts: " + hearts.size());
+//					System.out.println("lives: " + lives);
+//					}
+//			}
+//			}
+//			else overlapping = false;		
 		}
 		
 		for(Rectangle s : clouds ){
-			s.x -= movement * Gdx.graphics.getDeltaTime();
+			s.x -= movement * 0.7 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
 			if (s.overlaps(bob)){
@@ -338,7 +338,7 @@ public class GameScreen implements Screen {
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds2 ){
-			s.x -= movement * Gdx.graphics.getDeltaTime();
+			s.x -= movement * 0.6*Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
 			if (s.overlaps(bob)){
@@ -347,7 +347,7 @@ public class GameScreen implements Screen {
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds3 ){
-			s.x -= movement * Gdx.graphics.getDeltaTime();
+			s.x -= movement * 0.9 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
 			if (s.overlaps(bob)){
@@ -356,7 +356,7 @@ public class GameScreen implements Screen {
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds4 ){
-			s.x -= movement * Gdx.graphics.getDeltaTime();
+			s.x -= movement * 0.5 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
 			if (s.overlaps(bob)){
@@ -364,16 +364,15 @@ public class GameScreen implements Screen {
 			}
 			else movement = initMovement;
 		}
-
+		plane.x -= movement * 1.5 * Gdx.graphics.getDeltaTime();
 		if (plane.x + plane.width < 0){
 			spawnPlane();
 		}
-		plane.x -= movement * 2 * Gdx.graphics.getDeltaTime();
 		
+		blimp.x -= (movement/5)  * Gdx.graphics.getDeltaTime();
 		if(blimp.x + blimp.width < 0){
 			spawnBlimp();
 		}
-		blimp.x -= (movement/5)  * Gdx.graphics.getDeltaTime();
 		
 		birds.removeAll(toRemove);
 		trees.removeAll(toRemove);
