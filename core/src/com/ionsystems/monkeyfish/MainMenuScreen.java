@@ -57,7 +57,7 @@ public class MainMenuScreen implements Screen {
         TextButton btnAbout = new TextButton("About", skin);
         TextButton btnLevels = new TextButton("Levels", skin);
        
-        logo = new Texture(Gdx.files.internal("badlogic.jpg"));
+        logo = new Texture(Gdx.files.internal("IONsystems.png"));
         imgLogo = new Image(logo);
         Table root = new Table(skin);
 		root.setFillParent(true);
@@ -140,43 +140,29 @@ public class MainMenuScreen implements Screen {
 
     }
 
-	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		
 	}
 
-	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void dispose() {
 		stage.dispose();
 		
 	}
-
-
-        //...Rest of class omitted for succinctness.
-
 }
