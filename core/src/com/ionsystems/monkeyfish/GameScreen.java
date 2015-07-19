@@ -38,7 +38,8 @@ public class GameScreen implements Screen {
 	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime;
 	float btnPauseSx, btnPauseSy, verticalVelocity;
 	private boolean touch, antipodean;
-	
+	AnimationSprite mario;
+	AnimationSprite flappy;
 	//pause button variables
 	TextButton btnPause;
 	TextureAtlas pauseAtlas;
@@ -48,6 +49,8 @@ public class GameScreen implements Screen {
 	
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
+		mario = new AnimationSprite(this.game.batch, 5, 1,"mario-jump.png");
+		flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy.png");
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
 		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
@@ -127,6 +130,9 @@ public class GameScreen implements Screen {
         		Gdx.app.debug("gesture", "inside touchUp");
         	}
 		});
+		
+		mario.create();
+		flappy.create();
 		
 		stage.addActor(btnPause);
 		Gdx.input.setInputProcessor(stage);
@@ -224,6 +230,8 @@ public class GameScreen implements Screen {
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
+		mario.render(100, 100);
+		flappy.render(200, 100);
 		game.batch.end();
 
 		// process user input
@@ -258,7 +266,9 @@ public class GameScreen implements Screen {
 		 * Gdx.graphics.getDeltaTime(); if (Gdx.input.isKeyPressed(Keys.RIGHT))
 		 * bob.x += movement * Gdx.graphics.getDeltaTime();
 		 */
-
+	
+		
+		
 		// make sure the bob stays within the screen bounds
 		if (bob.x < 0)
 			bob.x = 0;
