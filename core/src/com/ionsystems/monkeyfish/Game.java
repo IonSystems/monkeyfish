@@ -17,11 +17,6 @@ public class Game extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("bard.png");
 		
-		preferences.putBoolean("sound", true);
-		preferences.putBoolean("music", true);
-		preferences.putBoolean("antipeeedeeeeean", false);
-		preferences.putString("username", "Donald Duck");
-		preferences.flush();
 		
 	}
 

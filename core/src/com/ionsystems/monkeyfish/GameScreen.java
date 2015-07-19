@@ -64,9 +64,9 @@ public class GameScreen implements Screen {
 		groundImage = new Texture(Gdx.files.internal ("ground1.png"));
 		heart = new Texture(Gdx.files.internal ("heart.png"));
 		
-		birdSong = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
-		gameMusic.setLooping(true);
+		birdSong = setupSoundSetting();
+		gameMusic = setupMusicSetting();
+		
 		frameHeight = Gdx.graphics.getHeight();
 		frameWidth = Gdx.graphics.getWidth();
 		initMovement = frameHeight/2;
@@ -142,6 +142,20 @@ public class GameScreen implements Screen {
 		spawnBlimp();
 	}
 	
+	private Sound setupSoundSetting() {
+		Sound sound;
+			sound = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
+		return sound;
+	}
+	
+	private Music setupMusicSetting() {
+		Music music;
+		music = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
+		music.setLooping(true);
+		
+		return music;
+	}
+
 	private void initialiseGround(){
 		for(int i = 0; i < (int)(frameWidth/groundImage.getWidth())+2; i++){
 			grounds.add(new SpawnObject(groundImage, i * groundImage.getWidth(), 0));
@@ -183,6 +197,7 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
+		checkSettings();
 		// clear the screen with a dark blue color. The
 		// arguments to glClearColor are the red, green
 		// blue and alpha component in the range [0,1]
@@ -384,6 +399,26 @@ public class GameScreen implements Screen {
 		clouds3.removeAll(toRemove);
 		clouds4.removeAll(toRemove);
 		stage.draw();
+	}
+
+	private void checkSettings() {
+		//Sound
+		if(!SavedSettings.SETTING_SOUND.getBoolean()){
+			birdSong.pause();
+			System.out.println("p");
+		}else{
+			birdSong.resume();
+		}
+		
+		//Music
+		if(!SavedSettings.SETTING_MUSIC.getBoolean()){
+			gameMusic.pause();
+			System.out.println("p");
+		}else if(!gameMusic.isPlaying()){
+			gameMusic.play();
+			Gdx.app.debug("Sound", "Music playing");
+		}
+		
 	}
 
 	@Override

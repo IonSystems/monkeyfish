@@ -1,6 +1,7 @@
 package com.ionsystems.monkeyfish;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -11,8 +12,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -20,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MainMenuScreen implements Screen {
+public class LevelSelectScreen implements Screen {
 
     final MonkeyFishGame game;
     
@@ -34,12 +37,17 @@ public class MainMenuScreen implements Screen {
     Texture logo;
     Image imgLogo;
     Viewport viewport;
-	
-	Label label;
+    Table levelsTable;
+    ScrollPane scrollPane;
+    int tempLevelIndex = 0;
+    
+    CheckBox chkSound, chkMusic, chkAntipeeedeeeeean;
+    TextButton[] btnPlay = new TextButton[10];
+    TextButton btnBack;
 
-    public MainMenuScreen(final MonkeyFishGame game) {
-    	screenWidth = 800;
-    	screenHeight = 480;
+    public LevelSelectScreen(final MonkeyFishGame game) {
+    	screenWidth = Gdx.graphics.getWidth();
+    	screenHeight = Gdx.graphics.getHeight();;
         this.game = game;
         stage = new Stage();
         camera = new OrthographicCamera();
@@ -47,73 +55,63 @@ public class MainMenuScreen implements Screen {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         skin.add("logo", new Texture("alpha.png"));
         
-        red = skin.getColor("red");
-        label = new Label("", skin);
-        
         //Buttons
-        TextButton btnStart = new TextButton("Start",skin);
-        TextButton btnOptions = new TextButton("Options", skin);
-        TextButton btnHelp = new TextButton("Help", skin);
-        TextButton btnAbout = new TextButton("About", skin);
-        TextButton btnLevels = new TextButton("Levels", skin);
+        Preferences preferences = Gdx.app.getPreferences("My Options");
+        chkSound = new CheckBox("Sound", skin);
+        chkSound.setChecked(preferences.getBoolean("sound"));
+        chkMusic = new CheckBox("Music", skin);
+        chkMusic.setChecked(preferences.getBoolean("music"));
+        chkAntipeeedeeeeean = new CheckBox("Antipodean", skin);
+        chkAntipeeedeeeeean.setChecked(preferences.getBoolean("antipeeedeeeeean"));
+        
        
         logo = new Texture(Gdx.files.internal("badlogic.jpg"));
         imgLogo = new Image(logo);
-        Table root = new Table(skin);
-		root.setFillParent(true);
-		root.setBackground(skin.getDrawable("default-pane"));
-		root.add(imgLogo).row();
-		root.add(btnStart).row();
-		root.add(btnOptions).row();
-		root.add(btnHelp).row();
-		root.add(btnAbout).row();
-		root.add(btnLevels).row();
-		root.add(label).row();
-		stage.addActor(root);
+        levelsTable = new Table(skin);
+        levelsTable.setFillParent(true);
+        levelsTable.setBackground(skin.getDrawable("default-pane"));
+        btnBack = new TextButton("Back", skin);
+        levelsTable.add(new Label("Name", skin));
+        levelsTable.add(new Label("Difficulty", skin));
+        levelsTable.add(new Label("Best Score", skin));
+        levelsTable.row();
+        
+        for(int i = 1; i <= Levels.getInstance().getNumberOfLevels(); i++){
+        	tempLevelIndex = i;
+        	Level tempLevel = Levels.getInstance().getSpecificLevel(i);
+        	btnPlay[i] = new TextButton("Play",skin);
+        	levelsTable.add(tempLevel.getName());
+        	levelsTable.add((Integer.toString(tempLevel.getDifficulty())));
+        	levelsTable.add(btnPlay[i]);
+        	levelsTable.row();
+        	btnPlay[i].addListener(new ClickListener() {
+                 @Override
+                 public void clicked(InputEvent e, float x, float y){
+                	 Levels.getInstance().gotoLevel(tempLevelIndex);
+                     game.setScreen(new GameScreen(game));
+                 }
+                
+    		 });
+        }
+		
+		scrollPane = new ScrollPane(levelsTable);
+		stage.addActor(levelsTable);
        
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
-		label.setText("Creators: Cameron Craig, Euan Mutch, Andrew Rigg, Stuart Thain");
         
 		 Gdx.input.setInputProcessor(stage);
 		 
-		 btnStart.addListener(new ClickListener() {
+		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new GameScreen(game));
+                     game.setScreen(new MainMenuScreen(game));
              }
             
 		 });
-		 btnOptions.addListener(new ClickListener() {
-             @Override
-             public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new OptionsScreen(game));
-             }
-            
-		 });
-		 btnLevels.addListener(new ClickListener() {
-             @Override
-             public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new LevelSelectScreen(game));
-             }
-            
-		 });
-
-//        Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
-//			public boolean keyDown (int keycode) {
-//				if (keycode == Input.Keys.SPACE) {
-//					label.setText("Label");
-//					stage.setViewport(viewport);
-//					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//				}
-//				return false;
-//			}
-//		}, stage));
-
+		 
     }
-    
-
 
     static public Viewport getViewport (Camera camera) {
 		int minWorldWidth = 640;
@@ -128,13 +126,10 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to MonkeyFish!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
         game.batch.end();
         stage.draw();
 
