@@ -18,12 +18,17 @@ public class PauseScreen implements Screen{
 	Stage stage;
 	
 	TextButton btnResume;
+	TextButtonStyle resumeStyle;
 	TextButton btnOptions;
+	TextButtonStyle optionsStyle;
 	TextButton btnQuit;
+	TextButtonStyle quitStyle;
+	TextButton btnRestart;
+	TextButtonStyle restartStyle;
 	
 	BitmapFont font;
 	TextureAtlas pauseAtlas;
-	TextButtonStyle pauseStyle;
+
 	Skin pauseSkin;
 	Table table;
 	
@@ -36,31 +41,62 @@ public class PauseScreen implements Screen{
 		
 		table.setFillParent(true);
 		
-		font = new BitmapFont(Gdx.files.internal("fonts/Arial.fnt"), false);
-		pauseStyle = new TextButtonStyle();
 		pauseSkin = new Skin();
-		pauseStyle.font = font;
 		
-		btnResume = new TextButton("Resume", pauseStyle);
+		font = new BitmapFont(Gdx.files.internal("fonts/Arial.fnt"), false);
+		resumeStyle = new TextButtonStyle();
+		
+		resumeStyle.font = font;
+		
+		btnResume = new TextButton("Resume", resumeStyle);
 		pauseAtlas = new TextureAtlas("buttons/btnOut/buttons.pack");
 		pauseSkin.addRegions(pauseAtlas);
-		pauseStyle.up = pauseSkin.getDrawable("black_button_up");
-		pauseStyle.down = pauseSkin.getDrawable("black_button_down");
+		resumeStyle.up = pauseSkin.getDrawable("black_button_up");
+		resumeStyle.down = pauseSkin.getDrawable("black_button_down");
 		
 		btnResume.addListener(new ClickListener() {
 			@Override
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
-        		Gdx.app.debug("gesture", "inside touchUp PauseScreen");
+        		Gdx.app.debug("gesture", "inside touchUp resume PauseScreen");
         		
         		game.setScreen(new GameScreen(game));
         	}
 		});
 		
+		restartStyle = new TextButtonStyle();
+		restartStyle.font = font;
+		btnRestart = new TextButton("Restart", restartStyle);
+		restartStyle.up = pauseSkin.getDrawable("purple_button_up");
+		restartStyle.down = pauseSkin.getDrawable("purple_button_down");
+		
+		btnRestart.addListener(new ClickListener() {
+			@Override
+        	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
+        		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
+        		
+        		game.setScreen(new GameScreen(game));
+        	}
+		});
+		
+		optionsStyle = new TextButtonStyle();
+		optionsStyle.font = font;
+		btnOptions = new TextButton("Options", optionsStyle);
+		optionsStyle.up = pauseSkin.getDrawable("lightblue_button_up");
+		optionsStyle.down = pauseSkin.getDrawable("darkblue_button_down");
+		
+		btnOptions.addListener(new ClickListener() {
+			@Override
+        	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
+        		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
+        		
+        		game.setScreen(new OptionsScreen(game));
+        	}
+		});
+		
+		
 		table.add(btnResume).row();
-		
-		
-		
-		
+		table.add(btnRestart).row();
+		table.add(btnOptions).row();
 		
 		stage.addActor(table);
 		

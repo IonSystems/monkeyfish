@@ -124,6 +124,12 @@ public class GameScreen implements Screen {
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp GameScreen");
         		
+        		/*try {
+					//this.wait();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}*/
         		game.setScreen(new PauseScreen(game));
         	}
 		});
