@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 	private boolean touch, antipodean;
 	AnimationSprite mario;
 	AnimationSprite flappy;
-	//pause button variables
+	ArrayList<String> imageNames;
 	TextButton btnPause;
 	TextureAtlas pauseAtlas;
 	TextButtonStyle pauseStyle;
@@ -198,7 +198,13 @@ public class GameScreen implements Screen {
 		}
 	}
 	
-	@Override
+	public float setAntipodean(float height, float y){
+		if(antipodean){
+			return frameHeight-y-height;
+		}
+		else return y;
+	}
+	
 	public void render(float delta) {
 		checkSettings();
 		// clear the screen with a dark blue color. The
@@ -221,30 +227,32 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 10, frameHeight - 5);
 				
+		
 		for (Rectangle ground : grounds){
-			game.batch.draw(groundImage, ground.x, ground.y);
+			game.batch.draw(groundImage, ground.x, setAntipodean(groundImage.getHeight(), ground.y), groundImage.getWidth(), groundImage.getHeight(), 0, 0, groundImage.getWidth(), groundImage.getHeight(), false, antipodean);
 		}
 		for (Rectangle tree : trees){
-			game.batch.draw(treeImage, tree.x, tree.y);
+			game.batch.draw(treeImage, tree.x, setAntipodean(treeImage.getHeight(), tree.y), treeImage.getWidth(), treeImage.getHeight(), 0, 0, treeImage.getWidth(), treeImage.getHeight(), false, antipodean);
+
 		}
 		for (Rectangle cloud : clouds){
-			game.batch.draw(cloudImage, cloud.x, cloud.y);
+			game.batch.draw(cloudImage, cloud.x, setAntipodean(cloudImage.getHeight(), cloud.y), cloudImage.getWidth(), cloudImage.getHeight(), 0, 0, cloudImage.getWidth(), cloudImage.getHeight(), false, antipodean);
 		}
 		for (Rectangle cloud : clouds2){
-			game.batch.draw(cloud2Image, cloud.x, cloud.y);
+			game.batch.draw(cloud2Image, cloud.x, setAntipodean(cloud2Image.getHeight(), cloud.y), cloud2Image.getWidth(), cloud2Image.getHeight(), 0, 0, cloud2Image.getWidth(), cloud2Image.getHeight(), false, antipodean);
 		}
 		for (Rectangle cloud : clouds3){
-			game.batch.draw(cloud3Image, cloud.x, cloud.y);
+			game.batch.draw(cloud3Image, cloud.x, setAntipodean(cloud3Image.getHeight(), cloud.y), cloud3Image.getWidth(), cloud3Image.getHeight(), 0, 0, cloud3Image.getWidth(), cloud3Image.getHeight(), false, antipodean);
 		}
 		for (Rectangle cloud : clouds4){
-			game.batch.draw(cloud4Image, cloud.x, cloud.y);
+			game.batch.draw(cloud4Image, cloud.x, setAntipodean(cloud4Image.getHeight(), cloud.y), cloud4Image.getWidth(), cloud4Image.getHeight(), 0, 0, cloud4Image.getWidth(), cloud4Image.getHeight(), false, antipodean);
 		}
 		for (Rectangle bird : birds) {
-			game.batch.draw(birdImage, bird.x, bird.y);
+			game.batch.draw(birdImage, bird.x, setAntipodean(birdImage.getHeight(), bird.y), birdImage.getWidth(), birdImage.getHeight(), 0, 0, birdImage.getWidth(), birdImage.getHeight(), false, antipodean);
 		}
-		game.batch.draw(planeImage, plane.x, plane.y);
-		game.batch.draw(blimpImage, blimp.x, blimp.y);
-		game.batch.draw(bobImage, bob.x, bob.y);
+		game.batch.draw(planeImage, plane.x, setAntipodean(planeImage.getHeight(), plane.y), planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(), false, antipodean);
+		game.batch.draw(blimpImage, blimp.x, setAntipodean(blimpImage.getHeight(), blimp.y), blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
+		game.batch.draw(bobImage, bob.x, setAntipodean(bobImage.getHeight(), bob.y), bobImage.getWidth(), bobImage.getHeight(), 0, 0, bobImage.getWidth(), bobImage.getHeight(), false, antipodean);
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
