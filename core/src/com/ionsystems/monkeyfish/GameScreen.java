@@ -27,32 +27,17 @@ public class GameScreen implements Screen {
 	final MonkeyFishGame game;
 
 	Stage stage;
-	Texture birdImage;
-	Texture bobImage;
-	Texture treeImage;
-	Texture cloudImage;
-	Texture groundImage;
-	Texture heart;
+	Texture birdImage, bobImage, treeImage, cloudImage, cloud2Image, cloud3Image, cloud4Image;
+	Texture groundImage, heart, background, textureUp, textureDown, blimpImage, planeImage;
 	Sound birdSong;
 	Music gameMusic;
 	OrthographicCamera camera;
-
-	Rectangle bob;
-	ArrayList<Rectangle> birds, trees, clouds, hearts, grounds;
-	Texture textureUp;
-	Texture textureDown;
-	Texture background;
-
-	long lastDropTime, lastTreeTime, lastCloudTime;
-	float btnPauseSx = 200;//eh?
-	float btnPauseSy = 200;//
-	int dropsGathered;
-	int frameHeight;
-	int frameWidth;
-	int movement;
-	float yVelocity = 0;
-	int acceleration = 10;
-	boolean antipodean = false;
+	ArrayList<Rectangle> birds, trees, clouds, clouds2, clouds3, clouds4, hearts, grounds;
+	Rectangle bob, plane, blimp;
+	int dropsGathered, frameHeight, frameWidth, movement, acceleration, lives, initMovement;
+	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime;
+	float btnPauseSx, btnPauseSy, horizontalVelocity;
+	private boolean touch, overlapping, antipodean;
 	
 	//pause button variables
 	TextButton btnPause;
@@ -60,20 +45,22 @@ public class GameScreen implements Screen {
 	TextButtonStyle pauseStyle;
 	BitmapFont font;
 	Skin pauseSkin;
-	int lives = 5;
-	int initMovement;
-	private boolean touch;
-	private boolean overlapping = false;
 	
 	public GameScreen(final MonkeyFishGame gam) {
 		this.game = gam;
 		stage = new Stage();
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
+		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
 		bobImage = new Texture(Gdx.files.internal("bob.png"));
 		treeImage = new Texture(Gdx.files.internal ("tree.png"));
 		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
+		cloud2Image = new Texture(Gdx.files.internal ("cloud2.png"));
+		cloud3Image = new Texture(Gdx.files.internal ("cloud3.png"));
+		cloud4Image = new Texture(Gdx.files.internal ("cloud4.png"));
+		planeImage = new Texture(Gdx.files.internal ("plane.png"));
 		groundImage = new Texture(Gdx.files.internal ("ground1.png"));
 		heart = new Texture(Gdx.files.internal ("heart.png"));
+		
 		birdSong = Gdx.audio.newSound(Gdx.files.internal("sound/sample2.wav"));
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
 		gameMusic.setLooping(true);
@@ -81,26 +68,33 @@ public class GameScreen implements Screen {
 		frameWidth = Gdx.graphics.getWidth();
 		initMovement = frameHeight/2;
 		movement = initMovement;
+		acceleration = 12;
+		horizontalVelocity = 0;
+		lives = 5;
+		antipodean = false;
+		
 		// create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, frameWidth, frameHeight);
-
 	
 		// create a Rectangle to logically represent the bob
 		bob = new Rectangle();
+		plane = new Rectangle();
+		blimp = new Rectangle();
 		bob.width = bobImage.getWidth();
 		bob.height = bobImage.getHeight();
 
-		bob.x = frameWidth / 2 - (bob.width) / 2; // center the bob
-														// horizontally
-		bob.y = 20; // bottom left corner of the bob is 20 pixels above
-						// the bottom screen edge
+		bob.x = frameWidth/2 - (bob.width)/2; // center the bob horizontally
+		bob.y = 1.2f*bob.height; // bottom left corner of the bob is 20 pixels above the bottom screen edge
 
 		// create the birds array and spawn the first raindrop
 		hearts = new ArrayList<Rectangle>();
 		birds = new ArrayList<Rectangle>();
 		trees = new ArrayList<Rectangle>();
 		clouds = new ArrayList<Rectangle>();
+		clouds2 = new ArrayList<Rectangle>();
+		clouds3 = new ArrayList<Rectangle>();
+		clouds4 = new ArrayList<Rectangle>();
 		grounds = new ArrayList<Rectangle>();
 		spawnBird();
 		initialiseGround();
@@ -144,10 +138,20 @@ public class GameScreen implements Screen {
 			grounds.add(new SpawnObject(groundImage, i * groundImage.getWidth(), 0));
 			}
 		}
+	private void spawnPlane(){
+		if(lastPlaneTime % 100 < 10)
+		plane = new SpawnObject(planeImage, frameWidth, frameHeight - planeImage.getHeight() - (int)MathUtils.random(0, frameHeight/3));
+		lastPlaneTime = TimeUtils.millis();
+	}
+	private void spawnBlimp(){
+		if(lastBlimpTime % 100 > 98)
+		blimp = new SpawnObject(blimpImage, frameWidth, frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/5));
+		lastBlimpTime = TimeUtils.millis();
+	}
 	
 	private void spawnBird() {
-		birds.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, 3*frameHeight/4 - birdImage.getHeight())));
-		lastDropTime = TimeUtils.nanoTime();
+		birds.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - birdImage.getHeight())));
+		lastBirdTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnTree() {
@@ -157,16 +161,18 @@ public class GameScreen implements Screen {
 	
 	private void spawnCloud(){
 		clouds.add(new SpawnObject(cloudImage, frameWidth+ (int)MathUtils.random(0, frameWidth/2), ((int)frameHeight/4 + (int)MathUtils.random(0, 3*frameHeight/4 - cloudImage.getHeight()))));
+		clouds2.add(new SpawnObject(cloud2Image, 2*frameWidth + (int)MathUtils.random(0, frameWidth), ((int)frameHeight/4 + (int)MathUtils.random(0, 3*frameHeight/4 - cloud2Image.getHeight()))));
+		clouds3.add(new SpawnObject(cloud3Image, 3*frameWidth + (int)MathUtils.random(0, frameWidth*3), ((int)frameHeight/3 + (int)MathUtils.random(0, 2*frameHeight/3 - cloud3Image.getHeight()))));
+		clouds4.add(new SpawnObject(cloud4Image, 4*frameWidth + (int)MathUtils.random(0, frameWidth*2), ((int)frameHeight/2 + (int)MathUtils.random(0, frameHeight/2 - cloud4Image.getHeight()))));
 		lastCloudTime = TimeUtils.nanoTime();
 	}
 	
 	private void spawnHearts(){
 		hearts.clear();
 		for (int i = 0; i < lives; i ++){
-			hearts.add(new SpawnObject(heart, 10+30*i, (frameHeight -50)));
+			hearts.add(new SpawnObject(heart, 5+30*i, (frameHeight -50)));
 		}
 	}
-	
 	
 	@Override
 	public void render(float delta) {
@@ -188,25 +194,35 @@ public class GameScreen implements Screen {
 
 		// begin a new batch and draw the bob and all drops
 		game.batch.begin();
-		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, frameHeight);
+		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 10, frameHeight - 5);
 				
-		for (Rectangle r : grounds){
-			game.batch.draw(groundImage, r.x, r.y);
+		for (Rectangle ground : grounds){
+			game.batch.draw(groundImage, ground.x, ground.y);
 		}
 		for (Rectangle tree : trees){
 			game.batch.draw(treeImage, tree.x, tree.y);
 		}
-		for (Rectangle raindrop : birds) {
-			game.batch.draw(birdImage, raindrop.x, raindrop.y);
-		}
 		for (Rectangle cloud : clouds){
 			game.batch.draw(cloudImage, cloud.x, cloud.y);
 		}
+		for (Rectangle cloud : clouds2){
+			game.batch.draw(cloud2Image, cloud.x, cloud.y);
+		}
+		for (Rectangle cloud : clouds3){
+			game.batch.draw(cloud3Image, cloud.x, cloud.y);
+		}
+		for (Rectangle cloud : clouds4){
+			game.batch.draw(cloud4Image, cloud.x, cloud.y);
+		}
+		for (Rectangle bird : birds) {
+			game.batch.draw(birdImage, bird.x, bird.y);
+		}
+		game.batch.draw(planeImage, plane.x, plane.y);
+		game.batch.draw(blimpImage, blimp.x, blimp.y);
+		game.batch.draw(bobImage, bob.x, bob.y);
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
-		game.batch.draw(bobImage, bob.x, bob.y);
-
 		game.batch.end();
 
 		// process user input
@@ -217,24 +233,24 @@ public class GameScreen implements Screen {
 			// camera.unproject(touchPos);
 			// bob.y = touchPos.y - bob.height / 2;
 			touch = true;
-			yVelocity = 7;
+			horizontalVelocity = 7;
 		}
 		if (touch) {
 			if (bob.y + bob.height >= frameHeight) {
 
 				touch = false;
-				yVelocity = 0;
+				horizontalVelocity = 0;
 			}
 
-			yVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
+			horizontalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 		} else {
 			if (bob.y > 1) {
-				yVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
+				horizontalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 			} else {
-				yVelocity = 0;
+				horizontalVelocity = 0;
 			}
 		}
-		bob.y += yVelocity;
+		bob.y += horizontalVelocity;
 		/*
 		 * Probably won't use side movements if
 		 * (Gdx.input.isKeyPressed(Keys.LEFT)) bob.x -= movement *
@@ -248,8 +264,8 @@ public class GameScreen implements Screen {
 		if (bob.x > frameWidth - bob.width)
 			bob.x = frameWidth - bob.width;
 
-		if (bob.y < bob.height)
-			bob.y = bob.height;
+		if (bob.y < 1.2f*bob.height)
+			bob.y = 1.2f*bob.height;
 		if (bob.y > frameHeight - bob.height)
 			bob.y = frameHeight - bob.height;
 		
@@ -264,13 +280,15 @@ public class GameScreen implements Screen {
 		if (TimeUtils.nanoTime() - lastTreeTime > 500000000)
 			spawnTree();
 
-		if (TimeUtils.nanoTime() - lastCloudTime > 1700000000)
+		if (TimeUtils.nanoTime() - lastCloudTime > 1900000000)
 			spawnCloud();
 		
-		if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+		if (TimeUtils.nanoTime() - lastBirdTime > 1000000000)
 			spawnBird();
-		
+		spawnPlane();
+		spawnBlimp();
 		spawnHearts();
+		
 		// move the birds, remove any that are beneath the bottom edge of
 		// the screen or that hit the bob. In the later case we increase the
 		// value our drops counter and add a sound effect.
@@ -319,10 +337,50 @@ public class GameScreen implements Screen {
 			}
 			else movement = initMovement;
 		}
+		for(Rectangle s : clouds2 ){
+			s.x -= movement * Gdx.graphics.getDeltaTime();
+			if (s.x + s.width < 0)
+				toRemove.add(s);
+			if (s.overlaps(bob)){
+				movement = 20;
+			}
+			else movement = initMovement;
+		}
+		for(Rectangle s : clouds3 ){
+			s.x -= movement * Gdx.graphics.getDeltaTime();
+			if (s.x + s.width < 0)
+				toRemove.add(s);
+			if (s.overlaps(bob)){
+				movement = 5;
+			}
+			else movement = initMovement;
+		}
+		for(Rectangle s : clouds4 ){
+			s.x -= movement * Gdx.graphics.getDeltaTime();
+			if (s.x + s.width < 0)
+				toRemove.add(s);
+			if (s.overlaps(bob)){
+				movement = 50;
+			}
+			else movement = initMovement;
+		}
 
+		if (plane.x + plane.width < 0){
+			spawnPlane();
+		}
+		plane.x -= movement * 2 * Gdx.graphics.getDeltaTime();
+		
+		if(blimp.x + blimp.width < 0){
+			spawnBlimp();
+		}
+		blimp.x -= (movement/5)  * Gdx.graphics.getDeltaTime();
+		
 		birds.removeAll(toRemove);
 		trees.removeAll(toRemove);
 		clouds.removeAll(toRemove);
+		clouds2.removeAll(toRemove);
+		clouds3.removeAll(toRemove);
+		clouds4.removeAll(toRemove);
 		stage.draw();
 	}
 
