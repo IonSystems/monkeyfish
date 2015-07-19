@@ -105,7 +105,7 @@ public class GameScreen implements Screen {
 		pauseSkin = new Skin();
 		pauseStyle.font = font;
 		btnPause = new TextButton("", pauseStyle);
-		pauseAtlas = new TextureAtlas("Buttons/pauseButton.pack");
+		pauseAtlas = new TextureAtlas("buttons/pauseOut/pauseButton.pack");
 		
 		btnPause.setPosition(100, 100);
 		btnPause.setSize(20, 20);
@@ -119,11 +119,8 @@ public class GameScreen implements Screen {
 			@Override
         	public boolean touchDown(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchDown");
+        		game.setScreen(new PauseScreen(game));
 				return false;
-        	}
-        	@Override
-        	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
-        		Gdx.app.debug("gesture", "inside touchUp");
         	}
 		});
 		

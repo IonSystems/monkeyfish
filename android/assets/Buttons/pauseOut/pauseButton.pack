@@ -1,0 +1,26 @@
+
+pauseButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+pause_button_background
+  rotate: false
+  xy: 1, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+pause_button_down
+  rotate: false
+  xy: 259, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+Pause_button_up
+  rotate: false
+  xy: 517, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
