@@ -55,12 +55,13 @@ public class GameScreen extends DefaultScreen implements Screen {
 	Table hud;
 	Label levelAnnounce;
 	long startTime = TimeUtils.millis();
+	int id = 0;
 
 	public GameScreen(final MonkeyFishGame gam, Table hud) {
 		super(gam, hud);
 		antipodean = SavedSettings.SETTING_UPSIDE_DOWN.getBoolean();
 		this.game = gam;
-		player = new AnimationSprite(this.game.batch, 5, 1, "mario(half).png", antipodean);
+		player = new AnimationSprite(this.game.batch, 5, 1, "mario(half).png", antipodean, id++);
 		this.hud = hud;
 		stage = new Stage();
 		setupImageTextures();
@@ -74,7 +75,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		// Load level settings
 		acceleration = Levels.getCurrentLevel().getGravity();
 		verticalVelocity = Levels.getCurrentLevel().getVerticalVelocity();
-		lives = Levels.getCurrentLevel().getLives();
+		lives = 2;//Levels.getCurrentLevel().getLives();
 		lockedHeight = Levels.getCurrentLevel().getInfiniteHeight(); // When set
 																		// to
 																		// false
@@ -103,8 +104,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 				frameHeight - blimpImage.getHeight() - (int) MathUtils.random(0, frameHeight / 4),
 				blimpImage.getWidth(), blimpImage.getHeight());
 		moon = new Rectangle(frameWidth * MathUtils.random(10, 20),
-				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 8), moonImage.getWidth(),
-				moonImage.getHeight());
+				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 8), 
+				moonImage.getWidth(), moonImage.getHeight());
 		lastFlappyTime = TimeUtils.nanoTime();
 		flappies = new ArrayList<AnimationSprite>();
 		hearts = new ArrayList<Rectangle>();
@@ -223,11 +224,12 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	private void spawnMoon() {
-		moon = new SpawnObject(moonImage, frameWidth * MathUtils.random(10, 20), (int) (frameHeight - moon.height));
+		moon = new SpawnObject(moonImage, frameWidth * MathUtils.random(10, 20),
+				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 8));
 	}
 
 	private void spawnFlappy() {
-		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png", antipodean);
+		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png", antipodean, id++);
 		flappy.create();
 		flappy.x = frameWidth;
 		flappy.y = (int) MathUtils.random(player.height, frameHeight - flappy.getHeight());
@@ -268,7 +270,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 	public void render(float delta) {
 		currentDistance++;
-		System.out.println("State: " + game.state + ",  " + game.getScreen() + ", currD: " + currentDistance + ", lD" + levelDistance);
+		//System.out.println("State: " + game.state + ",  " + game.getScreen() + ", currD: " + currentDistance + ", lD" + levelDistance);
 		if(currentDistance >= levelDistance){
 			game.state  = GameState.NEXT_LEVEL;
 			game.setScreen(new LevelCompleteScreen(game, hud)); //TODO: Should not need this, should be set from MonkeyFishGame
@@ -344,7 +346,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 			player.y = frameHeight - player.height;
 
 		ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
-		ArrayList<AnimationSprite> spritesRemove = new ArrayList<AnimationSprite>();
+		ArrayList<Integer> spritesRemove = new ArrayList<Integer>();
 
 		for (int i = 0; i < grounds.size(); i++) {
 			grounds.get(i).x -= movement * 0.5 * Gdx.graphics.getDeltaTime();
@@ -364,20 +366,22 @@ public class GameScreen extends DefaultScreen implements Screen {
 		spawnHearts();
 
 		for (AnimationSprite flappy : flappies) {
-			flappy.x -= movement * Gdx.graphics.getDeltaTime();
 			Rectangle tmp1 = new Rectangle(flappy.x, flappy.y, flappy.width, flappy.height);
+			//System.out.println("tmp1 x: " + tmp1.x + " tmp1 y: "+ tmp1.y);
 			Rectangle tmp2 = new Rectangle(player.x, player.y, player.width, player.height);
+			//System.out.println("tmp2 x: " + tmp2.x + " tmp2 y: "+ tmp2.y);
+			flappy.x -= movement * Gdx.graphics.getDeltaTime();
 			if (flappy.getX() + flappy.getWidth() < 0) {
-				spritesRemove.add(flappy);
+				spritesRemove.add(flappy.id);
 			}
-
 			if (tmp2.overlaps(tmp1)) {
-				dropsGathered++;//// broken!
+				spritesRemove.add(flappy.id);
 				if (dropsGathered % 10 == 0 && dropsGathered != 0 && lives < 5) {
 					lives++;
 				}
+				dropsGathered++;//// broken!
+
 				// birdSong.play();
-				spritesRemove.add(flappy);
 			}
 		}
 		for (Rectangle s : trees) {
@@ -418,9 +422,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 		plane.x -= movement * 1.5 * Gdx.graphics.getDeltaTime();
 		moon.x -= movement * 0.1 * Gdx.graphics.getDeltaTime();
 
-		if (moon.x > 2 * frameWidth && moon.x < 3 * frameWidth) {
-			lastMoonTime = TimeUtils.millis();
-		}
 		if (plane.x + plane.width < 0) {
 			spawnPlane();
 		}
@@ -428,10 +429,17 @@ public class GameScreen extends DefaultScreen implements Screen {
 			spawnBlimp();
 		}
 		if (moon.x + moon.width < 0) {
-				spawnMoon();
+			spawnMoon();
 		}
 		
-		flappies.removeAll(spritesRemove);
+		//flappies.removeAll(spritesRemove);
+		for(int i : spritesRemove){
+			for(int j = 0; j < flappies.size(); j++){
+				if(flappies.get(j).id == i){
+					flappies.remove(j);
+				}
+			}
+		}
 		birds.removeAll(toRemove);
 		trees.removeAll(toRemove);
 		clouds.removeAll(toRemove);

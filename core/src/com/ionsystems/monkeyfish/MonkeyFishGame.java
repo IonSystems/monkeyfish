@@ -49,7 +49,7 @@ public class MonkeyFishGame extends Game {
         exitButtonScreen = getScreen();
         font = new BitmapFont();
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-        imageButtonStyle = new ImageButtonStyle();  //Instaciate
+        imageButtonStyle = new ImageButtonStyle();  //Instantiate
         imageButtonStyle.up = skin.getDrawable("check-off");  //Set image for not pressed button 
         imageButtonStyle.down = skin.getDrawable("check-on");  //Set image for pressed
         imageButtonStyle.pressedOffsetX = 1; 

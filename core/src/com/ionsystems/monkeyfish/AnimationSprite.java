@@ -28,8 +28,10 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
     float x;
 	float y;
 	boolean antipodean;
+	int id;
+	
 
-	public AnimationSprite(SpriteBatch sb, int cols, int rows, String file, boolean antipodean){
+	public AnimationSprite(SpriteBatch sb, int cols, int rows, String file, boolean antipodean, int id){
         this.file = file;
     	this.walkSheet = new Texture(Gdx.files.internal(file)); // #9
     	this.spriteBatch = sb;
@@ -40,8 +42,11 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
 	    this.height = walkSheet.getWidth()/cols;
 	    this.width = walkSheet.getHeight()/rows;
 	    this.antipodean = antipodean;
+	    this.id = id;
+	   
     }
     
+	
 	public void create() {
         
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/cols, walkSheet.getHeight()/rows);              // #10
