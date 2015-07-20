@@ -90,7 +90,7 @@ public class MonkeyFishGame extends Game {
     GameState oldState;
     GameState backToState = GameState.MAINMENU;
     public void render() {
-    	System.out.println("sjdpasjdpas");
+    	//System.out.println("sjdpasjdpas");
     	if(state != oldState){
     		switch(state){
         	

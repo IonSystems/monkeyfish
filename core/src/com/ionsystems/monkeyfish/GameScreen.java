@@ -103,7 +103,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 				frameHeight - blimpImage.getHeight() - (int) MathUtils.random(0, frameHeight / 4),
 				blimpImage.getWidth(), blimpImage.getHeight());
 		moon = new Rectangle(frameWidth * MathUtils.random(10, 20),
-				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 4), moonImage.getWidth(),
+				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 8), moonImage.getWidth(),
 				moonImage.getHeight());
 		lastFlappyTime = TimeUtils.nanoTime();
 		flappies = new ArrayList<AnimationSprite>();
@@ -213,20 +213,17 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	private void spawnPlane() {
-		plane = new SpawnObject(planeImage, frameWidth,
+		plane = new SpawnObject(planeImage, frameWidth * MathUtils.random(50, 100),
 				frameHeight - planeImage.getHeight() - (int) MathUtils.random(0, frameHeight / 3));
-		lastPlaneTime = TimeUtils.millis();
 	}
 
 	private void spawnBlimp() {
-		blimp = new SpawnObject(blimpImage, frameWidth,
+		blimp = new SpawnObject(blimpImage, frameWidth * MathUtils.random(20, 40),
 				frameHeight - blimpImage.getHeight() - (int) MathUtils.random(0, frameHeight / 4));
-		lastBlimpTime = TimeUtils.millis();
 	}
 
 	private void spawnMoon() {
-		moon = new SpawnObject(moonImage, frameWidth, (int) (frameHeight - moon.height));
-		lastMoonTime = TimeUtils.millis();
+		moon = new SpawnObject(moonImage, frameWidth * MathUtils.random(10, 20), (int) (frameHeight - moon.height));
 	}
 
 	private void spawnFlappy() {
@@ -421,38 +418,27 @@ public class GameScreen extends DefaultScreen implements Screen {
 		plane.x -= movement * 1.5 * Gdx.graphics.getDeltaTime();
 		moon.x -= movement * 0.1 * Gdx.graphics.getDeltaTime();
 
-		if (plane.x > 2 * frameWidth && plane.x < 3 * frameWidth) {
-			lastPlaneTime = TimeUtils.millis();
-		}
-		if (blimp.x > 2 * frameWidth && blimp.x < 3 * frameWidth) {
-			lastBlimpTime = TimeUtils.millis();
-		}
 		if (moon.x > 2 * frameWidth && moon.x < 3 * frameWidth) {
 			lastMoonTime = TimeUtils.millis();
 		}
 		if (plane.x + plane.width < 0) {
-			if (TimeUtils.millis() - lastPlaneTime > 100000 + lastPlaneTime % 100000) {
-				spawnPlane();
-			}
-			if (blimp.x + blimp.width < 0) {
-				if (TimeUtils.millis() - lastBlimpTime > 300000 + lastBlimpTime % 300000) {
-					spawnBlimp();
-				}
-			}
-			if (moon.x + moon.width < 0) {
-				if (TimeUtils.millis() - lastMoonTime > 1000000 + lastMoonTime % 1000000) {
-					spawnMoon();
-				}
-			}
-			flappies.removeAll(spritesRemove);
-			birds.removeAll(toRemove);
-			trees.removeAll(toRemove);
-			clouds.removeAll(toRemove);
-			clouds2.removeAll(toRemove);
-			clouds3.removeAll(toRemove);
-			clouds4.removeAll(toRemove);
-			stage.draw();
+			spawnPlane();
 		}
+		if (blimp.x + blimp.width < 0) {
+			spawnBlimp();
+		}
+		if (moon.x + moon.width < 0) {
+				spawnMoon();
+		}
+		
+		flappies.removeAll(spritesRemove);
+		birds.removeAll(toRemove);
+		trees.removeAll(toRemove);
+		clouds.removeAll(toRemove);
+		clouds2.removeAll(toRemove);
+		clouds3.removeAll(toRemove);
+		clouds4.removeAll(toRemove);
+		stage.draw();
 		}
 	}
 
