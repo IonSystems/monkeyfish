@@ -100,4 +100,24 @@ public class Level {
 	public void setLevelNumber(int levelNumber) {
 		this.levelNumber = levelNumber;
 	}
+
+	public float getVerticalVelocity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getLives() {
+		// TODO Auto-generated method stub
+		return 5;
+	}
+
+	public boolean getInfiniteHeight() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean getUpsideDownMode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

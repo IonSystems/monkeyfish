@@ -22,8 +22,8 @@ public class Levels {
 	}
 	
 	private void setupLevels() {
-		Preferences level1 = makeLevel("Level 1", 1, 100, 0, 10, 200);
-		Preferences level2 = makeLevel("Level 2", 2, 88, 0, 5, 100);
+		Preferences level1 = makeLevel("Level 1", 1, 1000, 0, 10, 200);
+		Preferences level2 = makeLevel("Level 2", 2, 1200, 0, 5, 100);
 		
 	}
 
@@ -56,10 +56,10 @@ public class Levels {
 		return getInstance().level;
 	}
 	
-	public boolean nextLevel(){
+	public static boolean nextLevel(){
 		if(getInstance().levelNumber < getInstance().numberOfLevels){
 			getInstance().levelNumber++;
-			getInstance().level = getInstance().getSpecificLevel(levelNumber);
+			getInstance().level = getInstance().getSpecificLevel(getInstance().levelNumber);
 			return true;
 		}else{
 			return false;

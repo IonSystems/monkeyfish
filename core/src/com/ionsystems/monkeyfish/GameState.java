@@ -6,6 +6,7 @@ public enum GameState {
 	LEVEL_SELECT(),
 	HIGHSCORES(),
 	PLAYING(),
-	PAUSED();
+	PAUSED(),
+	NEXT_LEVEL();
 	
 }
