@@ -174,7 +174,7 @@ public class GameScreen implements Screen {
 		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png");
 		flappy.create();
 		flappy.x = frameWidth;
-		flappy.y = (int)MathUtils.random(0, frameHeight - flappy.getHeight());
+		flappy.y = (int)MathUtils.random(player.height-flappy.height, frameHeight - flappy.getHeight());
 		flappies.add(flappy);
 		lastFlappyTime = TimeUtils.nanoTime();
 	}
@@ -240,17 +240,12 @@ public class GameScreen implements Screen {
 		for (Rectangle cloud : clouds4){
 			game.batch.draw(cloud4Image, cloud.x, setAntipodean(cloud4Image.getHeight(), cloud.y), cloud4Image.getWidth(), cloud4Image.getHeight(), 0, 0, cloud4Image.getWidth(), cloud4Image.getHeight(), false, antipodean);
 		}
-		for (Rectangle bird : birds) {
-			game.batch.draw(birdImage, bird.x, setAntipodean(birdImage.getHeight(), bird.y), birdImage.getWidth(), birdImage.getHeight(), 0, 0, birdImage.getWidth(), birdImage.getHeight(), false, antipodean);
-		}
 		for (AnimationSprite flappy : flappies){
-			flappy.create();
-			game.batch.draw(flappy.walkSheet, flappy.x, setAntipodean(flappy.walkSheet.getHeight(), flappy.y), flappy.walkSheet.getWidth(), flappy.walkSheet.getHeight(), 0, 0, flappy.walkSheet.getWidth(), flappy.walkSheet.getHeight(), false, antipodean);
-			//flappy.create();
+			flappy.render((int)flappy.x, (int)setAntipodean(flappy.height,(int)flappy.y));
 		}
 		game.batch.draw(planeImage, plane.x, setAntipodean(planeImage.getHeight(), plane.y), planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(), false, antipodean);
 		game.batch.draw(blimpImage, blimp.x, setAntipodean(blimpImage.getHeight(), blimp.y), blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
-		player.render((int)player.x, (int)player.y);
+		player.render((int)player.x, (int)setAntipodean(player.height,(int)player.y));
 		for (Rectangle h : hearts){
 			game.batch.draw(heart, h.x, h.y);
 		}
@@ -316,16 +311,16 @@ public class GameScreen implements Screen {
 
 		for(AnimationSprite flappy : flappies){
 			flappy.x -= movement * Gdx.graphics.getDeltaTime();
-			if (flappy.x + flappy.width < 0)
+			/*if (flappy.x + flappy.width < 0)
 				spritesRemove.add(flappy);
 			if (flappy.overlaps(player)) {
-				dropsGathered++;////broken!
+				//dropsGathered++;////broken!
 				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives < 5){
 					lives++;
 				}
 				//birdSong.play();
 				spritesRemove.add(flappy);
-			}
+			}*/
 		}
 		for(Rectangle s : trees ){
 			s.x -= movement *0.5* Gdx.graphics.getDeltaTime();
@@ -351,7 +346,7 @@ public class GameScreen implements Screen {
 			else movement = initMovement;
 		}
 		for(Rectangle s : clouds4 ){
-			s.x -= movement * 0.5 *Gdx.graphics.getDeltaTime();
+			s.x -= movement * 0.65 *Gdx.graphics.getDeltaTime();
 			if (s.x + s.width < 0)
 				toRemove.add(s);
 			else movement = initMovement;
