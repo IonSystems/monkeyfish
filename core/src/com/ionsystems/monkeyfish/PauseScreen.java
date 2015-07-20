@@ -75,7 +75,7 @@ public class PauseScreen implements Screen{
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp resume PauseScreen");
         		
-        		game.setScreen(new GameScreen(game));
+        		//game.setScreen(new GameScreen(game));
         	}
 		});
 		
@@ -86,11 +86,8 @@ public class PauseScreen implements Screen{
 		restartStyle.down = pauseSkin.getDrawable("purple_button_down");
 		
 		btnRestart.addListener(new ClickListener() {
-			@Override
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
-        		
-        		//game.setScreen(new GameScreen(game));
         		game.state = GameState.PLAYING; //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
         	}
 		});
@@ -102,7 +99,7 @@ public class PauseScreen implements Screen{
 		optionsStyle.down = pauseSkin.getDrawable("darkblue_button_down");
 		
 		btnOptions.addListener(new ClickListener() {
-			@Override
+			
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
         		
@@ -110,7 +107,6 @@ public class PauseScreen implements Screen{
         		game.state = GameState.OPTIONS;
         	}
 		});
-		
 		
 		table.add(btnResume).row();
 		table.add(btnRestart).row();
@@ -122,10 +118,7 @@ public class PauseScreen implements Screen{
 		Gdx.input.setInputProcessor(stage);
 	}
 
-	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	static public Viewport getViewport (Camera camera) {

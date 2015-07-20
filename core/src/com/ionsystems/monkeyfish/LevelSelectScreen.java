@@ -88,11 +88,9 @@ public class LevelSelectScreen implements Screen {
                  @Override
                  public void clicked(InputEvent e, float x, float y){
                 	 Levels.getInstance().gotoLevel(tempLevelIndex);
-                     //game.setScreen(new GameScreen(game));
                 	 game.state = GameState.PLAYING;
                  }
-                
-    		 });
+    		});
         }
         levelsTable.add(btnBack).colspan(4);
 		
