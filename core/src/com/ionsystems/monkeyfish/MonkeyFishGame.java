@@ -90,7 +90,6 @@ public class MonkeyFishGame extends Game {
     GameState oldState;
     GameState backToState = GameState.MAINMENU;
     public void render() {
-    	System.out.println(state);
     	if(state != oldState){
     		switch(state){
         	
@@ -107,6 +106,10 @@ public class MonkeyFishGame extends Game {
         		break;
         	case PAUSED:
         		this.setScreen(new PauseScreen(this, hudTable));
+        		break;
+        	case LEVEL_SELECT:
+        		this.setScreen(new LevelSelectScreen(this, hudTable));
+        		backToState = oldState;
         		break;
     		default:
     			break;

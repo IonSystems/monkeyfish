@@ -44,8 +44,9 @@ public class LevelSelectScreen implements Screen {
     CheckBox chkSound, chkMusic, chkAntipeeedeeeeean;
     TextButton[] btnPlay = new TextButton[10];
     TextButton btnBack;
-
-    public LevelSelectScreen(final MonkeyFishGame game) {
+    Table hud;
+    public LevelSelectScreen(final MonkeyFishGame game, Table hud) {
+    	this.hud = hud;
     	screenWidth = Gdx.graphics.getWidth();
     	screenHeight = Gdx.graphics.getHeight();;
         this.game = game;
@@ -96,11 +97,11 @@ public class LevelSelectScreen implements Screen {
 		
 		scrollPane = new ScrollPane(levelsTable);
 		stage.addActor(levelsTable);
-       
+        stage.addActor(hud);
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
-        
+    
 		 Gdx.input.setInputProcessor(stage);
 		 
 		 btnBack.addListener(new ClickListener() {

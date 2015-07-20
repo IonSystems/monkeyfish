@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -23,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
@@ -57,17 +57,7 @@ public class GameScreen implements Screen {
 		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png", antipodean);
 		this.hud = hud;
 		stage = new Stage();
-		moonImage = new Texture(Gdx.files.internal("moon.png"));
-		birdImage = new Texture(Gdx.files.internal("bird.png"));
-		treeImage = new Texture(Gdx.files.internal ("tree.png"));
-		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
-		cloud2Image = new Texture(Gdx.files.internal ("cloud2.png"));
-		cloud3Image = new Texture(Gdx.files.internal ("cloud3.png"));
-		cloud4Image = new Texture(Gdx.files.internal ("cloud4.png"));
-		planeImage = new Texture(Gdx.files.internal ("plane.png"));
-		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
-		groundImage = new Texture(Gdx.files.internal ("ground1.png"));
-		heart = new Texture(Gdx.files.internal ("heart.png"));
+		setupImageTextures();
 		birdSong = setupSoundSetting();
 		gameMusic = setupMusicSetting();
 		
@@ -122,6 +112,13 @@ public class GameScreen implements Screen {
 		btnPause.setPosition((frameWidth-(0.12f*frameHeight)) , (0.88f*frameHeight));
 		btnPause.setSize((0.1f*frameHeight),(0.1f*frameHeight));
 		
+		stage.setViewport(viewport);
+		stage.addActor(btnPause);
+		stage.addActor(this.hud);
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(stage);
+		Gdx.input.setInputProcessor(inputMultiplexer);
+		
 		pauseSkin.addRegions(pauseAtlas);
 		pauseStyle.up = pauseSkin.getDrawable("pause_button_up");
 		pauseStyle.down = pauseSkin.getDrawable("pause_button_down");
@@ -132,6 +129,12 @@ public class GameScreen implements Screen {
         		game.state = GameState.PAUSED;
         	}
 			});
+		hud.addListener(new ClickListener() {
+        	public void clicked(InputEvent e, float x, float y){
+        		Gdx.app.debug("gesture", "inside ssasa GameScreen");
+        		game.state = GameState.PAUSED;
+        	}
+			});
 		
 		
 		player.create();
@@ -139,11 +142,22 @@ public class GameScreen implements Screen {
 		player.y = (int)(0.7*player.height);
 
 		//flappy.create();
-		stage.setViewport(viewport);
-		stage.addActor(btnPause);
-		stage.addActor(this.hud);
-		Gdx.input.setInputProcessor(stage);
+		
 		//end Pause Button
+	}
+
+	private void setupImageTextures() {
+		moonImage = new Texture(Gdx.files.internal("moon.png"));
+		birdImage = new Texture(Gdx.files.internal("bird.png"));
+		treeImage = new Texture(Gdx.files.internal ("tree.png"));
+		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
+		cloud2Image = new Texture(Gdx.files.internal ("cloud2.png"));
+		cloud3Image = new Texture(Gdx.files.internal ("cloud3.png"));
+		cloud4Image = new Texture(Gdx.files.internal ("cloud4.png"));
+		planeImage = new Texture(Gdx.files.internal ("plane.png"));
+		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
+		groundImage = new Texture(Gdx.files.internal ("ground1.png"));
+		heart = new Texture(Gdx.files.internal ("heart.png"));
 	}
 	
 	private Sound setupSoundSetting() {
@@ -223,7 +237,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);	
 		camera.update();
 		stage.act();
-		stage.draw();
+		
 		// tell the camera to update its matrices.
 		
 

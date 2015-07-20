@@ -1,3 +1,4 @@
+
 package com.ionsystems.monkeyfish;
 
 import com.badlogic.gdx.Gdx;
@@ -20,66 +21,34 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MainMenuScreen implements Screen {
+public class DefaultScreen implements Screen {
 
     final MonkeyFishGame game;
     
     OrthographicCamera camera;
     Stage stage;
-    TextureAtlas atlas;
     Skin skin;
-    TextureRegion hero;
-    Color red;
     int screenWidth, screenHeight;
-    Texture logo;
-    Image imgLogo;
     Viewport viewport;
     Table hud;
 	
-	Label label;
 
-    public MainMenuScreen(final MonkeyFishGame game, final Table hud) {
-    	screenWidth = 800;
-    	screenHeight = 480;
+
+    public DefaultScreen(final MonkeyFishGame game, final Table hud) {
+    	screenWidth = Gdx.graphics.getWidth();
+    	screenHeight = Gdx.graphics.getHeight();
         this.game = game;
+        this.hud = hud;
         stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-        skin.add("logo", new Texture("alpha.png"));
-        
-        red = skin.getColor("red");
-        label = new Label("", skin);
-        
-        
-        this.hud = hud;
-        
-        //Buttons
-        TextButton btnStart = new TextButton("Start",skin);
-        TextButton btnOptions = new TextButton("Options", skin);
-        TextButton btnHelp = new TextButton("Help", skin);
-        TextButton btnAbout = new TextButton("About", skin);
-        TextButton btnLevels = new TextButton("Levels", skin);
-       
-        logo = new Texture(Gdx.files.internal("IONsystems.png"));
-        imgLogo = new Image(logo);
-        Table root = new Table(skin);
-		root.setFillParent(true);
-		root.setBackground(skin.getDrawable("default-pane"));
-		root.add(imgLogo).row();
-		root.add(btnStart).row();
-		root.add(btnOptions).row();
-		root.add(btnHelp).row();
-		root.add(btnAbout).row();
-		root.add(btnLevels).row();
-		root.add(label).row();
-		stage.addActor(root);
+      
 		stage.addActor(hud);
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
-		label.setText("Creators: Cameron Craig, Euan Mutch, Andrew Rigg, Stuart Thain");
-        
+		
 		
 		 //Add a listener for the close button in the HUD
 //		 game.getButton().addListener(new ClickListener() {
@@ -89,27 +58,11 @@ public class MainMenuScreen implements Screen {
 //		 });
 		 
 
-		 btnStart.addListener(new ClickListener() {
+		 hud.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
                      //game.setScreen(new GameScreen(game,hud));
-            	 game.state = GameState.PLAYING;
-             }
-            
-		 });
-		 btnOptions.addListener(new ClickListener() {
-             @Override
-             public void clicked(InputEvent e, float x, float y){
-                     //game.setScreen(new OptionsScreen(game));
-            	 game.state = GameState.OPTIONS;
-             }
-            
-		 });
-		 btnLevels.addListener(new ClickListener() {
-             @Override
-             public void clicked(InputEvent e, float x, float y){
-                   //  game.setScreen(new LevelSelectScreen(game));
-            	 game.state = GameState.LEVEL_SELECT;
+            	Gdx.app.exit();
              }
             
 		 });
