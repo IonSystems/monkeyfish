@@ -20,40 +20,29 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen extends DefaultScreen implements Screen  {
 
     final MonkeyFishGame game;
-    
-    OrthographicCamera camera;
-    Stage stage;
     TextureAtlas atlas;
-    Skin skin;
     TextureRegion hero;
-    Color red;
-    int screenWidth, screenHeight;
     Texture logo;
     Image imgLogo;
-    Viewport viewport;
-    Table hud;
+
 	
-	Label label;
+	Label creatorLabel;
 
     public MainMenuScreen(final MonkeyFishGame game, final Table hud) {
+    	super(game,hud);
     	screenWidth = 800;
     	screenHeight = 480;
         this.game = game;
         stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-        skin.add("logo", new Texture("alpha.png"));
+       
+        creatorLabel  = new Label("Creators: Cameron Craig, Euan Mutch, Andrew Rigg, Stuart Thain",skin);
         
-        red = skin.getColor("red");
-        label = new Label("", skin);
-        
-        
-        this.hud = hud;
-        
+ 
         //Buttons
         TextButton btnStart = new TextButton("Start",skin);
         TextButton btnOptions = new TextButton("Options", skin);
@@ -72,13 +61,11 @@ public class MainMenuScreen implements Screen {
 		root.add(btnHelp).row();
 		root.add(btnAbout).row();
 		root.add(btnLevels).row();
-		root.add(label).row();
+		root.add(creatorLabel).row();
 		stage.addActor(root);
-		stage.addActor(hud);
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
-		label.setText("Creators: Cameron Craig, Euan Mutch, Andrew Rigg, Stuart Thain");
         
 		
 		 //Add a listener for the close button in the HUD

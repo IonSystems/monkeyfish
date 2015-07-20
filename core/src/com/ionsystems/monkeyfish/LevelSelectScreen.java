@@ -23,20 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class LevelSelectScreen implements Screen {
+public class LevelSelectScreen extends DefaultScreen implements Screen {
 
-    final MonkeyFishGame game;
-    
-    OrthographicCamera camera;
-    Stage stage;
-    TextureAtlas atlas;
-    Skin skin;
-    TextureRegion hero;
-    Color red;
-    int screenWidth, screenHeight;
-    Texture logo;
-    Image imgLogo;
-    Viewport viewport;
+  
+  
     Table levelsTable;
     ScrollPane scrollPane;
     int tempLevelIndex = 0;
@@ -46,16 +36,8 @@ public class LevelSelectScreen implements Screen {
     TextButton btnBack;
     Table hud;
     public LevelSelectScreen(final MonkeyFishGame game, Table hud) {
-    	this.hud = hud;
-    	screenWidth = Gdx.graphics.getWidth();
-    	screenHeight = Gdx.graphics.getHeight();;
-        this.game = game;
-        stage = new Stage();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, screenWidth, screenHeight);
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-        skin.add("logo", new Texture("alpha.png"));
-        
+    	super(game, hud);
+
         //Buttons
         Preferences preferences = Gdx.app.getPreferences("My Options");
         chkSound = new CheckBox("Sound", skin);
@@ -65,9 +47,6 @@ public class LevelSelectScreen implements Screen {
         chkAntipeeedeeeeean = new CheckBox("Antipodean", skin);
         chkAntipeeedeeeeean.setChecked(preferences.getBoolean("antipeeedeeeeean"));
         
-       
-        logo = new Texture(Gdx.files.internal("IONsystems.png"));
-        imgLogo = new Image(logo);
         levelsTable = new Table(skin);
         levelsTable.setFillParent(true);
         levelsTable.setBackground(skin.getDrawable("default-pane"));

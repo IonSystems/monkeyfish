@@ -48,16 +48,7 @@ public class DefaultScreen implements Screen {
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
-		
-		
-		 //Add a listener for the close button in the HUD
-//		 game.getButton().addListener(new ClickListener() {
-//             @Override
-//             public void clicked(InputEvent e, float x, float y){
-//                     Gdx.app.exit();//            
-//		 });
 		 
-
 		 hud.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
@@ -67,16 +58,6 @@ public class DefaultScreen implements Screen {
             
 		 });
 		 Gdx.input.setInputProcessor(stage);
-//        Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
-//			public boolean keyDown (int keycode) {
-//				if (keycode == Input.Keys.SPACE) {
-//					label.setText("Label");
-//					stage.setViewport(viewport);
-//					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//				}
-//				return false;
-//			}
-//		}, stage));
 
     }
     

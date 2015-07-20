@@ -19,10 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class PauseScreen implements Screen{
-
-	final MonkeyFishGame game;
-	Stage stage;
+public class PauseScreen extends DefaultScreen implements Screen{
 	float frameWidth;
 	float frameHeight;
 	
@@ -40,28 +37,17 @@ public class PauseScreen implements Screen{
 
 	Skin pauseSkin;
 	Table table;
-	OrthographicCamera camera;
-    Viewport viewport;
-	Table hud;
+	
 	public PauseScreen(final MonkeyFishGame g, Table hud){
+		super(g,hud);
 		this.hud = hud;
-		this.game = g;
-		stage = new Stage();
-		
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, frameWidth, frameHeight);
-		
-		viewport = getViewport((Camera)camera);
-		stage.setViewport(viewport);
+
 		table = new Table(pauseSkin);
-		
 		table.setFillParent(true);
 		
 		pauseSkin = new Skin();
-		
 		font = new BitmapFont(Gdx.files.internal("fonts/Arial.fnt"), false);
 		resumeStyle = new TextButtonStyle();
-		
 		resumeStyle.font = font;
 		
 		btnResume = new TextButton("Resume", resumeStyle);

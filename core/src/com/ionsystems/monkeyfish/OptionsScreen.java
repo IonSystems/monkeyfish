@@ -22,17 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class OptionsScreen implements Screen {
-
-    final MonkeyFishGame game;
-    
-    OrthographicCamera camera;
-    Stage stage;
-    TextureAtlas atlas;
-    Skin skin;
-    TextureRegion hero;
-    Color red;
-    int screenWidth, screenHeight;
+public class OptionsScreen extends DefaultScreen implements Screen {
     Texture logo;
     Image imgLogo;
     Viewport viewport;
@@ -41,21 +31,11 @@ public class OptionsScreen implements Screen {
     TextButton btnBack, btnSave;
 	
 	Label label;
-	Table hud;
+
 
     public OptionsScreen(final MonkeyFishGame game, Table hud) {
-		this.hud = hud;
-    	screenWidth = 800;
-    	screenHeight = 480;
-        this.game = game;
-        stage = new Stage();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, screenWidth, screenHeight);
-       // atlas = new TextureAtlas(Gdx.files.internal("textures/Textures1.png"));
-       // skin = new Skin(Gdx.files.internal("skins/uiskin.png"));
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-        skin.add("logo", new Texture("alpha.png"));
-        
+    	super(game, hud);
+
         label = new Label("Configure game options, click save to save.\n"
         		+ "Options are saved for the next time.", skin);
         //Buttons
@@ -81,12 +61,7 @@ public class OptionsScreen implements Screen {
 		root.add(btnBack).row();
 		root.add(btnSave).row();
 		stage.addActor(root);
-		stage.addActor(hud);
-       
-        viewport = getViewport((Camera)camera);
 
-		stage.setViewport(viewport);
-        
 		 Gdx.input.setInputProcessor(stage);
 		 System.out.println("Stage set");
 		 
@@ -113,15 +88,7 @@ public class OptionsScreen implements Screen {
 		 });
     }
 
-    static public Viewport getViewport (Camera camera) {
-		int minWorldWidth = 640;
-		int minWorldHeight = 480;
-		int maxWorldWidth = 800;
-		int maxWorldHeight = 480;
-		Viewport viewport;
-		viewport = new StretchViewport(minWorldWidth, minWorldHeight, camera);
-		return viewport;
-	}
+    
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
