@@ -32,15 +32,15 @@ public class GameScreen implements Screen {
 
 	Stage stage;
 	Texture birdImage, bobImage, treeImage, cloudImage, cloud2Image, cloud3Image, cloud4Image;
-	Texture groundImage, heart, background, textureUp, textureDown, blimpImage, planeImage;
+	Texture groundImage, heart, background, textureUp, textureDown, blimpImage, planeImage, moonImage;
 	Sound birdSong;
 	Music gameMusic;
 	OrthographicCamera camera;
 	ArrayList<Rectangle> birds, trees, clouds, clouds2, clouds3, clouds4, hearts, grounds;
 	ArrayList<AnimationSprite> flappies;
-	Rectangle plane, blimp;
+	Rectangle plane, blimp, moon;
 	int dropsGathered, frameHeight, frameWidth, movement, acceleration, lives, initMovement;
-	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime, lastFlappyTime;
+	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime, lastFlappyTime, lastMoonTime;
 	float btnPauseSx, btnPauseSy, verticalVelocity;
 	private boolean touch, antipodean, lockedHeight;
 	AnimationSprite player;
@@ -52,10 +52,12 @@ public class GameScreen implements Screen {
 	Viewport viewport;
 	Table hud;
 	public GameScreen(final MonkeyFishGame gam, Table hud) {
+		antipodean = false;
 		this.game = gam;
+		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png", antipodean);
 		this.hud = hud;
-		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png");
 		stage = new Stage();
+		moonImage = new Texture(Gdx.files.internal("moon.png"));
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
 		treeImage = new Texture(Gdx.files.internal ("tree.png"));
 		cloudImage = new Texture(Gdx.files.internal ("cloud.png"));
@@ -76,7 +78,7 @@ public class GameScreen implements Screen {
 		acceleration = 12;
 		verticalVelocity = 0;
 		lives = 5;
-		antipodean = true;
+
 		lockedHeight = true;  //When set to false allows infinite height.
 		
 		// create the camera and the SpriteBatch
@@ -86,7 +88,7 @@ public class GameScreen implements Screen {
 		// create a Rectangle to logically represent the bob
 		plane = new Rectangle(frameWidth*MathUtils.random(50, 100), frameHeight - planeImage.getHeight() - (int)MathUtils.random(0, frameHeight/3), planeImage.getWidth(), planeImage.getHeight());
 		blimp = new Rectangle(frameWidth*MathUtils.random(20,40), frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), blimpImage.getWidth(), blimpImage.getHeight());
-
+		moon = new Rectangle(frameWidth*MathUtils.random(10,20), frameHeight - moonImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), moonImage.getWidth(), moonImage.getHeight());
 		lastFlappyTime = TimeUtils.nanoTime();
 		flappies = new ArrayList<AnimationSprite>();
 		hearts = new ArrayList<Rectangle>();
@@ -97,8 +99,14 @@ public class GameScreen implements Screen {
 		clouds3 = new ArrayList<Rectangle>();
 		clouds4 = new ArrayList<Rectangle>();
 		grounds = new ArrayList<Rectangle>();
-		//spawnBird();
-		//spawnFlappy();
+		for(int i = 0; i < 5; i++){
+			trees.add(new SpawnObject(treeImage,(int)MathUtils.random(0, frameWidth), frameHeight/6));
+		}
+		clouds.add(new SpawnObject(cloudImage, (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds2.add(new SpawnObject(cloud2Image,(int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds3.add(new SpawnObject(cloud3Image, (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds4.add(new SpawnObject(cloud4Image, (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+
 		initialiseGround();
 		
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -167,16 +175,16 @@ public class GameScreen implements Screen {
 		lastBlimpTime = TimeUtils.millis();
 	}
 	
-	/*private void spawnBird() {
-		birds.add(new SpawnObject(birdImage, frameWidth, (int)MathUtils.random(0, frameHeight - birdImage.getHeight())));
-		lastBirdTime = TimeUtils.nanoTime();
-	}*/
+	private void spawnMoon(){
+		moon = new SpawnObject(moonImage, frameWidth, (int)(frameHeight - moon.height ));
+		lastMoonTime = TimeUtils.millis();
+	}
 	
 	private void spawnFlappy(){
-		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png");
+		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png", antipodean);
 		flappy.create();
 		flappy.x = frameWidth;
-		flappy.y = (int)MathUtils.random(player.height-flappy.height, frameHeight - flappy.getHeight());
+		flappy.y = (int)MathUtils.random(player.height, frameHeight - flappy.getHeight());
 		flappies.add(flappy);
 		lastFlappyTime = TimeUtils.nanoTime();
 	}
@@ -224,7 +232,8 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 
 		game.batch.begin();	
-		
+
+		game.batch.draw(moonImage, moon.x, setAntipodean(moonImage.getHeight(), moon.y), moonImage.getWidth(), moonImage.getHeight(), 0, 0, moonImage.getWidth(), moonImage.getHeight(), false, antipodean);
 		drawSprites(grounds, groundImage, false, antipodean);
 		drawSprites(trees , treeImage, false, antipodean);
 		drawSprites(clouds, cloudImage, false, antipodean);
@@ -232,6 +241,7 @@ public class GameScreen implements Screen {
 		drawSprites(clouds3, cloud3Image, false, antipodean);
 		drawSprites(clouds4, cloud4Image, false, antipodean);
 		drawSprites(flappies);
+		
 		game.batch.draw(planeImage, plane.x, setAntipodean(planeImage.getHeight(), plane.y), planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(), false, antipodean);
 		game.batch.draw(blimpImage, blimp.x, setAntipodean(blimpImage.getHeight(), blimp.y), blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
 		player.render((int)player.x, (int)setAntipodean(player.height,(int)player.y));
@@ -269,7 +279,7 @@ public class GameScreen implements Screen {
 		 * bob.x += movement * Gdx.graphics.getDeltaTime();
 		 */
 
-		if (player.y < 0.7*player.height)
+		if (player.y < (float)(0.7*player.height))
 			player.y = (float) (0.7*player.height);
 		if (player.y >= frameHeight - player.height && lockedHeight)
 			player.y = frameHeight - player.height;
@@ -293,23 +303,23 @@ public class GameScreen implements Screen {
 			spawnFlappy();
 		
 		spawnHearts();
-		
-		// move the birds, remove any that are beneath the bottom edge of
-		// the screen or that hit the bob. In the later case we increase the
-		// value our drops counter and add a sound effect.
 
 		for(AnimationSprite flappy : flappies){
 			flappy.x -= movement * Gdx.graphics.getDeltaTime();
-			/*if (flappy.x + flappy.width < 0)
+			Rectangle tmp1 = new Rectangle(flappy.x, flappy.y, flappy.width, flappy.height);
+			Rectangle tmp2 = new Rectangle(player.x, player.y, player.width, player.height);
+			if (flappy.getX() + flappy.getWidth() < 0){
 				spritesRemove.add(flappy);
-			if (flappy.overlaps(player)) {
-				//dropsGathered++;////broken!
+			}
+			
+			if (tmp2.overlaps(tmp1)) {
+				dropsGathered++;////broken!
 				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives < 5){
 					lives++;
 				}
 				//birdSong.play();
 				spritesRemove.add(flappy);
-			}*/
+			}
 		}
 		for(Rectangle s : trees ){
 			s.x -= movement *0.5* Gdx.graphics.getDeltaTime();
@@ -343,12 +353,16 @@ public class GameScreen implements Screen {
 		
 		blimp.x -= movement*0.6  * Gdx.graphics.getDeltaTime();
 		plane.x -= movement*1.5 * Gdx.graphics.getDeltaTime();
-
+		moon.x -= movement*0.1 *Gdx.graphics.getDeltaTime();
+		
 		if(plane.x > 2*frameWidth && plane.x < 3*frameWidth){
 			lastPlaneTime = TimeUtils.millis();
 		}
 		if(blimp.x > 2*frameWidth && blimp.x < 3*frameWidth){
 			lastBlimpTime = TimeUtils.millis();
+		}
+		if(moon.x > 2*frameWidth && moon.x < 3*frameWidth){
+			lastMoonTime = TimeUtils.millis();
 		}
 		if (plane.x + plane.width < 0){
 			if (TimeUtils.millis() - lastPlaneTime > 100000+lastPlaneTime%100000){
@@ -358,6 +372,11 @@ public class GameScreen implements Screen {
 		if(blimp.x + blimp.width < 0){
 			if(TimeUtils.millis() - lastBlimpTime > 300000+lastBlimpTime%300000){
 				spawnBlimp();
+			}
+		}
+		if(moon.x + moon.width < 0){
+			if(TimeUtils.millis() - lastMoonTime > 1000000+lastMoonTime%1000000){
+				spawnMoon();
 			}
 		}
 		flappies.removeAll(spritesRemove);

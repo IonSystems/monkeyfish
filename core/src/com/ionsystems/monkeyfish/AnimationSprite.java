@@ -27,29 +27,11 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
     float stateTime;                                        // #8
     float x;
 	float y;
-	
-	/*
-    public float getX() {
-		return x;
-	}
+	boolean antipodean;
 
-	public void setX(float x) {
-		this.x = x;
-	}
-
-
-	public float getY() {
-		return y;
-	}
-
-
-	public void setY(float y) {
-		this.y = y;
-	}
-	*/
-    public AnimationSprite(SpriteBatch sb, int cols, int rows, String file){
+	public AnimationSprite(SpriteBatch sb, int cols, int rows, String file, boolean antipodean){
         this.file = file;
-    	walkSheet = new Texture(Gdx.files.internal(file)); // #9
+    	this.walkSheet = new Texture(Gdx.files.internal(file)); // #9
     	this.spriteBatch = sb;
 	    this.cols = cols;
 	    this.rows = rows;
@@ -57,6 +39,7 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
 	    this.y = 0;
 	    this.height = walkSheet.getWidth()/cols;
 	    this.width = walkSheet.getHeight()/rows;
+	    this.antipodean = antipodean;
     }
     
 	public void create() {
@@ -66,10 +49,12 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
         int index = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
+            	tmp[i][j].flip(false, antipodean);
                 walkFrames[index++] = tmp[i][j];
+                
             }
         }
-        walkAnimation = new Animation(0.025f, walkFrames);      // #11
+        walkAnimation = new Animation(0.05f, walkFrames);      // #11
         //spriteBatch = new SpriteBatch();                // #12
         stateTime = 0f;                         // #13
     }
