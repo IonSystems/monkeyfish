@@ -75,7 +75,7 @@ public class PauseScreen implements Screen{
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp resume PauseScreen");
         		
-        		game.setScreen(new GameScreen(game));
+        		//game.setScreen(new GameScreen(game));
         	}
 		});
 		
@@ -89,7 +89,7 @@ public class PauseScreen implements Screen{
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
         		
-        		game.setScreen(new GameScreen(game));
+        		//game.setScreen(new GameScreen(game));
         	}
 		});
 		

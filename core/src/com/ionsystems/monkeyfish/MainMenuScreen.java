@@ -34,10 +34,11 @@ public class MainMenuScreen implements Screen {
     Texture logo;
     Image imgLogo;
     Viewport viewport;
+    Table hud;
 	
 	Label label;
 
-    public MainMenuScreen(final MonkeyFishGame game) {
+    public MainMenuScreen(final MonkeyFishGame game, final Table hud) {
     	screenWidth = 800;
     	screenHeight = 480;
         this.game = game;
@@ -49,6 +50,9 @@ public class MainMenuScreen implements Screen {
         
         red = skin.getColor("red");
         label = new Label("", skin);
+        
+        
+        this.hud = hud;
         
         //Buttons
         TextButton btnStart = new TextButton("Start",skin);
@@ -70,18 +74,27 @@ public class MainMenuScreen implements Screen {
 		root.add(btnLevels).row();
 		root.add(label).row();
 		stage.addActor(root);
-       
+		stage.addActor(hud);
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
 		label.setText("Creators: Cameron Craig, Euan Mutch, Andrew Rigg, Stuart Thain");
         
-		 Gdx.input.setInputProcessor(stage);
+		
+		 //Add a listener for the close button in the HUD
+//		 game.getButton().addListener(new ClickListener() {
+//             @Override
+//             public void clicked(InputEvent e, float x, float y){
+//                     Gdx.app.exit();
+//             }
+//            
+//		 });
 		 
+
 		 btnStart.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new GameScreen(game));
+                     game.setScreen(new GameScreen(game,hud));
              }
             
 		 });
@@ -99,7 +112,7 @@ public class MainMenuScreen implements Screen {
              }
             
 		 });
-
+		 Gdx.input.setInputProcessor(stage);
 //        Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
 //			public boolean keyDown (int keycode) {
 //				if (keycode == Input.Keys.SPACE) {
