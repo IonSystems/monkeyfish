@@ -88,11 +88,11 @@ public class LevelSelectScreen implements Screen {
                  @Override
                  public void clicked(InputEvent e, float x, float y){
                 	 Levels.getInstance().gotoLevel(tempLevelIndex);
-                     //game.setScreen(new GameScreen(game, levelsTable));
+                	 game.state = GameState.PLAYING;
                  }
-                
-    		 });
+    		});
         }
+        levelsTable.add(btnBack).colspan(4);
 		
 		scrollPane = new ScrollPane(levelsTable);
 		stage.addActor(levelsTable);
@@ -107,10 +107,10 @@ public class LevelSelectScreen implements Screen {
              @Override
              public void clicked(InputEvent e, float x, float y){
                      //game.setScreen(new MainMenuScreen(game,));
+            	 game.state = game.backToState;
              }
             
 		 });
-		 
     }
 
     static public Viewport getViewport (Camera camera) {

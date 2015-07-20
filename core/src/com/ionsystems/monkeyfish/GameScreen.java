@@ -50,10 +50,12 @@ public class GameScreen implements Screen {
 	BitmapFont font;
 	Skin pauseSkin;
 	Viewport viewport;
+	Table hud;
 	public GameScreen(final MonkeyFishGame gam, Table hud) {
 		antipodean = false;
 		this.game = gam;
 		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png", antipodean);
+		this.hud = hud;
 		stage = new Stage();
 		moonImage = new Texture(Gdx.files.internal("moon.png"));
 		birdImage = new Texture(Gdx.files.internal("bird.png"));
@@ -86,7 +88,6 @@ public class GameScreen implements Screen {
 		plane = new Rectangle(frameWidth*MathUtils.random(50, 100), frameHeight - planeImage.getHeight() - (int)MathUtils.random(0, frameHeight/3), planeImage.getWidth(), planeImage.getHeight());
 		blimp = new Rectangle(frameWidth*MathUtils.random(20,40), frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), blimpImage.getWidth(), blimpImage.getHeight());
 		moon = new Rectangle(frameWidth*MathUtils.random(10,20), frameHeight - moonImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), moonImage.getWidth(), moonImage.getHeight());
-
 		lastFlappyTime = TimeUtils.nanoTime();
 		flappies = new ArrayList<AnimationSprite>();
 		hearts = new ArrayList<Rectangle>();
@@ -97,8 +98,14 @@ public class GameScreen implements Screen {
 		clouds3 = new ArrayList<Rectangle>();
 		clouds4 = new ArrayList<Rectangle>();
 		grounds = new ArrayList<Rectangle>();
-		//spawnBird();
-		//spawnFlappy();
+		for(int i = 0; i < 5; i++){
+			trees.add(new SpawnObject(treeImage,(int)MathUtils.random(0, frameWidth), frameHeight/6));
+		}
+		clouds.add(new SpawnObject(cloudImage, (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds2.add(new SpawnObject(cloud2Image,(int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds3.add(new SpawnObject(cloud3Image, (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+		clouds4.add(new SpawnObject(cloud4Image, (int)MathUtils.random(0, frameWidth), frameHeight - cloudImage.getHeight() - (int)MathUtils.random(0,frameHeight/2)));
+
 		initialiseGround();
 		
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -119,12 +126,12 @@ public class GameScreen implements Screen {
 		pauseStyle.down = pauseSkin.getDrawable("pause_button_down");
 		
 		btnPause.addListener(new ClickListener() {
-        	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
+        	public void clicked(InputEvent e, float x, float y){
         		Gdx.app.debug("gesture", "inside touchUp GameScreen");
-        		game.setScreen(new PauseScreen(game));
+        		game.state = GameState.PAUSED;
         	}
-		});
-		Gdx.input.setInputProcessor(stage);
+			});
+		
 		
 		player.create();
 		player.x = frameWidth/2-player.width/2;
@@ -133,8 +140,8 @@ public class GameScreen implements Screen {
 		//flappy.create();
 		stage.setViewport(viewport);
 		stage.addActor(btnPause);
-		stage.addActor(hud);
-		
+		stage.addActor(this.hud);
+		Gdx.input.setInputProcessor(stage);
 		//end Pause Button
 	}
 	
@@ -209,14 +216,15 @@ public class GameScreen implements Screen {
 	}
 	
 	public void render(float delta) {
+
 		checkSettings();
 		Gdx.gl.glClearColor(0.4f, 0.4f, 0.7f, 1.5f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		stage.act();
-
-		// tell the camera to update its matrices.
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);	
 		camera.update();
+		stage.act();
+		stage.draw();
+		// tell the camera to update its matrices.
+		
 
 		// tell the SpriteBatch to render in the
 		// coordinate system specified by the camera.

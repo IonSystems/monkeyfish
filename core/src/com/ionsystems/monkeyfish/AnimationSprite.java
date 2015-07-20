@@ -54,7 +54,7 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
                 
             }
         }
-        walkAnimation = new Animation(0.025f, walkFrames);      // #11
+        walkAnimation = new Animation(0.05f, walkFrames);      // #11
         //spriteBatch = new SpriteBatch();                // #12
         stateTime = 0f;                         // #13
     }

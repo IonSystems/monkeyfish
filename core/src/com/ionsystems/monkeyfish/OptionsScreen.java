@@ -41,8 +41,10 @@ public class OptionsScreen implements Screen {
     TextButton btnBack, btnSave;
 	
 	Label label;
+	Table hud;
 
-    public OptionsScreen(final MonkeyFishGame game) {
+    public OptionsScreen(final MonkeyFishGame game, Table hud) {
+		this.hud = hud;
     	screenWidth = 800;
     	screenHeight = 480;
         this.game = game;
@@ -79,17 +81,20 @@ public class OptionsScreen implements Screen {
 		root.add(btnBack).row();
 		root.add(btnSave).row();
 		stage.addActor(root);
+		stage.addActor(hud);
        
         viewport = getViewport((Camera)camera);
 
 		stage.setViewport(viewport);
         
 		 Gdx.input.setInputProcessor(stage);
+		 System.out.println("Stage set");
 		 
 		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     //game.setScreen(new MainMenuScreen(game));
+            	 game.state = game.backToState;
+            	 
              }
             
 		 });
