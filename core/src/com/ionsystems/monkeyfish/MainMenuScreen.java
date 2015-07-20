@@ -94,14 +94,16 @@ public class MainMenuScreen implements Screen {
 		 btnStart.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new GameScreen(game,hud));
+                     //game.setScreen(new GameScreen(game,hud));
+            	 game.state = GameState.PLAYING;
              }
             
 		 });
 		 btnOptions.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new OptionsScreen(game));
+                     //game.setScreen(new OptionsScreen(game));
+            	 game.state = GameState.OPTIONS;
              }
             
 		 });
@@ -138,6 +140,9 @@ public class MainMenuScreen implements Screen {
 		return viewport;
 	}
     @Override
+    /*
+     * render only runs if it is the active screen
+     */
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

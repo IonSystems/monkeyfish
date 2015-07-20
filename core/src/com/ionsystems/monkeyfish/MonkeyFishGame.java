@@ -37,6 +37,10 @@ public class MonkeyFishGame extends Game {
     OrthographicCamera camera;
     Screen exitButtonScreen;
     Table hudTable;
+    
+    MainMenuScreen mms;
+    OptionsScreen os;
+    GameScreen gs;
     GameState state;
     public void create() {
     	state = GameState.MAINMENU;
@@ -78,21 +82,42 @@ public class MonkeyFishGame extends Game {
 		 });
         stage.addActor(hudTable);
         Gdx.input.setInputProcessor(stage);
-        this.setScreen(new MainMenuScreen(this,hudTable));
+        mms = new MainMenuScreen(this, hudTable);
+        //os = new OptionsScreen(this, hudTable);
+        //gs = new GameScreen(this, hudTable);
+        //this.setScreen(mms);
     }
-
+    GameState oldState;
+    GameState backToState = GameState.MAINMENU;
     public void render() {
-    	switch(state){
-    	case MAINMENU:
-    		//this.setScreen(new MainMenuScreen(this,stage));
-    		break;
-		default:
-			break;
-    		
+    	System.out.println(state);
+    	if(state != oldState){
+    		switch(state){
+        	
+        	case MAINMENU:
+        		this.setScreen(new MainMenuScreen(this, hudTable));
+        		backToState = oldState;
+        		break;
+        	case OPTIONS:
+        		this.setScreen(new OptionsScreen(this, hudTable));
+        		backToState = oldState;
+        		break;
+        	case PLAYING:
+        		this.setScreen(new GameScreen(this, hudTable));
+        		break;
+        	case PAUSED:
+        		this.setScreen(new PauseScreen(this, hudTable));
+        		break;
+    		default:
+    			break;
+        		
+        	}
     	}
+    	
         super.render(); //important!
         camera.update();
         //stage.act();
+        oldState  = state;
     }
 
     public void dispose() {

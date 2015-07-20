@@ -42,9 +42,9 @@ public class PauseScreen implements Screen{
 	Table table;
 	OrthographicCamera camera;
     Viewport viewport;
-	
-	public PauseScreen(final MonkeyFishGame g){
-		
+	Table hud;
+	public PauseScreen(final MonkeyFishGame g, Table hud){
+		this.hud = hud;
 		this.game = g;
 		stage = new Stage();
 		
@@ -90,7 +90,8 @@ public class PauseScreen implements Screen{
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
         		
-        		game.setScreen(new GameScreen(game));
+        		//game.setScreen(new GameScreen(game));
+        		game.state = GameState.PLAYING; //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
         	}
 		});
 		
@@ -105,7 +106,8 @@ public class PauseScreen implements Screen{
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
         		
-        		game.setScreen(new OptionsScreen(game));
+        		//game.setScreen(new OptionsScreen(game));
+        		game.state = GameState.OPTIONS;
         	}
 		});
 		
@@ -115,6 +117,7 @@ public class PauseScreen implements Screen{
 		table.add(btnOptions).row();
 		
 		stage.addActor(table);
+		stage.addActor(hud);
 		
 		Gdx.input.setInputProcessor(stage);
 	}
