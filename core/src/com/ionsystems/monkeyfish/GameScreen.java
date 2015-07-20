@@ -76,7 +76,7 @@ public class GameScreen implements Screen {
 		acceleration = 12;
 		verticalVelocity = 0;
 		lives = 5;
-		antipodean = false;
+		antipodean = true;
 		lockedHeight = true;  //When set to false allows infinite height.
 		
 		// create the camera and the SpriteBatch
@@ -225,27 +225,13 @@ public class GameScreen implements Screen {
 
 		game.batch.begin();	
 		
-		for (Rectangle ground : grounds){
-			game.batch.draw(groundImage, ground.x, setAntipodean(groundImage.getHeight(), ground.y), groundImage.getWidth(), groundImage.getHeight(), 0, 0, groundImage.getWidth(), groundImage.getHeight(), false, antipodean);
-		}
-		for (Rectangle tree : trees){
-			game.batch.draw(treeImage, tree.x, setAntipodean(treeImage.getHeight(), tree.y), treeImage.getWidth(), treeImage.getHeight(), 0, 0, treeImage.getWidth(), treeImage.getHeight(), false, antipodean);
-		}
-		for (Rectangle cloud : clouds){
-			game.batch.draw(cloudImage, cloud.x, setAntipodean(cloudImage.getHeight(), cloud.y), cloudImage.getWidth(), cloudImage.getHeight(), 0, 0, cloudImage.getWidth(), cloudImage.getHeight(), false, antipodean);
-		}
-		for (Rectangle cloud : clouds2){
-			game.batch.draw(cloud2Image, cloud.x, setAntipodean(cloud2Image.getHeight(), cloud.y), cloud2Image.getWidth(), cloud2Image.getHeight(), 0, 0, cloud2Image.getWidth(), cloud2Image.getHeight(), false, antipodean);
-		}
-		for (Rectangle cloud : clouds3){
-			game.batch.draw(cloud3Image, cloud.x, setAntipodean(cloud3Image.getHeight(), cloud.y), cloud3Image.getWidth(), cloud3Image.getHeight(), 0, 0, cloud3Image.getWidth(), cloud3Image.getHeight(), false, antipodean);
-		}
-		for (Rectangle cloud : clouds4){
-			game.batch.draw(cloud4Image, cloud.x, setAntipodean(cloud4Image.getHeight(), cloud.y), cloud4Image.getWidth(), cloud4Image.getHeight(), 0, 0, cloud4Image.getWidth(), cloud4Image.getHeight(), false, antipodean);
-		}
-		for (AnimationSprite flappy : flappies){
-			flappy.render((int)flappy.x, (int)setAntipodean(flappy.height,(int)flappy.y));
-		}
+		drawSprites(grounds, groundImage, false, antipodean);
+		drawSprites(trees , treeImage, false, antipodean);
+		drawSprites(clouds, cloudImage, false, antipodean);
+		drawSprites(clouds2, cloud2Image, false, antipodean);
+		drawSprites(clouds3, cloud3Image, false, antipodean);
+		drawSprites(clouds4, cloud4Image, false, antipodean);
+		drawSprites(flappies);
 		game.batch.draw(planeImage, plane.x, setAntipodean(planeImage.getHeight(), plane.y), planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(), false, antipodean);
 		game.batch.draw(blimpImage, blimp.x, setAntipodean(blimpImage.getHeight(), blimp.y), blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
 		player.render((int)player.x, (int)setAntipodean(player.height,(int)player.y));
@@ -383,6 +369,20 @@ public class GameScreen implements Screen {
 		clouds4.removeAll(toRemove);
 		stage.draw();
 	}
+
+	private void drawSprites(ArrayList<Rectangle>rects, Texture texture, boolean s, boolean antipodean) {
+		for (Rectangle cloud : rects){
+			game.batch.draw(texture, cloud.x, setAntipodean(texture.getHeight(), cloud.y), texture.getWidth(), texture.getHeight(), 0, 0, texture.getWidth(), texture.getHeight(), s, antipodean);
+		}
+	}
+	
+	private void drawSprites(ArrayList<AnimationSprite>sprites) {
+		for (AnimationSprite sprite : sprites){
+			sprite.render((int)sprite.x, (int)setAntipodean(sprite.height,(int)sprite.y));
+		}
+	}
+	
+	
 
 	private void checkSettings() {
 		//Sound
