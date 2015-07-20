@@ -317,16 +317,20 @@ public class GameScreen implements Screen {
 
 		for(AnimationSprite flappy : flappies){
 			flappy.x -= movement * Gdx.graphics.getDeltaTime();
-			/*if (flappy.x + flappy.width < 0)
+			Rectangle tmp1 = new Rectangle(flappy.x, flappy.y, flappy.width, flappy.height);
+			Rectangle tmp2 = new Rectangle(player.x, player.y, player.width, player.height);
+			if (flappy.getX() + flappy.getWidth() < 0){
 				spritesRemove.add(flappy);
-			/*if (flappy.overlaps(player)) {
+			}
+			
+			if (tmp2.overlaps(tmp1)) {
 				dropsGathered++;////broken!
 				if(dropsGathered%10 == 0 && dropsGathered != 0 && lives < 5){
 					lives++;
 				}
 				//birdSong.play();
 				spritesRemove.add(flappy);
-			}*/
+			}
 		}
 		for(Rectangle s : trees ){
 			s.x -= movement *0.5* Gdx.graphics.getDeltaTime();

@@ -31,7 +31,7 @@ public class AnimationSprite extends Rectangle implements ApplicationListener {
 
 	public AnimationSprite(SpriteBatch sb, int cols, int rows, String file, boolean antipodean){
         this.file = file;
-    	walkSheet = new Texture(Gdx.files.internal(file)); // #9
+    	this.walkSheet = new Texture(Gdx.files.internal(file)); // #9
     	this.spriteBatch = sb;
 	    this.cols = cols;
 	    this.rows = rows;
