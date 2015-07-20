@@ -30,22 +30,29 @@ public class OptionsScreen extends DefaultScreen implements Screen {
     CheckBox chkSound, chkMusic, chkAntipeeedeeeeean;
     TextButton btnBack, btnSave;
 	
-	Label label;
-
+	Label label, lblSaved;
+	ClickListener lnrCheckBox;
 
     public OptionsScreen(final MonkeyFishGame game, Table hud) {
     	super(game, hud);
+    	lnrCheckBox = new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y){
+        		lblSaved.setText("");
+            }
+           
+		 };
 
-        label = new Label("Configure game options, click save to save.\n"
-        		+ "Options are saved for the next time.", skin);
+    	 label = new Label("Configure game options, click save to save.\n"
+         		+ "Options are saved for the next time.", skin);
+    	 lblSaved = new Label("", skin);
         //Buttons
-        Preferences preferences = Gdx.app.getPreferences("My Options");
         chkSound = new CheckBox("Sound", skin);
-        chkSound.setChecked(preferences.getBoolean("sound"));
+        chkSound.setChecked(SavedSettings.SETTING_SOUND.getBoolean());
         chkMusic = new CheckBox("Music", skin);
-        chkMusic.setChecked(preferences.getBoolean("music"));
+        chkMusic.setChecked(SavedSettings.SETTING_MUSIC.getBoolean());
         chkAntipeeedeeeeean = new CheckBox("Antipodean", skin);
-        chkAntipeeedeeeeean.setChecked(preferences.getBoolean("antipeeedeeeeean"));
+        chkAntipeeedeeeeean.setChecked(SavedSettings.SETTING_UPSIDE_DOWN.getBoolean());
         btnBack = new TextButton("Back", skin);
         btnSave = new TextButton("Save", skin);
        
@@ -60,11 +67,14 @@ public class OptionsScreen extends DefaultScreen implements Screen {
 		root.add(chkAntipeeedeeeeean).row();
 		root.add(btnBack).row();
 		root.add(btnSave).row();
+		root.add(lblSaved).row();
 		stage.addActor(root);
 
 		 Gdx.input.setInputProcessor(stage);
-		 System.out.println("Stage set");
-		 
+		 //System.out.println("Stage set");
+		 chkAntipeeedeeeeean.addListener(lnrCheckBox);
+		 chkMusic.addListener(lnrCheckBox);
+		 chkSound.addListener(lnrCheckBox);
 		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
@@ -77,11 +87,11 @@ public class OptionsScreen extends DefaultScreen implements Screen {
              @Override
              public void clicked(InputEvent e, float x, float y){
             	Preferences preferences = Gdx.app.getPreferences("My Options");
-            	preferences.putBoolean("sound", chkSound.isChecked());
-         		preferences.putBoolean("music", chkMusic.isChecked());
-         		preferences.putBoolean("antipeeedeeeeean", chkAntipeeedeeeeean.isChecked());
-         		preferences.putString("username", "Donald Duck");
-         		preferences.flush();
+            	SavedSettings.SETTING_SOUND.setBoolean(chkSound.isChecked());
+            	SavedSettings.SETTING_MUSIC.setBoolean(chkMusic.isChecked());
+            	SavedSettings.SETTING_UPSIDE_DOWN.setBoolean(chkAntipeeedeeeeean.isChecked());
+            	SavedSettings.SETTING_USER_NAME.setString("Donald Duck");
+         		lblSaved.setText("Saved");
                 //game.setScreen(new MainMenuScreen(game));
              }
             

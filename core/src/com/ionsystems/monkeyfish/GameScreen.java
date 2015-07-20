@@ -52,7 +52,7 @@ public class GameScreen implements Screen {
 	Viewport viewport;
 	Table hud;
 	public GameScreen(final MonkeyFishGame gam, Table hud) {
-		antipodean = false;
+		antipodean = SavedSettings.SETTING_UPSIDE_DOWN.getBoolean();
 		this.game = gam;
 		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png", antipodean);
 		this.hud = hud;
@@ -421,14 +421,14 @@ public class GameScreen implements Screen {
 		//Sound
 		if(!SavedSettings.SETTING_SOUND.getBoolean()){
 			birdSong.pause();
-			System.out.println("p");
+			//System.out.println("p");
 		}else{
 			birdSong.resume();
 		}
 		//Music
 		if(!SavedSettings.SETTING_MUSIC.getBoolean()){
 			gameMusic.pause();
-			System.out.println("p");
+			//System.out.println("p");
 		}else if(!gameMusic.isPlaying()){
 			//gameMusic.play();
 			//Gdx.app.debug("Sound", "Music playing");

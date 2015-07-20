@@ -33,11 +33,18 @@ public enum SavedSettings {
 	public boolean getBoolean(){
 		return storage.getBoolean(id);
 	}
+	public String getSettingName(){
+		return this.id;
+	}
 	
 	public void setBoolean(boolean value){
 		storage.putBoolean(id, value);
 		storage.flush();
 	}
+//	public void setBoolean(SavedSettings setting){
+//		storage.putBoolean(id, setting.id);
+//		storage.flush();
+//	}
 	
 	public String getString(){
 		return storage.getString(id);
@@ -58,6 +65,7 @@ public enum SavedSettings {
 	}
 	
 	private void initialiseFields(){
+			
 			if(objectType == Type.BOOLEAN){
 				if(!storage.contains(this.id)){
 					this.setBoolean(true);
@@ -71,7 +79,9 @@ public enum SavedSettings {
 					this.setString("");
 				}
 			}
-		
+			if(id == "stgUpsideDown"){
+					this.setBoolean(false);
+				}
 		
 	
 }
