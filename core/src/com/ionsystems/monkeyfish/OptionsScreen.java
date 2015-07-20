@@ -89,7 +89,7 @@ public class OptionsScreen implements Screen {
 		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-                     game.setScreen(new MainMenuScreen(game));
+                     //game.setScreen(new MainMenuScreen(game));
              }
             
 		 });
@@ -102,7 +102,7 @@ public class OptionsScreen implements Screen {
          		preferences.putBoolean("antipeeedeeeeean", chkAntipeeedeeeeean.isChecked());
          		preferences.putString("username", "Donald Duck");
          		preferences.flush();
-                game.setScreen(new MainMenuScreen(game));
+                //game.setScreen(new MainMenuScreen(game));
              }
             
 		 });

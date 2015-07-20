@@ -17,10 +17,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
 
@@ -45,8 +49,8 @@ public class GameScreen implements Screen {
 	TextButtonStyle pauseStyle;
 	BitmapFont font;
 	Skin pauseSkin;
-	
-	public GameScreen(final MonkeyFishGame gam) {
+	Viewport viewport;
+	public GameScreen(final MonkeyFishGame gam, Table hud) {
 		this.game = gam;
 		player = new AnimationSprite(this.game.batch, 5, 1,"mario(half).png");
 		stage = new Stage();
@@ -76,7 +80,7 @@ public class GameScreen implements Screen {
 		// create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, frameWidth, frameHeight);
-	
+		viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth(), camera);//TODO: get width and height from somewhere
 		// create a Rectangle to logically represent the bob
 		plane = new Rectangle(frameWidth*MathUtils.random(50, 100), frameHeight - planeImage.getHeight() - (int)MathUtils.random(0, frameHeight/3), planeImage.getWidth(), planeImage.getHeight());
 		blimp = new Rectangle(frameWidth*MathUtils.random(20,40), frameHeight - blimpImage.getHeight() - (int)MathUtils.random(0, frameHeight/4), blimpImage.getWidth(), blimpImage.getHeight());
@@ -124,14 +128,16 @@ public class GameScreen implements Screen {
         		game.setScreen(new PauseScreen(game));
         	}
 		});
+		Gdx.input.setInputProcessor(stage);
 		
 		player.create();
 		player.x = frameWidth/2-player.width/2;
 		player.y = (int)(0.7*player.height);
 		//flappy.create();
-		
+		stage.setViewport(viewport);
 		stage.addActor(btnPause);
-		Gdx.input.setInputProcessor(stage);
+		stage.addActor(hud);
+		
 		//end Pause Button
 	}
 	
