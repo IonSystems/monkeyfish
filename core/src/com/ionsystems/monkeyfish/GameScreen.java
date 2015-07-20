@@ -170,6 +170,7 @@ public class GameScreen implements Screen {
 		Music music;
 		music = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
 		music.setLooping(true);
+		music.play();
 		return music;
 	}
 
@@ -382,7 +383,6 @@ public class GameScreen implements Screen {
 			if (TimeUtils.millis() - lastPlaneTime > 100000+lastPlaneTime%100000){
 				spawnPlane();
 			}		
-		}
 		if(blimp.x + blimp.width < 0){
 			if(TimeUtils.millis() - lastBlimpTime > 300000+lastBlimpTime%300000){
 				spawnBlimp();
@@ -401,6 +401,7 @@ public class GameScreen implements Screen {
 		clouds3.removeAll(toRemove);
 		clouds4.removeAll(toRemove);
 		stage.draw();
+		}
 	}
 
 	private void drawSprites(ArrayList<Rectangle>rects, Texture texture, boolean s, boolean antipodean) {
@@ -418,20 +419,17 @@ public class GameScreen implements Screen {
 	
 
 	private void checkSettings() {
+		System.out.println(gameMusic.isPlaying());
 		//Sound
 		if(!SavedSettings.SETTING_SOUND.getBoolean()){
 			birdSong.pause();
-			//System.out.println("p");
 		}else{
 			birdSong.resume();
 		}
 		//Music
 		if(!SavedSettings.SETTING_MUSIC.getBoolean()){
 			gameMusic.pause();
-			//System.out.println("p");
-		}else if(!gameMusic.isPlaying()){
-			//gameMusic.play();
-			//Gdx.app.debug("Sound", "Music playing");
+			System.out.println("mPaused");
 		}
 	}
 
