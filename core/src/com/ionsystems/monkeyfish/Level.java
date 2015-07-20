@@ -14,6 +14,7 @@ public class Level {
 	private int difficulty;
 	private int gravity; //AKA acceleration (towards monkey earth)
 	private int speed; //AKA movement
+	private boolean unlocked;
 
 	public Level(Preferences level){
 		this.name = level.getString("name");
@@ -27,6 +28,7 @@ public class Level {
 		this.difficulty = level.getInteger("difficulty");
 		this.gravity = level.getInteger("gravity");
 		this.speed = level.getInteger("speed");
+		this.unlocked = level.getBoolean("unlocked");
 	}
 	
 	public String getName() {

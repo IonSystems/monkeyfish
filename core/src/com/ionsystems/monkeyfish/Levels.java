@@ -22,8 +22,8 @@ public class Levels {
 	}
 	
 	private void setupLevels() {
-		Preferences level1 = makeLevel("Level 1", 1, 2000, 0, 10, 200);
-		Preferences level2 = makeLevel("Level 2", 2, 3000, 0, 5, 100);
+		Preferences level1 = makeLevel("Level 1", 1, 200, 0, 10, 200);
+		Preferences level2 = makeLevel("Level 2", 2, 300, 0, 5, 100);
 	}
 
 	

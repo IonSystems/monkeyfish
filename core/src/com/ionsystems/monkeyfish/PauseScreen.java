@@ -75,6 +75,7 @@ public class PauseScreen extends DefaultScreen implements Screen{
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
         		game.state = GameState.PLAYING; //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
+        		dispose();
         	}
 		});
 		

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,10 +39,12 @@ public class MonkeyFishGame extends Game {
     Screen exitButtonScreen;
     Table hudTable;
     
-    MainMenuScreen mms;
+    GameScreen mms;
     OptionsScreen os;
     GameScreen gs;
     GameState state;
+  //  Music music;
+    MusicPlaying mp = MusicPlaying.MENU;
     public void create() {
     	state = GameState.MAINMENU;
         batch = new SpriteBatch();
@@ -82,20 +85,28 @@ public class MonkeyFishGame extends Game {
 		 });
         stage.addActor(hudTable);
         Gdx.input.setInputProcessor(stage);
-        mms = new MainMenuScreen(this, hudTable);
+    //    music = setupMusicSetting();
+        mms = new GameScreen(this, hudTable);
+       // music = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
+      //  music.stop();
         //os = new OptionsScreen(this, hudTable);
         //gs = new GameScreen(this, hudTable);
         //this.setScreen(mms);
     }
     GameState oldState;
-    GameState backToState = GameState.MAINMENU;
+    GameState backToState = GameState.NOP;
     public void render() {
     	//System.out.println("sjdpasjdpas");
+    	checkSettings();
     	if(state != oldState){
     		switch(state){
-        	
         	case MAINMENU:
         		this.setScreen(new MainMenuScreen(this, hudTable));
+        		
+//        		if(!music.isPlaying() || backToState == GameState.PAUSED){
+//        			music = setupMainMenuMusic();
+//        			music.play();
+//        		}
         		backToState = oldState;
         		break;
         	case OPTIONS:
@@ -104,6 +115,8 @@ public class MonkeyFishGame extends Game {
         		break;
         	case PLAYING:
         		this.setScreen(new GameScreen(this, hudTable));
+//        		music = setupPlayingMusic();
+//        		music.play();
         		break;
         	case PAUSED:
         		this.setScreen(new PauseScreen(this, hudTable));
@@ -114,6 +127,7 @@ public class MonkeyFishGame extends Game {
         		break;
         	case NEXT_LEVEL:
         		this.setScreen(new LevelCompleteScreen(this, hudTable));
+        		//music.pause();
         		backToState = oldState;
         		break;
     		default:
@@ -128,10 +142,39 @@ public class MonkeyFishGame extends Game {
         oldState  = state;
     }
 
-    public void dispose() {
+//    private Music setupPlayingMusic() {
+//    	music.stop();
+//    	music = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
+//    	return music;
+//	}
+
+//	private Music setupMainMenuMusic() {
+//		music.stop();
+//    	music = Gdx.audio.newMusic(Gdx.files.internal("sound/title.mp3"));
+//    	return music;
+//	}
+
+	public void dispose() {
         batch.dispose();
         font.dispose();
     }
+    
+    private Music setupMusicSetting() {
+		Music music;
+		music = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
+		music.setLooping(true);
+		music.play();
+		return music;
+	}
+    
+    private void checkSettings() {
+		//System.out.println(gameMusic.isPlaying());
+		// Sound
+		// Music
+//		if (!SavedSettings.SETTING_MUSIC.getBoolean()) {
+//			music.pause();
+//		}
+	}
     
     public ImageButton getButton(){
     	return this.imageButton;

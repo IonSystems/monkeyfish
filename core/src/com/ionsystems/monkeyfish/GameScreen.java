@@ -65,7 +65,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		stage = new Stage();
 		setupImageTextures();
 		birdSong = setupSoundSetting();
-		gameMusic = setupMusicSetting();
+		
 		frameHeight = Gdx.graphics.getHeight();
 		frameWidth = Gdx.graphics.getWidth();
 		initMovement = frameHeight / 2;
@@ -198,13 +198,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		return sound;
 	}
 
-	private Music setupMusicSetting() {
-		Music music;
-		music = Gdx.audio.newMusic(Gdx.files.internal("sound/sample.mp3"));
-		music.setLooping(true);
-		music.play();
-		return music;
-	}
+	
 
 	private void initialiseGround() {
 		for (int i = 0; i < (int) (frameWidth / groundImage.getWidth()) + 2; i++) {
@@ -275,7 +269,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 		}
 		if(game.state == GameState.PLAYING){
 		long elapsedTime = TimeUtils.timeSinceMillis(startTime);
-		checkSettings();
 		Gdx.gl.glClearColor(0.4f, 0.4f, 0.7f, 1.5f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
@@ -455,19 +448,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		}
 	}
 
-	private void checkSettings() {
-		//System.out.println(gameMusic.isPlaying());
-		// Sound
-		if (!SavedSettings.SETTING_SOUND.getBoolean()) {
-			birdSong.pause();
-		} else {
-			birdSong.resume();
-		}
-		// Music
-		if (!SavedSettings.SETTING_MUSIC.getBoolean()) {
-			gameMusic.pause();
-		}
-	}
+	
 
 	public void resize(int width, int height) {
 	}
@@ -488,6 +469,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	public void dispose() {
+		gameMusic.dispose();
 		birdImage.dispose();
 		bobImage.dispose();
 		birdSong.dispose();
