@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -32,19 +33,22 @@ public class GameScreen extends DefaultScreen implements Screen {
 	final MonkeyFishGame game;
 
 	Stage stage;
-	Texture birdImage, bobImage, treeImage, cloudImage, cloud2Image, cloud3Image, cloud4Image;
-	Texture groundImage, heart, background, textureUp, textureDown, blimpImage, planeImage, moonImage;
+	Texture treeImage, cloudImage, cloud2Image, cloud3Image, cloud4Image, groundImage, heart, blimpImage, planeImage, moonImage;
 	Sound birdSong;
 	Music gameMusic;
 	OrthographicCamera camera;
-	ArrayList<Rectangle> birds, trees, clouds, clouds2, clouds3, clouds4, hearts, grounds;
+	
+	ArrayList<Rectangle> trees, clouds, clouds2, clouds3, clouds4, hearts, grounds;
 	ArrayList<AnimationSprite> flappies;
 	Rectangle plane, blimp, moon;
+	
 	int dropsGathered, frameHeight, frameWidth, movement, acceleration, lives, initMovement;
 	long lastTreeTime, lastCloudTime, lastBirdTime, lastPlaneTime, lastBlimpTime, lastFlappyTime, lastMoonTime;
 	long levelDistance, currentDistance;
 	float btnPauseSx, btnPauseSy, verticalVelocity;
 	private boolean touch, antipodean, lockedHeight;
+	int screenSize;
+	String screenVersion;	
 	AnimationSprite player;
 	TextButton btnPause;
 	TextureAtlas pauseAtlas;
@@ -61,17 +65,14 @@ public class GameScreen extends DefaultScreen implements Screen {
 		super(gam, hud);
 		antipodean = SavedSettings.SETTING_UPSIDE_DOWN.getBoolean();
 		this.game = gam;
-		player = new AnimationSprite(this.game.batch, 5, 1, "mario(half).png", antipodean, id++);
 		this.hud = hud;
 		stage = new Stage();
-		setupImageTextures();
 		birdSong = setupSoundSetting();
 		gameMusic = setupMusicSetting();
 		frameHeight = Gdx.graphics.getHeight();
 		frameWidth = Gdx.graphics.getWidth();
 		initMovement = frameHeight / 2;
 		movement = initMovement;
-
 		// Load level settings
 		acceleration = Levels.getCurrentLevel().getGravity();
 		verticalVelocity = Levels.getCurrentLevel().getVerticalVelocity();
@@ -85,7 +86,16 @@ public class GameScreen extends DefaultScreen implements Screen {
 		// Overide option value if set, otherwise use the option value.
 		antipodean = Levels.getCurrentLevel().getUpsideDownMode() ? true : antipodean;
 		levelDistance = Levels.getCurrentLevel().getDistance();
-
+		System.out.println("frameHeight: "+frameHeight);
+		if(frameHeight < 500)
+			screenVersion = "0.5";
+		else if (frameHeight < 800)
+			screenVersion = "";
+		else if (frameHeight < 1200)
+			screenVersion = "1.5";
+		else screenVersion = "2.0";
+		setupImageTextures();
+		System.out.println("setScreenSize = " + screenSize);
 		// create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, frameWidth, frameHeight);
@@ -96,7 +106,9 @@ public class GameScreen extends DefaultScreen implements Screen {
 																								// height
 																								// from
 																								// somewhere
-		// create a Rectangle to logically represent the bob
+
+		player = new AnimationSprite(this.game.batch, 5, 1, "mario"+screenVersion+".png", antipodean, id++);
+
 		plane = new Rectangle(frameWidth * MathUtils.random(50, 100),
 				frameHeight - planeImage.getHeight() - (int) MathUtils.random(0, frameHeight / 3),
 				planeImage.getWidth(), planeImage.getHeight());
@@ -109,7 +121,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 		lastFlappyTime = TimeUtils.nanoTime();
 		flappies = new ArrayList<AnimationSprite>();
 		hearts = new ArrayList<Rectangle>();
-		birds = new ArrayList<Rectangle>();
 		trees = new ArrayList<Rectangle>();
 		clouds = new ArrayList<Rectangle>();
 		clouds2 = new ArrayList<Rectangle>();
@@ -180,17 +191,16 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	private void setupImageTextures() {
-		moonImage = new Texture(Gdx.files.internal("moon.png"));
-		birdImage = new Texture(Gdx.files.internal("bird.png"));
-		treeImage = new Texture(Gdx.files.internal("tree.png"));
-		cloudImage = new Texture(Gdx.files.internal("cloud.png"));
-		cloud2Image = new Texture(Gdx.files.internal("cloud2.png"));
-		cloud3Image = new Texture(Gdx.files.internal("cloud3.png"));
-		cloud4Image = new Texture(Gdx.files.internal("cloud4.png"));
-		planeImage = new Texture(Gdx.files.internal("plane.png"));
-		blimpImage = new Texture(Gdx.files.internal("blimp.png"));
-		groundImage = new Texture(Gdx.files.internal("ground1.png"));
-		heart = new Texture(Gdx.files.internal("heart.png"));
+		moonImage = new Texture(Gdx.files.internal("moon"+screenVersion+".png"));
+		treeImage = new Texture(Gdx.files.internal("tree"+screenVersion+".png"));
+		cloudImage = new Texture(Gdx.files.internal("cloud"+screenVersion+".png"));
+		cloud2Image = new Texture(Gdx.files.internal("cloudtwo"+screenVersion+".png"));
+		cloud3Image = new Texture(Gdx.files.internal("cloudthree"+screenVersion+".png"));
+		cloud4Image = new Texture(Gdx.files.internal("cloudfour"+screenVersion+".png"));
+		planeImage = new Texture(Gdx.files.internal("plane"+screenVersion+".png"));
+		blimpImage = new Texture(Gdx.files.internal("blimp"+screenVersion+".png"));
+		groundImage = new Texture(Gdx.files.internal("ground"+screenVersion+".png"));
+		heart = new Texture(Gdx.files.internal("heart"+screenVersion+".png"));
 	}
 
 	private Sound setupSoundSetting() {
@@ -229,7 +239,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	private void spawnFlappy() {
-		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy(half).png", antipodean, id++);
+		AnimationSprite flappy = new AnimationSprite(this.game.batch, 3, 1, "flappy"+screenVersion+".png", antipodean, id++);
 		flappy.create();
 		flappy.x = frameWidth;
 		flappy.y = (int) MathUtils.random(player.height, frameHeight - flappy.getHeight());
@@ -257,7 +267,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 	private void spawnHearts() {
 		hearts.clear();
 		for (int i = 0; i < lives; i++) {
-			hearts.add(new SpawnObject(heart, 5 + 30 * i, (frameHeight - 50)));
+			hearts.add(new SpawnObject(heart, 5 + (3/2)* heart.getWidth() * i, frameHeight - (3/2)*heart.getHeight()));
 		}
 	}
 
@@ -440,7 +450,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 				}
 			}
 		}
-		birds.removeAll(toRemove);
 		trees.removeAll(toRemove);
 		clouds.removeAll(toRemove);
 		clouds2.removeAll(toRemove);
@@ -496,8 +505,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	public void dispose() {
-		birdImage.dispose();
-		bobImage.dispose();
 		birdSong.dispose();
 		gameMusic.dispose();
 		groundImage.dispose();
