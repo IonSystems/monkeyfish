@@ -87,11 +87,12 @@ public class GameScreen extends DefaultScreen implements Screen {
 		antipodean = Levels.getCurrentLevel().getUpsideDownMode() ? true : antipodean;
 		levelDistance = Levels.getCurrentLevel().getDistance();
 		System.out.println("frameHeight: "+frameHeight);
-		if(frameHeight < 500)
+		if(frameHeight < 480)
 			screenVersion = "0.5";
-		else if (frameHeight < 800)
+			//need to also change the speeds and gravity accordingly
+		else if (frameHeight < 600)
 			screenVersion = "";
-		else if (frameHeight < 1200)
+		else if (frameHeight < 1000)
 			screenVersion = "1.5";
 		else screenVersion = "2.0";
 		setupImageTextures();
