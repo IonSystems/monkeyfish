@@ -49,7 +49,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 	private boolean touch, antipodean, lockedHeight;
 	int screenSize;
 	String screenVersion;	
-	AnimationSprite player;
+	AnimationSprite player, sonic;
 	TextButton btnPause;
 	TextureAtlas pauseAtlas;
 	TextButtonStyle pauseStyle;
@@ -75,8 +75,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 		movement = initMovement;
 		// Load level settings
 		acceleration = Levels.getCurrentLevel().getGravity();
-		verticalVelocity = Levels.getCurrentLevel().getVerticalVelocity();
-		lives = 2;//Levels.getCurrentLevel().getLives();
+		verticalVelocity = 100;//Levels.getCurrentLevel().getVerticalVelocity();
+		lives = Levels.getCurrentLevel().getLives();
 		lockedHeight = Levels.getCurrentLevel().getInfiniteHeight(); // When set
 																		// to
 																		// false
@@ -109,14 +109,14 @@ public class GameScreen extends DefaultScreen implements Screen {
 																								// somewhere
 
 		player = new AnimationSprite(this.game.batch, 5, 1, "mario"+screenVersion+".png", antipodean, id++);
-
-		plane = new Rectangle(frameWidth * MathUtils.random(50, 100),
+		sonic = new AnimationSprite(this.game.batch, 6,1, "sonic.png", antipodean, id++);
+		plane = new Rectangle(frameWidth * MathUtils.random(5, 10),
 				frameHeight - planeImage.getHeight() - (int) MathUtils.random(0, frameHeight / 3),
 				planeImage.getWidth(), planeImage.getHeight());
-		blimp = new Rectangle(frameWidth * MathUtils.random(20, 40),
+		blimp = new Rectangle(frameWidth * MathUtils.random(2, 4),
 				frameHeight - blimpImage.getHeight() - (int) MathUtils.random(0, frameHeight / 4),
 				blimpImage.getWidth(), blimpImage.getHeight());
-		moon = new Rectangle(frameWidth * MathUtils.random(10, 20),
+		moon = new Rectangle(frameWidth * MathUtils.random(1, 2),
 				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 8), 
 				moonImage.getWidth(), moonImage.getHeight());
 		lastFlappyTime = TimeUtils.nanoTime();
@@ -185,7 +185,9 @@ public class GameScreen extends DefaultScreen implements Screen {
 		player.create();
 		player.x = frameWidth / 2 - player.width / 2;
 		player.y = (int) (0.7 * player.height);
-
+		sonic.create();
+		sonic.x = frameWidth;
+		sonic.y = (int) (0.5 * player.height);
 		// flappy.create();
 
 		// end Pause Button
@@ -317,6 +319,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 		game.batch.draw(blimpImage, blimp.x, setAntipodean(blimpImage.getHeight(), blimp.y), blimpImage.getWidth(),
 				blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
 		player.render((int) player.x, (int) setAntipodean(player.height, (int) player.y));
+		sonic.render((int) sonic.x, (int) setAntipodean(sonic.height, (int) sonic.y));
+
 		for (Rectangle h : hearts) {
 			game.batch.draw(heart, h.x, h.y);
 		}
@@ -376,6 +380,16 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 		spawnHearts();
 
+		if(sonic.x + sonic.width < 0){
+			sonic.x = frameWidth * MathUtils.random(2, 4);
+				if(player.overlaps(sonic)||sonic.overlaps(player)){		
+					player.y += 50;
+				lives--;
+			}
+		}
+				sonic.x -= 1.5 * movement * Gdx.graphics.getDeltaTime();
+
+		
 		for (AnimationSprite flappy : flappies) {
 			Rectangle tmp1 = new Rectangle(flappy.x, flappy.y, flappy.width, flappy.height);
 			//System.out.println("tmp1 x: " + tmp1.x + " tmp1 y: "+ tmp1.y);
