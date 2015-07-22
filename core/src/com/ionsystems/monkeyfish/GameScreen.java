@@ -1,5 +1,6 @@
 package com.ionsystems.monkeyfish;
 
+import java.awt.Frame;
 import java.util.ArrayList;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -186,7 +187,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		player.x = frameWidth / 2 - player.width / 2;
 		player.y = (int) (0.7 * player.height);
 		sonic.create();
-		sonic.x = frameWidth;
+		sonic.x = frameWidth * MathUtils.random(5,10);
 		sonic.y = (int) (0.5 * player.height);
 		// flappy.create();
 
@@ -382,11 +383,12 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 		if(sonic.x + sonic.width < 0){
 			sonic.x = frameWidth * MathUtils.random(2, 4);
-				if(player.overlaps(sonic)||sonic.overlaps(player)){		
-					player.y += 50;
-				lives--;
-			}
 		}
+		
+			if(sonic.x < player.x+player.width && sonic.x > player.x && player.y <= sonic.height){
+									player.y += 50;
+									lives--;
+			}
 				sonic.x -= 1.5 * movement * Gdx.graphics.getDeltaTime();
 
 		
