@@ -22,11 +22,10 @@ public class Levels {
 	}
 	
 	private void setupLevels() {
-		Preferences level1 = makeLevel("Level 1", 1, 2000, 0, 10, 200);
+		Preferences level1 = makeLevel("Level 1", 1, 10000, 0, 10, 200);
 		Preferences level2 = makeLevel("Level 2", 2, 3000, 0, 5, 100);
 	}
 
-	
 	private Preferences makeLevel(String name, int levelNumber, int distance, int difficulty, int gravity, int speed) {
 		Preferences level = Gdx.app.getPreferences("Level " + levelNumber);
 		level.putString("name", name);
