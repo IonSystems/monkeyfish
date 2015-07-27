@@ -84,7 +84,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		flappySpawnRate = 1000000000;
 		treeSpawnRate = 500000000;
 		cloudSpawnRate = 5000000;
-		fruitSpawnRate = 200000000;
+		fruitSpawnRate = 100000000;
 		lockedHeight = Levels.getCurrentLevel().getInfiniteHeight(); // When set to false allows infinite height.
 		// Overide option value if set, otherwise use the option value.
 		antipodean = Levels.getCurrentLevel().getUpsideDownMode() ? true : antipodean;
@@ -299,7 +299,11 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 	private void spawnFruit(){			
 			int thisFruit = MathUtils.random(0, fruitImage.length-1);
-			fruits.get(thisFruit).add(new SpawnObject(fruitImage[thisFruit], (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50, frameHeight)));
+			for (int i = 0; i < fruitImage.length; i++){
+				if(i == thisFruit){
+					fruits.get(thisFruit).add(new SpawnObject(fruitImage[thisFruit], (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50, frameHeight)));
+				}
+			}
 			//fruit.add(new SpawnObject(fruitImage[thisFruit], (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50, frameHeight)));
 			lastFruitTime = TimeUtils.nanoTime();
 	}
@@ -570,9 +574,15 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 	private void drawSprites(ArrayList<ArrayList<SpawnObject>> fruits, Texture texture [], boolean s, boolean antipodean){
 		for (ArrayList<SpawnObject>  fruit: fruits){
-			for(SpawnObject piece : fruit){
-				game.batch.draw(piece.Image, piece.x, setAntipodean(texture[fruits.indexOf(fruit)].getHeight(), piece.y), texture[fruits.indexOf(fruit)].getWidth(),
-						texture[fruits.indexOf(fruit)].getHeight(), 0, 0, texture[fruits.indexOf(fruit)].getWidth(), texture[fruits.indexOf(fruit)].getHeight(), s, antipodean);
+			//for(SpawnObject piece : fruit){
+			  for(int i = 0; i < fruit.size(); i++){
+				if(!fruit.isEmpty()){
+				game.batch.draw(fruitImage[i%12], 
+						fruit.get(i).x, 
+						setAntipodean(texture[i%12].getHeight(), fruit.get(i).y), 
+						texture[i%12].getWidth(),
+						texture[i%12].getHeight(), 0, 0, texture[i%12].getWidth(), texture[i%12].getHeight(), s, antipodean);
+				}
 			}
 		}
 	}
