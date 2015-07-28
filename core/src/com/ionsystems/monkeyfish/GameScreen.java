@@ -5,6 +5,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -48,6 +49,9 @@ public class GameScreen extends DefaultScreen implements Screen {
 	lastMoonTime, flappySpawnRate, treeSpawnRate, cloudSpawnRate, lastFruitTime, fruitSpawnRate;
 	long levelDistance, currentDistance;
 	float btnPauseSx, btnPauseSy, verticalVelocity, movement, acceleration, initMovement;
+	float accelX;
+	float accelY;
+	float accelZ;
 	private boolean touch, antipodean, lockedHeight;
 	int screenSize;
 	String screenVersion;
@@ -77,6 +81,9 @@ public class GameScreen extends DefaultScreen implements Screen {
 		frameWidth = Gdx.graphics.getWidth();
 		initMovement = frameHeight / 2;
 		movement = initMovement;
+		accelX = Gdx.input.getAccelerometerX();
+		accelY = Gdx.input.getAccelerometerY();
+		accelZ = Gdx.input.getAccelerometerZ();
 		// Load level settings
 		acceleration = Levels.getCurrentLevel().getGravity();
 		verticalVelocity = 100;// Levels.getCurrentLevel().getVerticalVelocity();
@@ -225,7 +232,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		moonImage = new Texture(Gdx.files.internal("moon" + screenVersion + ".png"));
 		treeImage = new Texture(Gdx.files.internal("tree" + screenVersion + ".png"));
 		for (int i = 0; i < fruitImage.length; i++){
-		fruitImage[i] = new Texture(Gdx.files.internal("fruit"+ i + "" + screenVersion + ".png"));
+		fruitImage[i] = new Texture(Gdx.files.internal("fruit"+ i + "(" + screenVersion + ").png"));
 		}
 		cloudImage = new Texture(Gdx.files.internal("cloud" + screenVersion + ".png"));
 		cloud2Image = new Texture(Gdx.files.internal("cloudtwo" + screenVersion + ".png"));
@@ -461,12 +468,29 @@ public class GameScreen extends DefaultScreen implements Screen {
 				player_hurt_timer = 1.6f;
 			}
 			if (lives < 0)lives = 0;
-			if(lives == 0){
-				// movement = 0;
+			if(lives == 0){		
+				//Shake device to get rid of fruit if gyroscope exists otherwise 
+				//press the 'x' key on the keyboard.
+				float currentX = Gdx.input.getAccelerometerX()-accelX;
+				float currentY = Gdx.input.getAccelerometerY()-accelY;
+				float currentZ = Gdx.input.getAccelerometerZ()-accelZ;
 				
 				if(TimeUtils.nanoTime() - lastFruitTime > fruitSpawnRate){
 					spawnFruit();
 				}
+				if(Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)){
+					if(currentX > 0.5 && currentY > 0.5 && currentZ > 0.5){
+						emptyFruit(fruits);
+						lives = 3;
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Keys.X)){
+					emptyFruit(fruits);
+					lives = 3;
+				}
+				accelX = Gdx.input.getAccelerometerX();
+				accelY = Gdx.input.getAccelerometerY();
+				accelZ = Gdx.input.getAccelerometerZ();
 			}
 			
 			sonic.x -= 2.0 * movement * Gdx.graphics.getDeltaTime();
@@ -587,6 +611,12 @@ public class GameScreen extends DefaultScreen implements Screen {
 		}
 	}
 
+	private void emptyFruit(ArrayList<ArrayList<SpawnObject>> fruits){
+		for (ArrayList<SpawnObject> fruit: fruits){
+			fruit.clear();
+		}
+	}
+	
 	private void checkSettings() {
 		// System.out.println(gameMusic.isPlaying());
 		// Sound

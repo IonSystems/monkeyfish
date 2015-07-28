@@ -12,7 +12,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
-		 config.useAccelerometer = false;
+		 config.useAccelerometer = true;
 	     config.useCompass = false;
 	     initialize(new MonkeyFishGame(), config);
 
