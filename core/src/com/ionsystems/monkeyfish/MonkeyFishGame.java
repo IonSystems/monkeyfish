@@ -21,6 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ionsystems.monkeyfish.screens.GameScreen;
+import com.ionsystems.monkeyfish.screens.LevelCompleteScreen;
+import com.ionsystems.monkeyfish.screens.LevelSelectScreen;
+import com.ionsystems.monkeyfish.screens.MainMenuScreen;
+import com.ionsystems.monkeyfish.screens.OptionsScreen;
 
 
 public class MonkeyFishGame extends Game {
@@ -41,9 +46,9 @@ public class MonkeyFishGame extends Game {
     MainMenuScreen mms;
     OptionsScreen os;
     GameScreen gs;
-    GameState state;
+    private GameState state;
     public void create() {
-    	state = GameState.MAINMENU;
+    	setState(GameState.MAINMENU);
         batch = new SpriteBatch();
         //Use LibGDX's default Arial font.
         exitButtonScreen = getScreen();
@@ -88,19 +93,19 @@ public class MonkeyFishGame extends Game {
         //this.setScreen(mms);
     }
     GameState oldState;
-    GameState backToState = GameState.MAINMENU;
+    private GameState backToState = GameState.MAINMENU;
     public void render() {
     	//System.out.println("sjdpasjdpas");
-    	if(state != oldState){
-    		switch(state){
+    	if(getState() != oldState){
+    		switch(getState()){
         	
         	case MAINMENU:
         		this.setScreen(new MainMenuScreen(this, hudTable));
-        		backToState = oldState;
+        		setBackToState(oldState);
         		break;
         	case OPTIONS:
         		this.setScreen(new OptionsScreen(this, hudTable));
-        		backToState = oldState;
+        		setBackToState(oldState);
         		break;
         	case PLAYING:
         		this.setScreen(new GameScreen(this, hudTable));
@@ -110,11 +115,11 @@ public class MonkeyFishGame extends Game {
         		break;
         	case LEVEL_SELECT:
         		this.setScreen(new LevelSelectScreen(this, hudTable));
-        		backToState = oldState;
+        		setBackToState(oldState);
         		break;
         	case NEXT_LEVEL:
         		this.setScreen(new LevelCompleteScreen(this, hudTable));
-        		backToState = oldState;
+        		setBackToState(oldState);
         		break;
     		default:
     			break;
@@ -125,7 +130,7 @@ public class MonkeyFishGame extends Game {
         super.render(); //important!
         camera.update();
         //stage.act();
-        oldState  = state;
+        oldState  = getState();
     }
 
     public void dispose() {
@@ -136,6 +141,22 @@ public class MonkeyFishGame extends Game {
     public ImageButton getButton(){
     	return this.imageButton;
     }
+
+	public GameState getState() {
+		return state;
+	}
+
+	public void setState(GameState state) {
+		this.state = state;
+	}
+
+	public GameState getBackToState() {
+		return backToState;
+	}
+
+	public void setBackToState(GameState backToState) {
+		this.backToState = backToState;
+	}
     
 }
 

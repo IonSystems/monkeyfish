@@ -1,6 +1,7 @@
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,12 +17,12 @@ public class AnimationTexture extends Rectangle {
     String name;
     boolean 						antipodean;
     
-	public AnimationTexture(String name, int cols, int rows,	String file, boolean antipodean) {
+	public AnimationTexture(String name, int cols, int rows, FileHandle file, boolean antipodean) {
 		super();
 		this.name = name;
 		this.cols = cols;
 		this.rows = rows;		
-		this.texture = new Texture(Gdx.files.internal(file));
+		this.texture = new Texture(file); //TODO: Refactor, should pass in texture as parameter, not file.
 		this.antipodean = antipodean;
 		create();
 	}

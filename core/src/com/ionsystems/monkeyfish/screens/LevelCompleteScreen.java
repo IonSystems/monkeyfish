@@ -1,4 +1,4 @@
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,6 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ionsystems.monkeyfish.GameState;
+import com.ionsystems.monkeyfish.Levels;
+import com.ionsystems.monkeyfish.MonkeyFishGame;
 
 public class LevelCompleteScreen extends DefaultScreen implements Screen{
 	float frameWidth;
@@ -60,7 +63,7 @@ public class LevelCompleteScreen extends DefaultScreen implements Screen{
 			@Override
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Levels.nextLevel();
-        		game.state = GameState.PLAYING;
+        		game.setState(GameState.PLAYING);
         		
         		//game.setScreen(new GameScreen(game));
         	}
@@ -75,7 +78,7 @@ public class LevelCompleteScreen extends DefaultScreen implements Screen{
 		btnRestart.addListener(new ClickListener() {
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
-        		game.state = GameState.PLAYING; //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
+        		game.setState(GameState.PLAYING); //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
         	}
 		});
 		
@@ -88,7 +91,7 @@ public class LevelCompleteScreen extends DefaultScreen implements Screen{
 		btnMainMenu.addListener(new ClickListener() {
 			
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
-        		game.state = GameState.MAINMENU;
+        		game.setState(GameState.MAINMENU);
         	}
 		});
 		

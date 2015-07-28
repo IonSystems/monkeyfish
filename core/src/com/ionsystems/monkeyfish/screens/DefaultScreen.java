@@ -1,5 +1,5 @@
 
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ionsystems.monkeyfish.MonkeyFishGame;
 
 public class DefaultScreen implements Screen {
 
