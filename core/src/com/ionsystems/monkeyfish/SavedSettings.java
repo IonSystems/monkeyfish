@@ -41,10 +41,6 @@ public enum SavedSettings {
 		storage.putBoolean(id, value);
 		storage.flush();
 	}
-//	public void setBoolean(SavedSettings setting){
-//		storage.putBoolean(id, setting.id);
-//		storage.flush();
-//	}
 	
 	public String getString(){
 		return storage.getString(id);

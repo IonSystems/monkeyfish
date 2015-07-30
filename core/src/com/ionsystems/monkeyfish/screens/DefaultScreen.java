@@ -67,8 +67,6 @@ public class DefaultScreen implements Screen {
     static public Viewport getViewport (Camera camera) {
 		int minWorldWidth = 640;
 		int minWorldHeight = 480;
-		int maxWorldWidth = 800;
-		int maxWorldHeight = 480;
 		Viewport viewport;
 		viewport = new StretchViewport(minWorldWidth, minWorldHeight, camera);
 		return viewport;

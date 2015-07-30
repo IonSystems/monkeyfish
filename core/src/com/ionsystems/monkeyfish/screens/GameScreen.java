@@ -246,7 +246,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		moonImage = new Texture(File.getInstance().getFile("moon" + screenVersion));
 		treeImage = new Texture(File.getInstance().getFile("tree" + screenVersion));
 		for (int i = 0; i < fruitImage.length; i++){
-		fruitImage[i] = new Texture(File.getInstance().getFile("fruit" + i + screenVersion));
+		fruitImage[i] = new Texture(File.getInstance().getFile("fruit" + i + "(" + screenVersion + ")"));
 		}
 		cloudImage = new Texture(File.getInstance().getFile("cloud" + screenVersion));
 		cloud2Image = new Texture(File.getInstance().getFile("cloud2" + screenVersion));
@@ -507,8 +507,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 				accelZ = Gdx.input.getAccelerometerZ();
 			}
 			
-			sonic.setX(sonic.getX() - 2.0 * movement * Gdx.graphics.getDeltaTime());
-			crash.setX(crash.getX() - 1.5 * movement * Gdx.graphics.getDeltaTime());
+			sonic.setX((float)(sonic.getX() - 2.0 * movement * Gdx.graphics.getDeltaTime()));
+			crash.setX((float)(crash.getX() - 1.5 * movement * Gdx.graphics.getDeltaTime()));
 			if(player_hurt_timer < 1){
 				player.setCurrentAnimation("mario");
 			}else{

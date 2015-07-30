@@ -79,11 +79,6 @@ public class AnimationSprite {
 		this.y = y;
 	}
 
-	public void setX(double d) {
-		// TODO Andrew, why u do this? Floats or doubles, pick one.
-		
-	}
-
 	public int getId() {
 		return id;
 	}

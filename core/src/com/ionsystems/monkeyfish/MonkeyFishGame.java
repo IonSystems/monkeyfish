@@ -2,15 +2,10 @@ package com.ionsystems.monkeyfish;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -26,6 +21,7 @@ import com.ionsystems.monkeyfish.screens.LevelCompleteScreen;
 import com.ionsystems.monkeyfish.screens.LevelSelectScreen;
 import com.ionsystems.monkeyfish.screens.MainMenuScreen;
 import com.ionsystems.monkeyfish.screens.OptionsScreen;
+import com.ionsystems.monkeyfish.screens.PauseScreen;
 
 
 public class MonkeyFishGame extends Game {
@@ -47,6 +43,11 @@ public class MonkeyFishGame extends Game {
     OptionsScreen os;
     GameScreen gs;
     private GameState state;
+    public static GoogleServices googleServices;
+    public MonkeyFishGame(GoogleServices googleServices){
+    	super();
+    	MonkeyFishGame.googleServices = googleServices;
+    }
     public void create() {
     	setState(GameState.MAINMENU);
         batch = new SpriteBatch();
@@ -157,6 +158,7 @@ public class MonkeyFishGame extends Game {
 	public void setBackToState(GameState backToState) {
 		this.backToState = backToState;
 	}
-    
+
+	
 }
 
