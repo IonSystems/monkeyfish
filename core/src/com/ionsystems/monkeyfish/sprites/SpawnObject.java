@@ -44,11 +44,6 @@ public class SpawnObject{
 	}
 
 
-	public void setX(double d) {
-		// TODO: Andrew, why u do this?
-		
-	}
-
 
 	public int getWidth() {
 		return width;

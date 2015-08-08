@@ -11,7 +11,7 @@ public class AnimationSprite {
 
 	HashMap<String, AnimationTexture> animations;
 
-	AnimationTexture currentAnimation;
+	private AnimationTexture currentAnimation;
 	SpriteBatch spriteBatch;
 	TextureRegion currentFrame;
 
@@ -32,11 +32,11 @@ public class AnimationSprite {
 	}
 
 	public float getHeight() {
-		return currentAnimation.getHeight();
+		return getCurrentAnimation().getHeight();
 	}
 
 	public float getWidth() {
-		return currentAnimation.getWidth();
+		return getCurrentAnimation().getWidth();
 	}
 
 	public void generateAnimation(String name, FileHandle file, int cols, int rows) {
@@ -49,10 +49,10 @@ public class AnimationSprite {
 	}
 
 	public void render() {
-		if (currentAnimation != null) {
+		if (getCurrentAnimation() != null) {
 			stateTime += Gdx.graphics.getDeltaTime();
-			currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-			spriteBatch.draw(currentFrame, getX(), setAntipodean(currentAnimation.getHeight(), getY()));
+			currentFrame = getCurrentAnimation().getKeyFrame(stateTime, true);
+			spriteBatch.draw(currentFrame, getX(), setAntipodean(getCurrentAnimation().getHeight(), getY()));
 		}
 	}
 	
@@ -85,6 +85,14 @@ public class AnimationSprite {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public AnimationTexture getCurrentAnimation() {
+		return currentAnimation;
+	}
+
+	public void setCurrentAnimation(AnimationTexture currentAnimation) {
+		this.currentAnimation = currentAnimation;
 	}
 
 }

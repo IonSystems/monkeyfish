@@ -65,10 +65,17 @@ public class File {
 		strings.put("mario1.5", "sprites/mario/mario1.5.png");
 		strings.put("mario2.0", "sprites/mario/mario2.0.png");
 
-		strings.put("mariohurt", "sprites/mario/mario_hurt.png");
+		strings.put("mario_hurt", "sprites/mario/mario_hurt.png");
 		strings.put("mariohurt0.5", "sprites/mario/mario_hurt0.5.png");
 		strings.put("mariohurt1.5", "sprites/mario/mario_hurt1.5.png");
 		strings.put("mariohurt2.0", "sprites/mario/mario_hurt2.0.png");
+		strings.put("mariobackwards", "sprites/mario/mariobackwards.png");
+		strings.put("mario_hurt_backwards0.5", "sprites/mario/mario_hurt_backwards0.5.png");
+		strings.put("mario_hurt_backwards1.5", "sprites/mario/mario_hurt_backwards1.5.png");
+		strings.put("mario_hurt_backwards2.0", "sprites/mario/mario_hurt_backwards2.0.png");
+		strings.put("mario_hurt_backwards", "sprites/mario/mariobackwards.png");
+		
+		strings.put("monkey", "sprites/monkey_walk/monkey_walk2.0.png");
 
 		// Ground
 		strings.put("ground", "sprites/ground/ground.png");

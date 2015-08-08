@@ -41,20 +41,22 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 	final MonkeyFishGame game;
 	Stage stage;
-	Texture treeImage, cloudImage, cloud2Image, cloud3Image, cloud4Image, groundImage, heart, blimpImage, planeImage, moonImage;
-	Texture [] fruitImage = new Texture [12];
+	Texture treeImage, cloudImage, cloud2Image, cloud3Image, cloud4Image, groundImage, heart, blimpImage, planeImage,
+			moonImage;
+	Texture[] fruitImage = new Texture[12];
 	Sound birdSong;
 	Music gameMusic;
 	OrthographicCamera camera;
 	ArrayList<ArrayList<SpawnObject>> fruits;
-	ArrayList<SpawnObject>  fruit1, fruit2, fruit3, fruit4, fruit5, fruit6, fruit7, fruit8, fruit9, fruit10, fruit11, fruit12;
+	ArrayList<SpawnObject> fruit1, fruit2, fruit3, fruit4, fruit5, fruit6, fruit7, fruit8, fruit9, fruit10, fruit11,
+			fruit12;
 	ArrayList<SpawnObject> trees, clouds, clouds2, clouds3, clouds4, hearts, grounds;
 	ArrayList<AnimationSprite> flappies;
 	SpawnObject plane;
 	SpawnObject blimp, moon;
 	int dropsGathered, frameHeight, frameWidth, lives;
-	long lastTreeTime, lastCloudTime, lastFlappyTime, 
-	lastMoonTime, flappySpawnRate, treeSpawnRate, cloudSpawnRate, lastFruitTime, fruitSpawnRate;
+	long lastTreeTime, lastCloudTime, lastFlappyTime, lastMoonTime, flappySpawnRate, treeSpawnRate, cloudSpawnRate,
+			lastFruitTime, fruitSpawnRate;
 	long levelDistance, currentDistance;
 	float btnPauseSx, btnPauseSy, verticalVelocity, movement, acceleration, initMovement;
 	float accelX;
@@ -94,14 +96,19 @@ public class GameScreen extends DefaultScreen implements Screen {
 		accelY = Gdx.input.getAccelerometerY();
 		accelZ = Gdx.input.getAccelerometerZ();
 		// Load level settings
-		acceleration = 40;//Levels.getCurrentLevel().getGravity();
+		acceleration = 40;// Levels.getCurrentLevel().getGravity();
 		verticalVelocity = 1000;// Levels.getCurrentLevel().getVerticalVelocity();
-		lives = 2;//Levels.getCurrentLevel().getLives();
+		lives = 2;// Levels.getCurrentLevel().getLives();
 		flappySpawnRate = 1000000000;
 		treeSpawnRate = 500000000;
 		cloudSpawnRate = 5000000;
 		fruitSpawnRate = 100000000;
-		lockedHeight = Levels.getCurrentLevel().getInfiniteHeight(); // When set to false allows infinite height.
+		lockedHeight = Levels.getCurrentLevel().getInfiniteHeight(); // When set
+																		// to
+																		// false
+																		// allows
+																		// infinite
+																		// height.
 		// Overide option value if set, otherwise use the option value.
 		antipodean = Levels.getCurrentLevel().getUpsideDownMode() ? true : antipodean;
 		levelDistance = Levels.getCurrentLevel().getDistance();
@@ -124,10 +131,11 @@ public class GameScreen extends DefaultScreen implements Screen {
 		viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth(), camera);
 		player = new AnimationSprite(this.game.batch, antipodean, id++);
 
-		player.generateAnimation("mario", File.getInstance().getFile("mario" + screenVersion + ".png"), 5, 1);
-		player.generateAnimation("mario_hurt", File.getInstance().getFile("mario_hurt" + screenVersion + ".png"),3, 1);
-		player.generateAnimation("mario_backwards", File.getInstance().getFile("mariobackwards" + screenVersion + ".png"), 5, 1);
-		player.generateAnimation("mario_hurt_backwards", File.getInstance().getFile("mario_hurt_backwards" + screenVersion + ".png"),3, 1);
+		player.generateAnimation("mario", File.getInstance().getFile("monkey" + screenVersion), 8, 1);
+		player.generateAnimation("mario_hurt", File.getInstance().getFile("mario_hurt" + screenVersion), 3, 1);
+		player.generateAnimation("mario_backwards", File.getInstance().getFile("mariobackwards" + screenVersion), 5, 1);
+		player.generateAnimation("mario_hurt_backwards",
+				File.getInstance().getFile("mario_hurt_backwards" + screenVersion), 3, 1);
 
 		player.setCurrentAnimation("mario");
 		sonic = new AnimationSprite(this.game.batch, antipodean, id++);
@@ -149,10 +157,10 @@ public class GameScreen extends DefaultScreen implements Screen {
 		moon = new SpawnObject(moonImage, frameWidth * MathUtils.random(1, 2),
 				frameHeight - moonImage.getHeight() - (int) MathUtils.random(0, frameHeight / 8));
 		lastFlappyTime = TimeUtils.nanoTime();
-		fruits = new ArrayList<ArrayList<SpawnObject>> ();
-		//somehow initialise array of arraylists!!!
-		//fruit = new ArrayList<SpawnObject> ()[12];
-		//for(int i = 0; i < fruitImage.length; i++){
+		fruits = new ArrayList<ArrayList<SpawnObject>>();
+		// somehow initialise array of arraylists!!!
+		// fruit = new ArrayList<SpawnObject> ()[12];
+		// for(int i = 0; i < fruitImage.length; i++){
 		fruit1 = new ArrayList<SpawnObject>();
 		fruit2 = new ArrayList<SpawnObject>();
 		fruit3 = new ArrayList<SpawnObject>();
@@ -162,22 +170,22 @@ public class GameScreen extends DefaultScreen implements Screen {
 		fruit7 = new ArrayList<SpawnObject>();
 		fruit8 = new ArrayList<SpawnObject>();
 		fruit9 = new ArrayList<SpawnObject>();
-		fruit10= new ArrayList<SpawnObject>();
-		fruit11= new ArrayList<SpawnObject>();
-		fruit12= new ArrayList<SpawnObject>();
-			fruits.add(fruit1);
-			fruits.add(fruit2);
-			fruits.add(fruit3);
-			fruits.add(fruit4);
-			fruits.add(fruit5);
-			fruits.add(fruit6);
-			fruits.add(fruit7);
-			fruits.add(fruit8);
-			fruits.add(fruit9);
-			fruits.add(fruit10);
-			fruits.add(fruit11);
-			fruits.add(fruit12);
-		//}
+		fruit10 = new ArrayList<SpawnObject>();
+		fruit11 = new ArrayList<SpawnObject>();
+		fruit12 = new ArrayList<SpawnObject>();
+		fruits.add(fruit1);
+		fruits.add(fruit2);
+		fruits.add(fruit3);
+		fruits.add(fruit4);
+		fruits.add(fruit5);
+		fruits.add(fruit6);
+		fruits.add(fruit7);
+		fruits.add(fruit8);
+		fruits.add(fruit9);
+		fruits.add(fruit10);
+		fruits.add(fruit11);
+		fruits.add(fruit12);
+		// }
 		flappies = new ArrayList<AnimationSprite>();
 		hearts = new ArrayList<SpawnObject>();
 		trees = new ArrayList<SpawnObject>();
@@ -210,12 +218,13 @@ public class GameScreen extends DefaultScreen implements Screen {
 		btnPause = new TextButton("", pauseStyle);
 		pauseAtlas = new TextureAtlas("buttons/pauseOut/pauseButton.pack");
 
-		//btnPause.setPosition((frameWidth - (0.12f * frameHeight)), (0.88f * frameHeight));
-		//btnPause.setSize((0.1f * frameHeight), (0.1f * frameHeight));
+		// btnPause.setPosition((frameWidth - (0.12f * frameHeight)), (0.88f *
+		// frameHeight));
+		// btnPause.setSize((0.1f * frameHeight), (0.1f * frameHeight));
 
 		stage.setViewport(viewport);
 		stage.addActor(btnPause);
-		stage.addActor(this.hud);
+		//stage.addActor(this.hud); //TODO: Re-enable this once pause button works.
 		levelAnnounce = new Label(Levels.getCurrentLevel().getName(), skin);
 		levelAnnounce.setBounds(50, 50, 50, 20);
 		stage.addActor(levelAnnounce);
@@ -249,8 +258,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 	private void setupImageTextures() {
 		moonImage = new Texture(File.getInstance().getFile("moon" + screenVersion));
 		treeImage = new Texture(File.getInstance().getFile("tree" + screenVersion));
-		for (int i = 0; i < fruitImage.length; i++){
-		fruitImage[i] = new Texture(File.getInstance().getFile("fruit" + i + "(" + screenVersion + ")"));
+		for (int i = 0; i < fruitImage.length; i++) {
+			fruitImage[i] = new Texture(File.getInstance().getFile("fruit" + i + "(" + screenVersion + ")"));
 		}
 		cloudImage = new Texture(File.getInstance().getFile("cloud" + screenVersion));
 		cloud2Image = new Texture(File.getInstance().getFile("cloud2" + screenVersion));
@@ -281,7 +290,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 			grounds.add(new SpawnObject(groundImage, i * groundImage.getWidth(), 0));
 		}
 	}
-	
+
 	private void spawnSonic() {
 		sonic.setX(frameWidth * MathUtils.random(4, 8));
 		sonic.setY((int) (0.5 * player.getHeight()));
@@ -291,7 +300,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		crash.setX(frameWidth * MathUtils.random(3, 6));
 		crash.setY((int) (0.7 * player.getHeight()));
 	}
-	
+
 	private void spawnPlane() {
 		plane = new SpawnObject(planeImage, frameWidth * MathUtils.random(50, 100),
 				frameHeight - planeImage.getHeight() - (int) MathUtils.random(0, frameHeight / 3));
@@ -322,17 +331,20 @@ public class GameScreen extends DefaultScreen implements Screen {
 		lastTreeTime = TimeUtils.nanoTime();
 	}
 
-	private void spawnFruit(){			
-			int thisFruit = MathUtils.random(0, fruitImage.length-1);
-			for (int i = 0; i < fruitImage.length; i++){
-				if(i == thisFruit){
-					fruits.get(thisFruit).add(new SpawnObject(fruitImage[thisFruit], (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50, frameHeight)));
-				}
+	private void spawnFruit() {
+		int thisFruit = MathUtils.random(0, fruitImage.length - 1);
+		for (int i = 0; i < fruitImage.length; i++) {
+			if (i == thisFruit) {
+				fruits.get(thisFruit).add(new SpawnObject(fruitImage[thisFruit],
+						(int) MathUtils.random(-50, frameWidth), (int) MathUtils.random(-50, frameHeight)));
 			}
-			//fruit.add(new SpawnObject(fruitImage[thisFruit], (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50, frameHeight)));
-			lastFruitTime = TimeUtils.nanoTime();
+		}
+		// fruit.add(new SpawnObject(fruitImage[thisFruit],
+		// (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50,
+		// frameHeight)));
+		lastFruitTime = TimeUtils.nanoTime();
 	}
-	
+
 	private void spawnCloud() {
 		clouds.add(new SpawnObject(cloudImage, frameWidth + (int) MathUtils.random(0, frameWidth),
 				frameHeight - cloudImage.getHeight() - (int) MathUtils.random(0, frameHeight / 2)));
@@ -366,7 +378,11 @@ public class GameScreen extends DefaultScreen implements Screen {
 		// ", currD: " + currentDistance + ", lD" + levelDistance);
 		if (currentDistance >= levelDistance) {
 			game.setState(GameState.NEXT_LEVEL);
-			game.setScreen(new LevelCompleteScreen(game, hud)); // TODO: Should not need this, should be set from MonkeyFishGame
+			game.setScreen(new LevelCompleteScreen(game, hud)); // TODO: Should
+																// not need
+																// this, should
+																// be set from
+																// MonkeyFishGame
 		}
 		if (game.getState() == GameState.PLAYING) {
 			long elapsedTime = TimeUtils.timeSinceMillis(startTime);
@@ -384,8 +400,9 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 			game.batch.begin();
 
-			game.batch.draw(moonImage, moon.getX(), setAntipodean(moonImage.getHeight(), moon.getY()), moonImage.getWidth(),
-					moonImage.getHeight(), 0, 0, moonImage.getWidth(), moonImage.getHeight(), false, antipodean);
+			game.batch.draw(moonImage, moon.getX(), setAntipodean(moonImage.getHeight(), moon.getY()),
+					moonImage.getWidth(), moonImage.getHeight(), 0, 0, moonImage.getWidth(), moonImage.getHeight(),
+					false, antipodean);
 			drawSprites(grounds, groundImage, false, antipodean);
 			drawSprites(trees, treeImage, false, antipodean);
 			drawSprites(clouds, cloudImage, false, antipodean);
@@ -394,14 +411,17 @@ public class GameScreen extends DefaultScreen implements Screen {
 			drawSprites(clouds4, cloud4Image, false, antipodean);
 			drawSprites(flappies);
 
-			game.batch.draw(planeImage, plane.getX(), setAntipodean(planeImage.getHeight(), plane.getY()), planeImage.getWidth(),
-					planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(), false, antipodean);
-			game.batch.draw(blimpImage, blimp.getX(), setAntipodean(blimpImage.getHeight(), blimp.getY()), blimpImage.getWidth(),
-					blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(), false, antipodean);
+			game.batch.draw(planeImage, plane.getX(), setAntipodean(planeImage.getHeight(), plane.getY()),
+					planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(),
+					false, antipodean);
+			game.batch.draw(blimpImage, blimp.getX(), setAntipodean(blimpImage.getHeight(), blimp.getY()),
+					blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(),
+					false, antipodean);
 			player.render();
 			sonic.render();
 			crash.render();
-			//drawSprites(fruit, fruitImage[fruit.size()%12], false, antipodean);
+			// drawSprites(fruit, fruitImage[fruit.size()%12], false,
+			// antipodean);
 			drawSprites(fruits, fruitImage, false, antipodean);
 			for (SpawnObject h : hearts) {
 				game.batch.draw(heart, h.getX(), h.getY());
@@ -412,7 +432,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 			game.batch.end();
 
-			if (Gdx.input.isButtonPressed(Buttons.LEFT)|| Gdx.input.isKeyPressed(Keys.SPACE)) {
+			if (Gdx.input.isButtonPressed(Buttons.LEFT) || Gdx.input.isKeyPressed(Keys.SPACE)) {
 				touch = true;
 				verticalVelocity = 10;
 			}
@@ -431,145 +451,142 @@ public class GameScreen extends DefaultScreen implements Screen {
 				}
 			}
 			player.setY(player.getY() + verticalVelocity);
-			
-			if (player.x + player.getWidth() < 15){
-				player.x = -player.getWidth() + 15;
+
+			if (player.getX() + player.getWidth() < 15) {
+				player.setX(player.getX() - player.getWidth() + 15);
 			}
-			if (player.x > frameWidth - 15){
-				player.x = frameWidth - 15;
+			if (player.getX() > frameWidth - 15) {
+				player.setX(frameWidth - 15);
 			}
-			
-			 // Probably won't use side movements if
-<<<<<<< HEAD:core/src/com/ionsystems/monkeyfish/GameScreen.java
-			if(Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)){
+
+			// Probably won't use side movements if
+			if (Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)) {
 				float currentY = Gdx.input.getAccelerometerY();
-				if(currentY <= 0.1){
-					player.x -= movement * Gdx.graphics.getDeltaTime(); 
+				if (currentY <= 0.1) {
+					player.setX(player.getX() - movement * Gdx.graphics.getDeltaTime());
 					player.setCurrentAnimation("mario_backwards");
-				}
-				else if (currentY > 0.9){
-					player.x += movement * Gdx.graphics.getDeltaTime();
+				} else if (currentY > 0.9) {
+					player.setX(player.getX() + movement * Gdx.graphics.getDeltaTime());
 					player.setCurrentAnimation("mario");
-					}
+				}
+			} else {
+				if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+					player.setCurrentAnimation("mario_backwards");
+					player.setX(player.getX() - 1.2f * movement * Gdx.graphics.getDeltaTime());
+					// movement *= 0.5;
+				}
+				if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+					player.setCurrentAnimation("mario");
+					player.setX((float) (player.getX() + 0.7 * movement * Gdx.graphics.getDeltaTime()));
+				}
+
+				if (Gdx.input.isKeyPressed(Keys.LEFT))
+					player.setX(player.getX() - movement * Gdx.graphics.getDeltaTime());
+				if (Gdx.input.isKeyPressed(Keys.RIGHT))
+					player.setX(player.getX() + movement * Gdx.graphics.getDeltaTime());
 			}
-			else 
-			  if(Gdx.input.isKeyPressed(Keys.LEFT)) {
-				  player.setCurrentAnimation("mario_backwards");
-				  player.x -= 1.2f * movement * Gdx.graphics.getDeltaTime();
-				 // movement  *= 0.5;
-			  }
-			  if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-				  player.setCurrentAnimation("mario");
-				  player.x += 0.7 * movement * Gdx.graphics.getDeltaTime();
-			  }
-				 
-			if (player.y < (float) (0.7 * player.getHeight()))
-				player.y = (float) (0.7 * player.getHeight());
-			if (player.y >= frameHeight - player.getHeight() && lockedHeight)
-				player.y = frameHeight - player.getHeight();
-=======
-			  if(Gdx.input.isKeyPressed(Keys.LEFT)) player.setX(player.getX() - movement *
-			  Gdx.graphics.getDeltaTime()); 
-			  if (Gdx.input.isKeyPressed(Keys.RIGHT)) player.setX(player.getX() + movement *
-			  Gdx.graphics.getDeltaTime());
-			 
 
 			if (player.getY() < (float) (0.7 * player.getHeight()))
 				player.setY((float) (0.7 * player.getHeight()));
 			if (player.getY() >= frameHeight - player.getHeight() && lockedHeight)
 				player.setY(frameHeight - player.getHeight());
->>>>>>> origin/master:core/src/com/ionsystems/monkeyfish/screens/GameScreen.java
 
 			ArrayList<SpawnObject> toRemove = new ArrayList<SpawnObject>();
 			ArrayList<Integer> spritesRemove = new ArrayList<Integer>();
 
 			for (int i = 0; i < grounds.size(); i++) {
-				grounds.get(i).setX(grounds.get(i).getX() - movement * 0.5 * Gdx.graphics.getDeltaTime());
+				grounds.get(i).setX(grounds.get(i).getX() - movement * 0.5f * Gdx.graphics.getDeltaTime());
 				if (grounds.get(i).getX() + grounds.get(i).getWidth() <= 0) {
 					grounds.get(i).setX(grounds.get(i).getX() + grounds.get(i).getWidth() * grounds.size());
 				}
 			}
-			if (TimeUtils.nanoTime() - lastTreeTime > treeSpawnRate)
+			if (TimeUtils.nanoTime() - lastTreeTime > treeSpawnRate) {
 				spawnTree();
+			}
 
-			if ((TimeUtils.nanoTime() - lastCloudTime) / 1000 > cloudSpawnRate)
+			if ((TimeUtils.nanoTime() - lastCloudTime) / 1000 > cloudSpawnRate) {
 				spawnCloud();
+			}
 
-			if (TimeUtils.nanoTime() - lastFlappyTime > flappySpawnRate)
+			if (TimeUtils.nanoTime() - lastFlappyTime > flappySpawnRate) {
 				spawnFlappy();
 
+			}
 			spawnHearts();
 
 			if (sonic.getX() + sonic.getWidth() < 0) {
 				spawnSonic();
 			}
 
-			if (sonic.getX() < player.getX() + player.getWidth() && sonic.getX() > player.getX() && player.getY() <= sonic.getHeight()) {
-				player.setY(player.getY() + (sonic.getHeight()-10));
+			if (sonic.getX() < player.getX() + player.getWidth() && sonic.getX() > player.getX()
+					&& player.getY() <= sonic.getHeight()) {
+				player.setY(player.getY() + (sonic.getHeight() - 10));
 				lives--;
-				if(player.currentAnimation.name=="mario"){////Need to add mario walking hurt...
+				if (player.getCurrentAnimation().getName() == "mario") {//// Need
+																		//// to
+																		//// add
+																		//// mario
+																		//// walking
+																		//// hurt...
 					player.setCurrentAnimation("mario_hurt");
-				}
-				else if (player.currentAnimation.name=="mario_backwards"){
+				} else if (player.getCurrentAnimation().getName() == "mario_backwards") {
 					player.setCurrentAnimation("mario_hurt_backwards");
 				}
 				player_hurt_timer = 1.6f;
 			}
-	
+
 			if (crash.getX() + crash.getWidth() < 0) {
 				spawnCrash();
-				}
+			}
 
-			if (crash.getX() < player.getX() + player.getWidth() && crash.getX() > player.getX() && player.getY() <= crash.getHeight()) {
+			if (crash.getX() < player.getX() + player.getWidth() && crash.getX() > player.getX()
+					&& player.getY() <= crash.getHeight()) {
 				player.setY(player.getY() + crash.getHeight());
 				lives--;
-				if(player.currentAnimation.name=="mario"){
-				player.setCurrentAnimation("mario_hurt");
-				}
-				else if (player.currentAnimation.name=="mario_backwards"){
+				if (player.getCurrentAnimation().getName() == "mario") {
+					player.setCurrentAnimation("mario_hurt");
+				} else if (player.getCurrentAnimation().getName() == "mario_backwards") {
 					player.setCurrentAnimation("mario_hurt_backwards");
 				}
 				player_hurt_timer = 1.6f;
 			}
-			if (lives < 0)lives = 0;
-			if(lives == 0){		
-				//Shake device to get rid of fruit if gyroscope exists otherwise 
-				//press the 'x' key on the keyboard.
-				float currentX = Gdx.input.getAccelerometerX()-accelX;
-				float currentY = Gdx.input.getAccelerometerY()-accelY;
-				float currentZ = Gdx.input.getAccelerometerZ()-accelZ;
-				
-				if(TimeUtils.nanoTime() - lastFruitTime > fruitSpawnRate){
+			if (lives < 0) {
+				lives = 0;
+			}
+			if (lives == 0) {
+				// Shake device to get rid of fruit if gyroscope exists
+				// otherwise
+				// press the 'x' key on the keyboard.
+				// float currentX = Gdx.input.getAccelerometerX() - accelX;
+				float currentY = Gdx.input.getAccelerometerY() - accelY;
+				float currentZ = Gdx.input.getAccelerometerZ() - accelZ;
+
+				if (TimeUtils.nanoTime() - lastFruitTime > fruitSpawnRate) {
 					spawnFruit();
 				}
-				if(currentY > 0.8 && currentZ > 0.8 || Gdx.input.isKeyPressed(Keys.X)){
+				if (currentY > 0.8 && currentZ > 0.8 || Gdx.input.isKeyPressed(Keys.X)) {
 					emptyFruit(fruits);
 					lives = 2;
-					}
+				}
 				accelX = Gdx.input.getAccelerometerX();
 				accelY = Gdx.input.getAccelerometerY();
 				accelZ = Gdx.input.getAccelerometerZ();
 			}
-			
-<<<<<<< HEAD:core/src/com/ionsystems/monkeyfish/GameScreen.java
-			sonic.x -= 2.0 * movement * Gdx.graphics.getDeltaTime();
-			crash.x -= 1.5 * movement * Gdx.graphics.getDeltaTime();
-			if(player_hurt_timer <= 0){
-				if(player.currentAnimation.name == "mario_hurt"){
-=======
-			sonic.setX((float)(sonic.getX() - 2.0 * movement * Gdx.graphics.getDeltaTime()));
-			crash.setX((float)(crash.getX() - 1.5 * movement * Gdx.graphics.getDeltaTime()));
-			if(player_hurt_timer < 1){
->>>>>>> origin/master:core/src/com/ionsystems/monkeyfish/screens/GameScreen.java
-				player.setCurrentAnimation("mario");
-				}
-				else if(player.currentAnimation.name == "mario_hurt_backwards"){
-					player.setCurrentAnimation("mario_backwards");
+
+			if (player_hurt_timer <= 0) {
+				if (player.getCurrentAnimation().getName() == "mario_hurt") {
+
+					sonic.setX((float) (sonic.getX() - 2.0 * movement * Gdx.graphics.getDeltaTime()));
+					crash.setX((float) (crash.getX() - 1.5 * movement * Gdx.graphics.getDeltaTime()));
+					if (player_hurt_timer < 1) {
+						player.setCurrentAnimation("mario");
+					} else if (player.getCurrentAnimation().getName() == "mario_hurt_backwards") {
+						player.setCurrentAnimation("mario_backwards");
+					} else {
+						player_hurt_timer -= Gdx.graphics.getDeltaTime();
 					}
-			}else{
-				player_hurt_timer -= Gdx.graphics.getDeltaTime();
+				}
 			}
-			
 			for (AnimationSprite flappy : flappies) {
 				Rectangle tmp1 = new Rectangle(flappy.getX(), flappy.getY(), flappy.getWidth(), flappy.getHeight());
 				Rectangle tmp2 = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
@@ -588,42 +605,42 @@ public class GameScreen extends DefaultScreen implements Screen {
 				}
 			}
 			for (SpawnObject s : trees) {
-				s.setX(s.getX() - movement * 0.5 * Gdx.graphics.getDeltaTime());
+				s.setX(s.getX() - movement * 0.5f * Gdx.graphics.getDeltaTime());
 				if (s.getX() + s.getWidth() < 0)
 					toRemove.add(s);
 			}
 			for (SpawnObject s : clouds) {
-				s.setX(s.getX() - movement * 0.7 * Gdx.graphics.getDeltaTime());
+				s.setX(s.getX() - movement * 0.7f * Gdx.graphics.getDeltaTime());
 				if (s.getX() + s.getWidth() < 0)
 					toRemove.add(s);
 				else
 					movement = initMovement;
 			}
 			for (SpawnObject s : clouds2) {
-				s.setX(s.getX() - movement * 0.6 * Gdx.graphics.getDeltaTime());
+				s.setX(s.getX() - movement * 0.6f * Gdx.graphics.getDeltaTime());
 				if (s.getX() + s.getWidth() < 0)
 					toRemove.add(s);
 				else
 					movement = initMovement;
 			}
 			for (SpawnObject s : clouds3) {
-				s.setX(s.getX() - movement * 0.9 * Gdx.graphics.getDeltaTime());
+				s.setX(s.getX() - movement * 0.9f * Gdx.graphics.getDeltaTime());
 				if (s.getX() + s.getWidth() < 0)
 					toRemove.add(s);
 				else
 					movement = initMovement;
 			}
 			for (SpawnObject s : clouds4) {
-				s.setX(s.getX() - movement * 0.65 * Gdx.graphics.getDeltaTime());
+				s.setX(s.getX() - movement * 0.65f * Gdx.graphics.getDeltaTime());
 				if (s.getX() + s.getWidth() < 0)
 					toRemove.add(s);
 				else
 					movement = initMovement;
 			}
 
-			blimp.setX(blimp.getX() - movement * 0.6 * Gdx.graphics.getDeltaTime());
-			plane.setX(plane.getX() - movement * 1.5 * Gdx.graphics.getDeltaTime());
-			moon.setX(moon.getX() - movement * 0.1 * Gdx.graphics.getDeltaTime());
+			blimp.setX(blimp.getX() - movement * 0.6f * Gdx.graphics.getDeltaTime());
+			plane.setX(plane.getX() - movement * 1.5f * Gdx.graphics.getDeltaTime());
+			moon.setX(moon.getX() - movement * 0.1f * Gdx.graphics.getDeltaTime());
 
 			if (plane.getX() + plane.getWidth() < 0) {
 				spawnPlane();
@@ -649,7 +666,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 			clouds3.removeAll(toRemove);
 			clouds4.removeAll(toRemove);
 			stage.draw();
-		}
+
+		} // }}
 	}
 
 	private void drawSprites(ArrayList<SpawnObject> rects, Texture texture, boolean s, boolean antipodean) {
@@ -665,27 +683,27 @@ public class GameScreen extends DefaultScreen implements Screen {
 		}
 	}
 
-	private void drawSprites(ArrayList<ArrayList<SpawnObject>> fruits, Texture texture [], boolean s, boolean antipodean){
-		for (ArrayList<SpawnObject>  fruit: fruits){
-			//for(SpawnObject piece : fruit){
-			  for(int i = 0; i < fruit.size(); i++){
-				if(!fruit.isEmpty()){
-				game.batch.draw(fruitImage[i%12], 
-						fruit.get(i).getX(), 
-						setAntipodean(texture[i%12].getHeight(), fruit.get(i).getY()), 
-						texture[i%12].getWidth(),
-						texture[i%12].getHeight(), 0, 0, texture[i%12].getWidth(), texture[i%12].getHeight(), s, antipodean);
+	private void drawSprites(ArrayList<ArrayList<SpawnObject>> fruits, Texture texture[], boolean s,
+			boolean antipodean) {
+		for (ArrayList<SpawnObject> fruit : fruits) {
+			// for(SpawnObject piece : fruit){
+			for (int i = 0; i < fruit.size(); i++) {
+				if (!fruit.isEmpty()) {
+					game.batch.draw(fruitImage[i % 12], fruit.get(i).getX(),
+							setAntipodean(texture[i % 12].getHeight(), fruit.get(i).getY()), texture[i % 12].getWidth(),
+							texture[i % 12].getHeight(), 0, 0, texture[i % 12].getWidth(), texture[i % 12].getHeight(),
+							s, antipodean);
 				}
 			}
 		}
 	}
 
-	private void emptyFruit(ArrayList<ArrayList<SpawnObject>> fruits){
-		for (ArrayList<SpawnObject> fruit: fruits){
+	private void emptyFruit(ArrayList<ArrayList<SpawnObject>> fruits) {
+		for (ArrayList<SpawnObject> fruit : fruits) {
 			fruit.clear();
 		}
 	}
-	
+
 	private void checkSettings() {
 		// System.out.println(gameMusic.isPlaying());
 		// Sound
