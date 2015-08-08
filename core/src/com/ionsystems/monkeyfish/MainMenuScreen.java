@@ -53,6 +53,8 @@ public class MainMenuScreen extends DefaultScreen implements Screen  {
         logo = new Texture(Gdx.files.internal("IONsystems.png"));
         imgLogo = new Image(logo);
         Table root = new Table(skin);
+        root.center();
+        root.setBounds(10, 10, screenWidth/2, screenHeight/2);
 		root.setFillParent(true);
 		root.setBackground(skin.getDrawable("default-pane"));
 		root.add(imgLogo).row();

@@ -85,8 +85,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 		accelY = Gdx.input.getAccelerometerY();
 		accelZ = Gdx.input.getAccelerometerZ();
 		// Load level settings
-		acceleration = Levels.getCurrentLevel().getGravity();
-		verticalVelocity = 100;// Levels.getCurrentLevel().getVerticalVelocity();
+		acceleration = 40;//Levels.getCurrentLevel().getGravity();
+		verticalVelocity = 1000;// Levels.getCurrentLevel().getVerticalVelocity();
 		lives = 2;//Levels.getCurrentLevel().getLives();
 		flappySpawnRate = 1000000000;
 		treeSpawnRate = 500000000;
@@ -115,6 +115,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 		player = new AnimationSprite(this.game.batch, antipodean, id++);
 		player.generateAnimation("mario", "mario" + screenVersion + ".png", 5, 1);
 		player.generateAnimation("mario_hurt", "mario_hurt" + screenVersion + ".png",3, 1);
+		player.generateAnimation("mario_backwards", "mariobackwards" + screenVersion + ".png", 5, 1);
+		player.generateAnimation("mario_hurt_backwards", "mario_hurt_backwards" + screenVersion + ".png",3, 1);
 		player.setCurrentAnimation("mario");
 		sonic = new AnimationSprite(this.game.batch, antipodean, id++);
 		sonic.generateAnimation("sonic", "sonic" + screenVersion + ".png", 6, 1);
@@ -192,8 +194,8 @@ public class GameScreen extends DefaultScreen implements Screen {
 		btnPause = new TextButton("", pauseStyle);
 		pauseAtlas = new TextureAtlas("buttons/pauseOut/pauseButton.pack");
 
-		btnPause.setPosition((frameWidth - (0.12f * frameHeight)), (0.88f * frameHeight));
-		btnPause.setSize((0.1f * frameHeight), (0.1f * frameHeight));
+		//btnPause.setPosition((frameWidth - (0.12f * frameHeight)), (0.88f * frameHeight));
+		//btnPause.setSize((0.1f * frameHeight), (0.1f * frameHeight));
 
 		stage.setViewport(viewport);
 		stage.addActor(btnPause);
@@ -394,9 +396,9 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 			game.batch.end();
 
-			if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			if (Gdx.input.isButtonPressed(Buttons.LEFT)|| Gdx.input.isKeyPressed(Keys.SPACE)) {
 				touch = true;
-				verticalVelocity = 7;
+				verticalVelocity = 10;
 			}
 
 			if (touch) {
@@ -414,13 +416,36 @@ public class GameScreen extends DefaultScreen implements Screen {
 			}
 			player.y += verticalVelocity;
 			
+			if (player.x + player.getWidth() < 15){
+				player.x = -player.getWidth() + 15;
+			}
+			if (player.x > frameWidth - 15){
+				player.x = frameWidth - 15;
+			}
+			
 			 // Probably won't use side movements if
-			  if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= movement *
-			  Gdx.graphics.getDeltaTime(); 
-			  if (Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += movement *
-			  Gdx.graphics.getDeltaTime();
-			 
-
+			if(Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)){
+				float currentY = Gdx.input.getAccelerometerY();
+				if(currentY <= 0.1){
+					player.x -= movement * Gdx.graphics.getDeltaTime(); 
+					player.setCurrentAnimation("mario_backwards");
+				}
+				else if (currentY > 0.9){
+					player.x += movement * Gdx.graphics.getDeltaTime();
+					player.setCurrentAnimation("mario");
+					}
+			}
+			else 
+			  if(Gdx.input.isKeyPressed(Keys.LEFT)) {
+				  player.setCurrentAnimation("mario_backwards");
+				  player.x -= 1.2f * movement * Gdx.graphics.getDeltaTime();
+				 // movement  *= 0.5;
+			  }
+			  if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+				  player.setCurrentAnimation("mario");
+				  player.x += 0.7 * movement * Gdx.graphics.getDeltaTime();
+			  }
+				 
 			if (player.y < (float) (0.7 * player.getHeight()))
 				player.y = (float) (0.7 * player.getHeight());
 			if (player.y >= frameHeight - player.getHeight() && lockedHeight)
@@ -453,7 +478,12 @@ public class GameScreen extends DefaultScreen implements Screen {
 			if (sonic.x < player.x + player.getWidth() && sonic.x > player.x && player.y <= sonic.getHeight()) {
 				player.y += sonic.getHeight()-10;
 				lives--;
-				player.setCurrentAnimation("mario_hurt");
+				if(player.currentAnimation.name=="mario"){////Need to add mario walking hurt...
+					player.setCurrentAnimation("mario_hurt");
+				}
+				else if (player.currentAnimation.name=="mario_backwards"){
+					player.setCurrentAnimation("mario_hurt_backwards");
+				}
 				player_hurt_timer = 1.6f;
 			}
 	
@@ -464,7 +494,12 @@ public class GameScreen extends DefaultScreen implements Screen {
 			if (crash.x < player.x + player.getWidth() && crash.x > player.x && player.y <= crash.getHeight()) {
 				player.y += crash.getHeight();
 				lives--;
+				if(player.currentAnimation.name=="mario"){
 				player.setCurrentAnimation("mario_hurt");
+				}
+				else if (player.currentAnimation.name=="mario_backwards"){
+					player.setCurrentAnimation("mario_hurt_backwards");
+				}
 				player_hurt_timer = 1.6f;
 			}
 			if (lives < 0)lives = 0;
@@ -478,16 +513,10 @@ public class GameScreen extends DefaultScreen implements Screen {
 				if(TimeUtils.nanoTime() - lastFruitTime > fruitSpawnRate){
 					spawnFruit();
 				}
-				if(Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)){
-					if(currentX > 0.5 && currentY > 0.5 && currentZ > 0.5){
-						emptyFruit(fruits);
-						lives = 3;
-					}
-				}
-				else if(Gdx.input.isKeyPressed(Keys.X)){
+				if(currentY > 0.8 && currentZ > 0.8 || Gdx.input.isKeyPressed(Keys.X)){
 					emptyFruit(fruits);
-					lives = 3;
-				}
+					lives = 2;
+					}
 				accelX = Gdx.input.getAccelerometerX();
 				accelY = Gdx.input.getAccelerometerY();
 				accelZ = Gdx.input.getAccelerometerZ();
@@ -495,8 +524,13 @@ public class GameScreen extends DefaultScreen implements Screen {
 			
 			sonic.x -= 2.0 * movement * Gdx.graphics.getDeltaTime();
 			crash.x -= 1.5 * movement * Gdx.graphics.getDeltaTime();
-			if(player_hurt_timer < 1){
+			if(player_hurt_timer <= 0){
+				if(player.currentAnimation.name == "mario_hurt"){
 				player.setCurrentAnimation("mario");
+				}
+				else if(player.currentAnimation.name == "mario_hurt_backwards"){
+					player.setCurrentAnimation("mario_backwards");
+					}
 			}else{
 				player_hurt_timer -= Gdx.graphics.getDeltaTime();
 			}

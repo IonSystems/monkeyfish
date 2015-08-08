@@ -14,7 +14,7 @@ public class AnimationTexture extends Rectangle {
     Texture                         texture;            
     TextureRegion[]                 textureRegion;  
     String name;
-    boolean 						antipodean;
+	boolean 						antipodean;
     
 	public AnimationTexture(String name, int cols, int rows,	String file, boolean antipodean) {
 		super();
@@ -44,4 +44,13 @@ public class AnimationTexture extends Rectangle {
 	public TextureRegion getKeyFrame(float stateTime, boolean b) {
 		return animation.getKeyFrame(stateTime, b);
 	}
+	
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }
