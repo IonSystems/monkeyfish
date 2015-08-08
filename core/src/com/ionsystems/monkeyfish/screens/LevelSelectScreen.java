@@ -1,4 +1,4 @@
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -22,6 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ionsystems.monkeyfish.GameState;
+import com.ionsystems.monkeyfish.Level;
+import com.ionsystems.monkeyfish.Levels;
+import com.ionsystems.monkeyfish.MonkeyFishGame;
 
 public class LevelSelectScreen extends DefaultScreen implements Screen {
 
@@ -68,7 +72,7 @@ public class LevelSelectScreen extends DefaultScreen implements Screen {
                  @Override
                  public void clicked(InputEvent e, float x, float y){
                 	 Levels.getInstance().gotoLevel(tempLevelIndex);
-                	 game.state = GameState.PLAYING;
+                	 game.setState(GameState.PLAYING);
                  }
     		});
         }
@@ -87,7 +91,7 @@ public class LevelSelectScreen extends DefaultScreen implements Screen {
              @Override
              public void clicked(InputEvent e, float x, float y){
                      //game.setScreen(new MainMenuScreen(game,));
-            	 game.state = game.backToState;
+            	 game.setState(game.getBackToState());
              }
             
 		 });

@@ -1,4 +1,4 @@
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ionsystems.monkeyfish.MonkeyFishGame;
+import com.ionsystems.monkeyfish.SavedSettings;
 
 public class OptionsScreen extends DefaultScreen implements Screen {
     Texture logo;
@@ -78,7 +80,7 @@ public class OptionsScreen extends DefaultScreen implements Screen {
 		 btnBack.addListener(new ClickListener() {
              @Override
              public void clicked(InputEvent e, float x, float y){
-            	 game.state = game.backToState;
+            	 game.setState(game.getBackToState());
             	 
              }
             

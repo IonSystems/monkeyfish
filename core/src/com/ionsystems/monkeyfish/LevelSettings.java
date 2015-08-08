@@ -19,4 +19,8 @@ public enum LevelSettings {
 	private LevelSettings(String id) {
 		this.id = id;
 	}
+
+	public String getId() {
+		return id;
+	}
 }

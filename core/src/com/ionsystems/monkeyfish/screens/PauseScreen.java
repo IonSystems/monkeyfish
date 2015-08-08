@@ -1,4 +1,4 @@
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ionsystems.monkeyfish.GameState;
+import com.ionsystems.monkeyfish.MonkeyFishGame;
 
 public class PauseScreen extends DefaultScreen implements Screen{
 	float frameWidth;
@@ -40,7 +42,6 @@ public class PauseScreen extends DefaultScreen implements Screen{
 	
 	public PauseScreen(final MonkeyFishGame g, Table hud){
 		super(g,hud);
-		this.hud = hud;
 
 		table = new Table(pauseSkin);
 		table.setFillParent(true);
@@ -74,7 +75,7 @@ public class PauseScreen extends DefaultScreen implements Screen{
 		btnRestart.addListener(new ClickListener() {
         	public void touchUp(InputEvent e, float x, float y, int pointer, int button){
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
-        		game.state = GameState.PLAYING; //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
+        		game.setState(GameState.PLAYING); //TODO:Possibl bug here, may not restart as no change in state if restarting form PLAYING
         	}
 		});
 		
@@ -90,7 +91,7 @@ public class PauseScreen extends DefaultScreen implements Screen{
         		Gdx.app.debug("gesture", "inside touchUp restart PauseScreen");
         		
         		//game.setScreen(new OptionsScreen(game));
-        		game.state = GameState.OPTIONS;
+        		game.setState(GameState.OPTIONS);
         	}
 		});
 		

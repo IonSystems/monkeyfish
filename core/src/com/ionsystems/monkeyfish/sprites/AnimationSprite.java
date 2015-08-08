@@ -1,8 +1,9 @@
-package com.ionsystems.monkeyfish;
+package com.ionsystems.monkeyfish.sprites;
 
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,18 +16,18 @@ public class AnimationSprite {
 	TextureRegion currentFrame;
 
 	float stateTime;
-	float x;
-	float y;
+	private float x;
+	private float y;
 	boolean antipodean;
-	int id;
+	private int id;
 
 	public AnimationSprite(SpriteBatch sb, boolean antipodean, int id) {
 		animations = new HashMap<String, AnimationTexture>();
 		this.spriteBatch = sb;
-		this.x = 0;
-		this.y = 0;
+		this.setX(0);
+		this.setY(0);
 		this.antipodean = antipodean;
-		this.id = id;
+		this.setId(id);
 		stateTime = 0f;
 	}
 
@@ -38,7 +39,7 @@ public class AnimationSprite {
 		return currentAnimation.getWidth();
 	}
 
-	public void generateAnimation(String name, String file, int cols, int rows) {
+	public void generateAnimation(String name, FileHandle file, int cols, int rows) {
 		animations.put(name, new AnimationTexture(name, cols, rows, file, antipodean));
 	}
 
@@ -51,7 +52,7 @@ public class AnimationSprite {
 		if (currentAnimation != null) {
 			stateTime += Gdx.graphics.getDeltaTime();
 			currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-			spriteBatch.draw(currentFrame, x, setAntipodean(currentAnimation.getHeight(), y));
+			spriteBatch.draw(currentFrame, getX(), setAntipodean(currentAnimation.getHeight(), getY()));
 		}
 	}
 	
@@ -60,6 +61,30 @@ public class AnimationSprite {
 			return Gdx.graphics.getHeight() - y - height;
 		} else
 			return y;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }
