@@ -45,14 +45,13 @@ public class AnimationSprite {
 
 	public void setCurrentAnimation(String name) {
 			currentAnimation = animations.get(name);
-
 	}
 
-	public void render() {
+	public void render(boolean flip) {
 		if (getCurrentAnimation() != null) {
 			stateTime += Gdx.graphics.getDeltaTime();
 			currentFrame = getCurrentAnimation().getKeyFrame(stateTime, true);
-			spriteBatch.draw(currentFrame, getX(), setAntipodean(getCurrentAnimation().getHeight(), getY()));
+			spriteBatch.draw(currentFrame, getX(), setAntipodean(getCurrentAnimation().getHeight(), getY()), flip ? -currentFrame.getRegionWidth() : currentFrame.getRegionWidth() , currentFrame.getRegionHeight());
 		}
 	}
 	
@@ -94,5 +93,4 @@ public class AnimationSprite {
 	public void setCurrentAnimation(AnimationTexture currentAnimation) {
 		this.currentAnimation = currentAnimation;
 	}
-
 }

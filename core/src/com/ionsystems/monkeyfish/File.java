@@ -75,7 +75,7 @@ public class File {
 		strings.put("mario_hurt_backwards2.0", "sprites/mario/mario_hurt_backwards2.0.png");
 		strings.put("mario_hurt_backwards", "sprites/mario/mariobackwards.png");
 		
-		strings.put("monkey", "sprites/monkey_walk/monkey_walk2.0.png");
+		strings.put("monkey", "sprites/monkey_walk/monkey_walk3.1.png");
 
 		// Ground
 		strings.put("ground", "sprites/ground/ground.png");

@@ -1,6 +1,5 @@
 package com.ionsystems.monkeyfish.sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -53,5 +52,20 @@ public class AnimationTexture extends Rectangle {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public Texture getTexture() {
+		return this.texture;
+	}
+
+	public int getColumns() {
+		return cols;
+	}
+	public int getRows() {
+		return rows;
+	}
+
+//	public void setBackwards(boolean backwards) {
+////		this.backwards = backwards;
+//	}
 
 }

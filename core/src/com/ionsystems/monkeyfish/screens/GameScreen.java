@@ -63,7 +63,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 	float accelY;
 	float accelZ;
 	private boolean touch, antipodean, lockedHeight;
-	int screenSize;
+	float screenProportion;
 	String screenVersion;
 	AnimationSprite player, sonic, crash;
 	TextButton btnPause;
@@ -103,6 +103,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		treeSpawnRate = 500000000;
 		cloudSpawnRate = 5000000;
 		fruitSpawnRate = 100000000;
+		screenProportion = (float)640/frameWidth;
 		lockedHeight = Levels.getCurrentLevel().getInfiniteHeight(); // When set
 																		// to
 																		// false
@@ -124,28 +125,18 @@ public class GameScreen extends DefaultScreen implements Screen {
 			screenVersion = "2.0";
 		setupImageTextures();
 		flappyImage = File.getInstance().getFile("flappy" + screenVersion);
-		System.out.println("setScreenSize = " + screenSize);
 		// create the camera and the SpriteBatch
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, frameWidth, frameHeight);
 		viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth(), camera);
 		player = new AnimationSprite(this.game.batch, antipodean, id++);
-
 		player.generateAnimation("mario", File.getInstance().getFile("monkey" + screenVersion), 8, 1);
 		player.generateAnimation("mario_hurt", File.getInstance().getFile("mario_hurt" + screenVersion), 3, 1);
-		player.generateAnimation("mario_backwards", File.getInstance().getFile("mariobackwards" + screenVersion), 5, 1);
-		player.generateAnimation("mario_hurt_backwards",
-				File.getInstance().getFile("mario_hurt_backwards" + screenVersion), 3, 1);
-
 		player.setCurrentAnimation("mario");
 		sonic = new AnimationSprite(this.game.batch, antipodean, id++);
 		sonic.generateAnimation("sonic", File.getInstance().getFile("sonic" + screenVersion), 6, 1);
 		sonic.setCurrentAnimation("sonic");
 		spawnSonic();
-		crash = new AnimationSprite(this.game.batch, antipodean, id++);
-		crash.generateAnimation("crash", File.getInstance().getFile("crash" + screenVersion), 8, 1);
-		crash.setCurrentAnimation("crash");
-		spawnCrash();
 		crash = new AnimationSprite(this.game.batch, antipodean, id++);
 		crash.generateAnimation("crash", File.getInstance().getFile("crash" + screenVersion), 8, 1);
 		crash.setCurrentAnimation("crash");
@@ -250,7 +241,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 		});
 
 		player.setX(frameWidth / 2 - player.getWidth() / 2);
-		player.setY((int) (0.7 * player.getHeight()));
+		player.setY((int) (0.3 * player.getHeight()));
 
 		// end Pause Button
 	}
@@ -339,9 +330,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 						(int) MathUtils.random(-50, frameWidth), (int) MathUtils.random(-50, frameHeight)));
 			}
 		}
-		// fruit.add(new SpawnObject(fruitImage[thisFruit],
-		// (int)MathUtils.random(-50, frameWidth), (int)MathUtils.random(-50,
-		// frameHeight)));
 		lastFruitTime = TimeUtils.nanoTime();
 	}
 
@@ -373,16 +361,14 @@ public class GameScreen extends DefaultScreen implements Screen {
 	}
 
 	public void render(float delta) {
+		//TODO: Dont forget to remove
+		//System.out.println("ONE FRAME");
 		currentDistance++;
 		// System.out.println("State: " + game.state + ", " + game.getScreen() +
 		// ", currD: " + currentDistance + ", lD" + levelDistance);
 		if (currentDistance >= levelDistance) {
 			game.setState(GameState.NEXT_LEVEL);
-			game.setScreen(new LevelCompleteScreen(game, hud)); // TODO: Should
-																// not need
-																// this, should
-																// be set from
-																// MonkeyFishGame
+			game.setScreen(new LevelCompleteScreen(game, hud)); // TODO: Shouldn't need this
 		}
 		if (game.getState() == GameState.PLAYING) {
 			long elapsedTime = TimeUtils.timeSinceMillis(startTime);
@@ -393,7 +379,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 			stage.act();
 
 			// tell the camera to update its matrices.
-
 			// tell the SpriteBatch to render in the
 			// coordinate system specified by the camera.
 			game.batch.setProjectionMatrix(camera.combined);
@@ -401,7 +386,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 			game.batch.begin();
 
 			game.batch.draw(moonImage, moon.getX(), setAntipodean(moonImage.getHeight(), moon.getY()),
-					moonImage.getWidth(), moonImage.getHeight(), 0, 0, moonImage.getWidth(), moonImage.getHeight(),
+					screenProportion * moonImage.getWidth(), screenProportion *moonImage.getHeight(), 0, 0, moonImage.getWidth(), moonImage.getHeight(),
 					false, antipodean);
 			drawSprites(grounds, groundImage, false, antipodean);
 			drawSprites(trees, treeImage, false, antipodean);
@@ -412,16 +397,36 @@ public class GameScreen extends DefaultScreen implements Screen {
 			drawSprites(flappies);
 
 			game.batch.draw(planeImage, plane.getX(), setAntipodean(planeImage.getHeight(), plane.getY()),
-					planeImage.getWidth(), planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(),
+					screenProportion* planeImage.getWidth(), screenProportion *planeImage.getHeight(), 0, 0, planeImage.getWidth(), planeImage.getHeight(),
 					false, antipodean);
 			game.batch.draw(blimpImage, blimp.getX(), setAntipodean(blimpImage.getHeight(), blimp.getY()),
-					blimpImage.getWidth(), blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(),
+					screenProportion *blimpImage.getWidth(), screenProportion *blimpImage.getHeight(), 0, 0, blimpImage.getWidth(), blimpImage.getHeight(),
 					false, antipodean);
-			player.render();
-			sonic.render();
-			crash.render();
-			// drawSprites(fruit, fruitImage[fruit.size()%12], false,
-			// antipodean);
+			boolean playerDirection = false;
+			// Probably won't use side movements if
+			if (Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)) {
+				float currentY = Gdx.input.getAccelerometerY();
+				if (currentY <= 0.1) {
+					playerDirection = true;
+					player.setX(player.getX() - movement * Gdx.graphics.getDeltaTime());
+				} else if (currentY > 0.9) {
+					playerDirection = false;
+					player.setX(player.getX() + movement * Gdx.graphics.getDeltaTime());
+				}
+			} else {
+				if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+					playerDirection = true;
+					player.setX(player.getX() - 1.2f * movement * Gdx.graphics.getDeltaTime());
+				}
+				else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+					playerDirection = false;
+					player.setX((player.getX() + 0.7f * movement * Gdx.graphics.getDeltaTime()));
+				}
+			}
+			player.render(playerDirection);
+			sonic.render(false);
+			crash.render(false);
+
 			drawSprites(fruits, fruitImage, false, antipodean);
 			for (SpawnObject h : hearts) {
 				game.batch.draw(heart, h.getX(), h.getY());
@@ -444,7 +449,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 				}
 				verticalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 			} else {
-				if (player.getY() > 0.7 * player.getHeight()) {
+				if (player.getY() > 0.4 * player.getHeight()) {
 					verticalVelocity -= Gdx.graphics.getDeltaTime() * acceleration;
 				} else {
 					verticalVelocity = 0;
@@ -452,42 +457,16 @@ public class GameScreen extends DefaultScreen implements Screen {
 			}
 			player.setY(player.getY() + verticalVelocity);
 
-			if (player.getX() + player.getWidth() < 15) {
-				player.setX(player.getX() - player.getWidth() + 15);
+			if (player.getX() < 0) {
+				player.setX(0);
 			}
-			if (player.getX() > frameWidth - 15) {
-				player.setX(frameWidth - 15);
+			if (player.getX() + player.getWidth() > frameWidth) {
+				player.setX(frameWidth - player.getWidth());
 			}
+			
 
-			// Probably won't use side movements if
-			if (Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)) {
-				float currentY = Gdx.input.getAccelerometerY();
-				if (currentY <= 0.1) {
-					player.setX(player.getX() - movement * Gdx.graphics.getDeltaTime());
-					player.setCurrentAnimation("mario_backwards");
-				} else if (currentY > 0.9) {
-					player.setX(player.getX() + movement * Gdx.graphics.getDeltaTime());
-					player.setCurrentAnimation("mario");
-				}
-			} else {
-				if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-					player.setCurrentAnimation("mario_backwards");
-					player.setX(player.getX() - 1.2f * movement * Gdx.graphics.getDeltaTime());
-					// movement *= 0.5;
-				}
-				if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-					player.setCurrentAnimation("mario");
-					player.setX((float) (player.getX() + 0.7 * movement * Gdx.graphics.getDeltaTime()));
-				}
-
-				if (Gdx.input.isKeyPressed(Keys.LEFT))
-					player.setX(player.getX() - movement * Gdx.graphics.getDeltaTime());
-				if (Gdx.input.isKeyPressed(Keys.RIGHT))
-					player.setX(player.getX() + movement * Gdx.graphics.getDeltaTime());
-			}
-
-			if (player.getY() < (float) (0.7 * player.getHeight()))
-				player.setY((float) (0.7 * player.getHeight()));
+			if (player.getY() < (float) (0.4 * player.getHeight()))
+				player.setY((float) (0.4 * player.getHeight()));
 			if (player.getY() >= frameHeight - player.getHeight() && lockedHeight)
 				player.setY(frameHeight - player.getHeight());
 
@@ -522,16 +501,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 					&& player.getY() <= sonic.getHeight()) {
 				player.setY(player.getY() + (sonic.getHeight() - 10));
 				lives--;
-				if (player.getCurrentAnimation().getName() == "mario") {//// Need
-																		//// to
-																		//// add
-																		//// mario
-																		//// walking
-																		//// hurt...
-					player.setCurrentAnimation("mario_hurt");
-				} else if (player.getCurrentAnimation().getName() == "mario_backwards") {
-					player.setCurrentAnimation("mario_hurt_backwards");
-				}
+				player.setCurrentAnimation("mario_hurt");
 				player_hurt_timer = 1.6f;
 			}
 
@@ -543,11 +513,7 @@ public class GameScreen extends DefaultScreen implements Screen {
 					&& player.getY() <= crash.getHeight()) {
 				player.setY(player.getY() + crash.getHeight());
 				lives--;
-				if (player.getCurrentAnimation().getName() == "mario") {
-					player.setCurrentAnimation("mario_hurt");
-				} else if (player.getCurrentAnimation().getName() == "mario_backwards") {
-					player.setCurrentAnimation("mario_hurt_backwards");
-				}
+				player.setCurrentAnimation("mario_hurt");
 				player_hurt_timer = 1.6f;
 			}
 			if (lives < 0) {
@@ -575,13 +541,10 @@ public class GameScreen extends DefaultScreen implements Screen {
 
 			if (player_hurt_timer <= 0) {
 				if (player.getCurrentAnimation().getName() == "mario_hurt") {
-
-					sonic.setX((float) (sonic.getX() - 2.0 * movement * Gdx.graphics.getDeltaTime()));
-					crash.setX((float) (crash.getX() - 1.5 * movement * Gdx.graphics.getDeltaTime()));
+					sonic.setX(sonic.getX() - 2.0f * movement * Gdx.graphics.getDeltaTime());
+					crash.setX(crash.getX() - 1.5f * movement * Gdx.graphics.getDeltaTime());
 					if (player_hurt_timer < 1) {
 						player.setCurrentAnimation("mario");
-					} else if (player.getCurrentAnimation().getName() == "mario_hurt_backwards") {
-						player.setCurrentAnimation("mario_backwards");
 					} else {
 						player_hurt_timer -= Gdx.graphics.getDeltaTime();
 					}
@@ -652,7 +615,6 @@ public class GameScreen extends DefaultScreen implements Screen {
 				spawnMoon();
 			}
 
-			// flappies.removeAll(spritesRemove);
 			for (int i : spritesRemove) {
 				for (int j = 0; j < flappies.size(); j++) {
 					if (flappies.get(j).getId() == i) {
@@ -666,27 +628,25 @@ public class GameScreen extends DefaultScreen implements Screen {
 			clouds3.removeAll(toRemove);
 			clouds4.removeAll(toRemove);
 			stage.draw();
-
-		} // }}
+		}
 	}
 
-	private void drawSprites(ArrayList<SpawnObject> rects, Texture texture, boolean s, boolean antipodean) {
+	private void drawSprites(ArrayList<SpawnObject> rects, Texture texture, boolean forwards, boolean antipodean) {
 		for (SpawnObject rect : rects) {
-			game.batch.draw(texture, rect.getX(), setAntipodean(texture.getHeight(), rect.getY()), texture.getWidth(),
-					texture.getHeight(), 0, 0, texture.getWidth(), texture.getHeight(), s, antipodean);
+			game.batch.draw(texture, rect.getX(), setAntipodean(texture.getHeight(), rect.getY()), screenProportion *texture.getWidth(),
+					screenProportion *texture.getHeight(), 0, 0, texture.getWidth(), texture.getHeight(), forwards, antipodean);
 		}
 	}
 
 	private void drawSprites(ArrayList<AnimationSprite> sprites) {
 		for (AnimationSprite sprite : sprites) {
-			sprite.render();
+			sprite.render(false);
 		}
 	}
 
 	private void drawSprites(ArrayList<ArrayList<SpawnObject>> fruits, Texture texture[], boolean s,
 			boolean antipodean) {
 		for (ArrayList<SpawnObject> fruit : fruits) {
-			// for(SpawnObject piece : fruit){
 			for (int i = 0; i < fruit.size(); i++) {
 				if (!fruit.isEmpty()) {
 					game.batch.draw(fruitImage[i % 12], fruit.get(i).getX(),
